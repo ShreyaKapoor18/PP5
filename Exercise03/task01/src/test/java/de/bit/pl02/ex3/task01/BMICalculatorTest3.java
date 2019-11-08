@@ -2,7 +2,7 @@ package de.bit.pl02.ex3.task01;
 
 import static org.junit.Assert.*;
 import java.text.DecimalFormat;
-import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 public class BMICalculatorTest3 {
