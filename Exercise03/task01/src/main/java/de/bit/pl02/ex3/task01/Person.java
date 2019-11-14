@@ -11,12 +11,7 @@ public class Person {
 	//public Person(double weight, double height) {
 	//	this.weight = weight;
 	//	this.height = height;
-		
-	//}
-	// weight in kg
-	//public double weight;
-	// height in cm 
-	// public double height; 			
+					
 	
 	public Person() {
 		// TODO Auto-generated constructor stub

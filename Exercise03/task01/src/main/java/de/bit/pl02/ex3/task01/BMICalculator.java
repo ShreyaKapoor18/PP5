@@ -1,9 +1,11 @@
 package de.bit.pl02.ex3.task01;
 
-public class BMICalculator extends Person{
+import de.bit.pl02.ex3.task02.*;
+
+public class BMICalculator extends InputPerson{
 	private static double bmi; 
 	
-	public static double BMI (Person person1) {
+	public static double BMI (InputPerson person1) {
 		bmi = (person1.getWeight() / (person1.getHeight() * person1.getHeight()));
 		return bmi;
 	}
