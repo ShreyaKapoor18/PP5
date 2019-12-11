@@ -2,7 +2,6 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-
   <groupId>de.bit.pl02.pp5</groupId>
   <artifactId>task01</artifactId>
   <version>0.0.1-SNAPSHOT</version>
@@ -28,7 +27,7 @@
     	<version>1.4</version>
     </dependency>
   </dependencies>
-  <build>
+   <build>
   	<plugins>
   		<plugin>
   			<groupId>commons-cli</groupId>
@@ -42,6 +41,7 @@
   			 <configuration>
           <archive>
   			 <manifest>
+  			 <mainClass> de.bit.pl02.pp5.task01.CommandLineInterface</mainClass>
               <addClasspath>true</addClasspath>
             </manifest>
           </archive>
@@ -49,4 +49,5 @@
   		</plugin>
   	</plugins>
   </build>
+  
 </project>
