@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # Created by https://www.gitignore.io/api/maven
 # Edit at https://www.gitignore.io/?templates=maven
@@ -16,3 +17,6 @@ buildNumber.properties
 .flattened-pom.xml
 
 # End of https://www.gitignore.io/api/maven
+=======
+/.metadata/
+>>>>>>> origin/master
