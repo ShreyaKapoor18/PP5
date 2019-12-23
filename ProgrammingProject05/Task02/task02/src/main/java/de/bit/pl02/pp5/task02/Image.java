@@ -60,7 +60,7 @@ public class Image {
 	    			if (filename.contains("jpg") || filename.contains("png") || filename.contains("jpeg")){
 	    				Image app = new Image();
 	    				// how to put the id of the images!
-	    				app.updatePicture("1xz", child.getAbsolutePath());
+	    				app.updatePicture(filename, child.getAbsolutePath());
 	    			} 
 	    		} 
 	    	} 
