@@ -1,4 +1,4 @@
-package de.bit.pl02.pp5.task02new;
+package de.bit.pl02.pp5.task02;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

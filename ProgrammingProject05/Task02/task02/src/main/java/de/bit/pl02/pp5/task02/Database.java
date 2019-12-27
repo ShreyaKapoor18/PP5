@@ -1,5 +1,5 @@
-package de.bit.pl02.pp5.task02new;
-import de.bit.pl02.pp5.task02new.Image; 
+package de.bit.pl02.pp5.task02;
+import de.bit.pl02.pp5.task02.Image; 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
