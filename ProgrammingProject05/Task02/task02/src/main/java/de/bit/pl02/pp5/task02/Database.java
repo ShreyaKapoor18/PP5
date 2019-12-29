@@ -30,15 +30,7 @@ import java.io.IOException;
  */
 
 public class Database {
-<<<<<<< HEAD
-<<<<<<< HEAD
-	
-	public static void main(String[] args) throws SQLException
-=======
-	public static void main(String[] args) throws SQLException, IOException
->>>>>>> 9d279c02eb75411f54caf72eead3fa50e65f435f
-	{ 
-=======
+
 	/** the name of the database */
 	private String name;
 	/** TODO (giving an error when something goes wrong with the database) */
@@ -64,18 +56,13 @@ public class Database {
 	 * 
 	 * @return con connection to the database
 	 */
-	public Connection Connect_db() throws SQLException
-	{ // connecting to the database whether existing or not existing!
->>>>>>> c08156299ec19e025ebbd1ad89c7996d3ad330fe
+	public Connection Connect_db() throws SQLException { 
+		// connecting to the database whether existing or not existing!
 		Connection con = null; 
 		try {
-			
 			Class.forName("org.sqlite.JDBC"); 
-<<<<<<< HEAD
 			con = DriverManager.getConnection("jdbc:sqlite:test.db"); 
 			try {
-<<<<<<< HEAD
-				
 			// Check if TABLE Images is already present 
 			Statement smt = con.createStatement(); 
 			String presence = "SELECT * FROM sqlite_master WHERE type='TABLE' AND name='IMAGES'"; 
@@ -106,12 +93,10 @@ public class Database {
 			   String x = rs.getString("ID"); 
 			   String s = rs.getString("TITLE");
 			   System.out.println(x+" "+s); 
-=======
-				Statement smt = con.createStatement(); 
-				String presence = "SELECT count(name) FROM sqlite_master WHERE type='TABLE' AND name='IMAGES'"; 
-				smt.execute(presence);				
+			   Statement smt = con.createStatement(); 
+			   String presence = "SELECT count(name) FROM sqlite_master WHERE type='TABLE' AND name='IMAGES'"; 
+			   smt.execute(presence);				
 			// look for a method to put metadata in these columns using the metadata file. 
->>>>>>> 9d279c02eb75411f54caf72eead3fa50e65f435f
 			   
 			   ResultSet rs = smt.executeQuery("SELECT * from IMAGES"); 
 			   	while (rs.next())
@@ -120,7 +105,7 @@ public class Database {
 				   String s = rs.getString("TITLE");
 				   System.out.println(x+" "+s);   
 			   	}
-			}catch(Exception e) {
+			} catch(Exception e) {
 				Statement smt = con.createStatement(); 
 				String sql = "CREATE TABLE IMAGES " +
 						       "(ID TEXT PRIMARY KEY NOT NULL,"+ 
@@ -132,16 +117,13 @@ public class Database {
 				 readmetadata("//Users//shreyakapoor//Desktop//PP5"); 
 				e.printStackTrace();
 			}
-=======
+
 			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
-			return con; 
-			
->>>>>>> c08156299ec19e025ebbd1ad89c7996d3ad330fe
-		} catch (ClassNotFoundException e) { 
-			e.printStackTrace();
-			return null; 
+			return con; } catch (ClassNotFoundException e) { 
+				e.printStackTrace();
+				return null; 
+			}
 		}
-	}
 		
 	/** Creates a table as a database
 	 *  TODO is this complete?
@@ -161,7 +143,7 @@ public class Database {
 				}
 			stmt.close(); 
 			}
-		}catch(Exception e){
+		} catch(Exception e){
 			e.printStackTrace();
 			System.out.println(e.getMessage()); 
 		}
@@ -178,12 +160,9 @@ public class Database {
 		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
 		commands.add("ALTER TABLE IMAGES PICTURE ADD COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
 		
-		return commands; 
-		
+		return commands; 	
 	}
-<<<<<<< HEAD
-<<<<<<< HEAD
-	
+
 	/**
 	 * Reads in the files of the given directory.
 	 * Creates an unique ID consisting of Author, Title and Filename
@@ -194,16 +173,14 @@ public class Database {
 	 * @param dir is the path for the folder in which the metadata files are located
 	 * @param smt is an instance of Connection.createStatement() 
 	 */
-	public static void readmetadata(String dir, Statement smt) throws IOException, SQLException
-	{ 
-=======
-	public static void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException
-	{ 	Class.forName("org.sqlite.JDBC"); 
+
+	public static void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
+		Class.forName("org.sqlite.JDBC"); 
+	
 		Connection con = DriverManager.getConnection("jdbc:sqlite:test.db");
 		Statement smt = con.createStatement();
 		smt.execute("SELECT * FROM IMAGES"); 
->>>>>>> 9d279c02eb75411f54caf72eead3fa50e65f435f
-=======
+	}
 
 	/** Prints the values of the table IMAGES
 	 *  of column ID, TITLE and AUTHOR
@@ -239,7 +216,6 @@ public class Database {
 	public ArrayList<String> read_director(String dir) throws SQLException
 	{  
 		Statement smt = this.con.createStatement(); 
->>>>>>> c08156299ec19e025ebbd1ad89c7996d3ad330fe
 		File dir1 = new File(dir); 
     	File[] filesindir = dir1.listFiles();
     	ArrayList<String> arr = new ArrayList<String>();
@@ -274,7 +250,6 @@ public class Database {
 	 * 
 	 * @param value		the String of the value of column AUTHOR or TITLE in the database
 	 * @return bImage	blob of input image
-	 * @throws SQLException
 	 * 
 	 * TODO handle multiple hits, with ArrayList<byte[]> ?
 	 */
@@ -283,17 +258,21 @@ public class Database {
 		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE "
 				+ column_name +
 				" LIKE " + value;
-		ResultSet rs = stmt.executeQuery(query);
-		// TODO Handle multiple hits 
-		//while (rs.next()) {
+		ResultSet rs;
 		try {
-			InputStream bImage = rs.getBinaryStream("PICTURE blob");
-			return bImage;
-			}catch (Exception e) {
-			System.out.println(e.getMessage()); 
-	    } finally {
+			ResultSet rs = stmt.executeQuery(query);
+			InputStream bImage = rs.getBinaryStream("PICTURE blob");	
+			// TODO Handle multiple hits 
+			//while (rs.next()) {
+		} catch (Exception e) {
+			System.out.println(e.getMessage()); }			
+	    finally {
 	        if (stmt != null) { stmt.close(); }}
+		// TODO Why can it not return?
+		return bImage;	
+		
 	}
+	
 	    
     /** Takes a String with value of column AUTHOR and TITLE and return the byte array contained
 	 * in column PICTURE blob as a generator 
@@ -301,7 +280,6 @@ public class Database {
 	 * @param column_author	the String of the value of column AUTHOR 
 	 * @param column_title		the String of the value of column TITLE 
 	 * @return bImage			the byte array of the image
-	 * @throws SQLException
 	 * 
 	 * 
 	 * TODO handle multiple hits, with ArrayList<byte[]> ?
@@ -330,7 +308,12 @@ public class Database {
 	 * @throws IOException
 	 */
 	public void get_meta(String value, String column_name) {
-		Statement stmt = this.con.createStatement();
+		Statement stmt;
+		try {
+			stmt = this.con.createStatement();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		// create temporary database without PICTURE blob column
 		String query1 = "SELECT * INTO TempTable FROM IMAGES";
 		String query2 = "ALTER TABLE TempTable";
@@ -338,7 +321,12 @@ public class Database {
 		String query = "SELECT * FROM TempTable WHERE " +
 				column_name + " LIKE " + value;
 		//String query5 = "DROP TABLE TempTable";
-		ResultSet rs = stmt.executeQuery(query);
+		ResultSet rs;
+		try {
+			rs = stmt.executeQuery(query);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			while (rs.next()) {
 				String author = rs.getString("AUTHOR"); 
@@ -356,7 +344,7 @@ public class Database {
 
 	
 	/** Main method
-	 * TODO 
+	 * TODO instance of CLI, get athor title from user use as input for Database query
 	 * @param args	
 	 * 
 	 */

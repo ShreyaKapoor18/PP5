@@ -1,4 +1,5 @@
 package de.bit.pl02.pp5.task02;
+import de.bit.pl02.pp5.task02.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -22,11 +23,24 @@ import java.util.ArrayList;
  */
 public class Image {
 	
-	// TODO put attributes first? 
+	/** image in byte array format to be stored in database column PICTURE blob */
+	private byte[] blob; 
+	/** TODO ??? */
+	private String name; 
+	/** Name of the file path */
+	private String path; 
 	
-<<<<<<< HEAD
-
-
+	/** Class constructor
+	 * 
+	 * @param path	the name of the file path of the image
+	 * @param name	??? TODO 
+	 */
+	
+	Image(String path, String name) {
+		this.blob = readFile(path); 
+		this.name = name; 
+		this.path = path; 
+	}
 
 	/**Reads in an image file and converts it to its binary format
 	 * Returns byte array of input image if not null
@@ -115,27 +129,6 @@ public class Image {
 	    	} 
 	    }
 
-=======
-
-	/** image in byte array format to be stored in database column PICTURE blob */
-	private byte[] blob; 
-	/** TODO ??? */
-	private String name; 
-	/** Name of the file path */
-	private String path; 
-	
-	/** Class constructor
-	 * 
-	 * @param path	the name of the file path of the image
-	 * @param name	??? TODO 
-	 */
-	Image(String path, String name)
-	{
-		this.blob = readFile(path); 
-		this.name = name; 
-		this.path = path; 
-	}
-	
 	/** Reads in all .meta files in a folder with specified path
 	 *  and returns the meta information found about author and title
 	 *  together with the constructed id in a String array.
@@ -195,6 +188,5 @@ public class Image {
 	
 }
 	
->>>>>>> c08156299ec19e025ebbd1ad89c7996d3ad330fe
 
 }

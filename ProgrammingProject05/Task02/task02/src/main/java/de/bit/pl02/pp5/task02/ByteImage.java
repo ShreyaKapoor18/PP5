@@ -8,10 +8,24 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/** Class of images stored as a byte array to be converted to a .jpg file
+ * 
+ * 
+ * @author Shreya Kapoor
+ * @author Sophia Krix
+ * @author Gemma van der Voort 
+ * 
+ * @since 1.8.0_231 // JKD Version
+ *
+ */
 public class ByteImage {
-
+	/** byte array of the image */
 	private byte[] byte_array;
 	
+	/** Constructor method
+	 * 
+	 * @param byte_array	the byte array of the image
+	 */
 	public ByteImage(byte[] byte_array) {
 		this.byte_array = byte_array;
 		
