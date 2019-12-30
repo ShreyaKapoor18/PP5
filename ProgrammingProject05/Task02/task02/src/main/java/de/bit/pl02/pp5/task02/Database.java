@@ -15,6 +15,8 @@ public class Database {
 	private String name;
 	private int error_code; // giving an error when something goes wrong with the database. 
 	private Connection con; 
+	private static int id; 
+	private static int dir_count; // count of how many directories have been added
 	Database(String name)
 	{ // this constructor method asks the user for the name of the database.
 		this.name = name;
@@ -62,7 +64,7 @@ public class Database {
 	{ 	System.out.println("adding the fields"); 
 		// arraylist of SQL commands which can be given to the program so that the execution gets up and running. 
 		ArrayList<String> commands = new ArrayList<String>();
-		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
+		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID INTEGER PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
 		commands.add("ALTER TABLE IMAGES PICTURE ADD COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
 		
 		return commands; 

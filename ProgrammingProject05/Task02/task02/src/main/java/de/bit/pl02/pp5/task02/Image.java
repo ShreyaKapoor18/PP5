@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Image {
 	private byte[] blob; // so that this image can be entered into the blob columb 
 	private String name; 
-	private String path; 
+	private String path;
 	Image(String path, String name)
 	{
 		this.blob = readFile(path); 
