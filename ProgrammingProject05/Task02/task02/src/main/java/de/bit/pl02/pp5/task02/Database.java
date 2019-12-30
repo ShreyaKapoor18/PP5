@@ -1,5 +1,5 @@
 package de.bit.pl02.pp5.task02;
-import de.bit.pl02.pp5.task02.Image; 
+import de.bit.pl02.pp5.task02.*; 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,6 +14,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.CommandLine; 
+
 
 
 /** A class of a database to store images in binary format and their meta information.
@@ -350,6 +353,42 @@ public class Database {
 	 */
 	public static void main(String[] args) throws SQLException
 	{ 
+		CommandLineInterface cli = new CommandLineInterface();
+		/** create command line options */
+		Options options = cli.make_options();
+		/** parse command line for options */
+		CommandLine cmd = cli.parse_commandline(options, args);
+		
+		/** Check command line options and do corresponding methods */
+		if (cmd.hasOption("m")){
+			cli.option_m();
+		}
+		
+		if (cmd.hasOption("s")){
+			cli.option_s();
+		}
+		
+		if (cmd.hasOption("gia")){
+			cli.option_gia();
+		}
+		
+		if (cmd.hasOption("git")){
+			cli.option_git();
+		}
+		
+		if (cmd.hasOption("giat")){
+			cli.option_giat();
+		}
+		
+		if (cmd.hasOption("gma")){
+			cli.option_gma();
+		}
+		
+		if (cmd.hasOption("gmt")){
+			cli.option_gmt();
+		}
+		
+		/** Previous main method
 		Scanner input = new Scanner(System.in); 
 		System.out.println("Enter the name of the database you want to make/see"); 
 		String name = input.nextLine(); 
@@ -366,7 +405,7 @@ public class Database {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 }
