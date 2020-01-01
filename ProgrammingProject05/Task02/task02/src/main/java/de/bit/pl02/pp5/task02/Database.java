@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -67,7 +68,7 @@ public class Database {
 		Connection con = null; 
 		try {
 			Class.forName("org.sqlite.JDBC"); 
-			con = DriverManager.getConnection("jdbc:sqlite:test.db"); 
+			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
 			try {
 			// Check if TABLE Images is already present 
 			Statement smt = con.createStatement(); 
@@ -92,7 +93,7 @@ public class Database {
 				 smt.execute(sql1); 
 				 System.out.println(sql1); 
 				 //readmetadata("//Users//shreyakapoor//Desktop//PP5"); 
-				e.printStackTrace();
+				
 			}
 
 			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
@@ -116,6 +117,7 @@ public class Database {
 				System.out.println("create tables!"); 
 				stmt.execute(sql); } 
 				catch (SQLException e) {
+					//System.out.println(sql + " got error with the query"); 
 					continue; // if there is an erro means it does contain the columns etc.
 				}
 			stmt.close(); 
@@ -134,8 +136,8 @@ public class Database {
 	{ 	System.out.println("adding the fields"); 
 		// arraylist of SQL commands which can be given to the program so that the execution gets up and running. 
 		ArrayList<String> commands = new ArrayList<String>();
-		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID INTEGER PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
-		commands.add("ALTER TABLE IMAGES PICTURE ADD COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
+		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
+		commands.add("ALTER TABLE IMAGES PICTURE ADD IF NOT EXISTS COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
 		
 		return commands; 	
 	}
@@ -151,10 +153,10 @@ public class Database {
 	 * @param smt is an instance of Connection.createStatement() 
 	 */
 
-	public static void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
+	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
 		Class.forName("org.sqlite.JDBC"); 
 	
-		Connection con = DriverManager.getConnection("jdbc:sqlite:test.db");
+		Connection con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");
 		Statement smt = con.createStatement();
 		smt.execute("SELECT * FROM IMAGES"); 
 	}
@@ -194,13 +196,17 @@ public class Database {
 	{  
 		Statement smt = this.con.createStatement(); 
 		File dir1 = new File(dir); 
+		System.out.println(dir); 
     	File[] filesindir = dir1.listFiles();
+    	System.out.println(filesindir); 
     	ArrayList<String> arr = new ArrayList<String>();
     	for (File f: filesindir)
     	{ 	String imgname = f.getName();
+    		System.out.println(imgname); 
     		if (imgname.contains(".png")|| imgname.contains(".jpg") || imgname.contains(".jpeg")){ 
     			Image img = new Image(f.getAbsolutePath(), imgname); 
     			ArrayList<String> meta = img.find_metadata(f.getAbsolutePath()); 
+    			if (meta!= null) {
     			arr.add("INSERT INTO IMAGES (ID,TITLE, AUTHOR)" + "VALUES ('"+ meta.get(0)+ "','"+ meta.get(1) + "'," + meta.get(2) +"')"); 
     			try {
     				String id = "'"+ meta.get(0)+ "'"; 
@@ -210,18 +216,44 @@ public class Database {
     		
     				String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR) VALUES ("+ id + "," + title +  "," + author + ")";
     				smt.execute(sql);
+    				updatePicture(img, id, f.getAbsolutePath()); 
     				System.out.println(sql); 
     			}catch (Exception e) {
     				System.out.println(e.getMessage()); 
     				//continue; // only this particular image could not be inserted into the database.
     			}
-    			}
+    		 }
+    	  }
     	}
     	System.out.println("inserting images");
 
     	return arr; 
 	}
 	
+	/** Updates the database with the new image
+	   * 
+	   * @param Id			the value of the id column in the database
+	   * @param filename	the path of the image to be stored
+	   */
+	    public void updatePicture(Image img,String Id, String path) {
+	        // update sql
+	        String updateSQL = "UPDATE IMAGES " + "SET PICTURE =?"
+	                + "WHERE id=?";
+	        try  {
+	 
+            PreparedStatement pstmt = this.con.prepareStatement(updateSQL); 
+	            // set parameters
+	            pstmt.setBytes(1, img.readFile(path));
+	            pstmt.setString(2, Id);
+	 
+	            pstmt.executeUpdate();
+	            System.out.println("Stored the file in the BLOB column.");
+	 
+	        } catch (SQLException e) {
+	            System.out.println(e.getMessage());
+	        }
+	    }
+
 	/** Takes a String with value of column AUTHOR and return the blob contained
 	 * in column PICTURE blob 
 	 * 
@@ -251,6 +283,7 @@ public class Database {
 		// TODO Why can it not return, because the datatype has an issue!		
 		
 	}
+	
 	
 	    
     /** Takes a String with value of column AUTHOR and TITLE and return the byte array contained
