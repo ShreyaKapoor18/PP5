@@ -2,23 +2,35 @@ package de.bit.pl02.pp5.task02new;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class Image {
-	private byte[] blob; // so that this image can be entered into the blob columb 
+	private byte[] blob; // so that this image can be entered into the blob column
 	private String name; 
 	private String path; 
+	
 	Image(String path, String name)
 	{
+		// blob of type byte[]
 		this.blob = readFile(path); 
 		this.name = name; 
 		this.path = path; 
+
 	}
+	
+	/** Reads in an image file and converts it to its binary format
+	 * Reutrns byte array of input image if not null
+	 * 
+	 * @params file is the file path of the .jpg or .png file
+	 */	
 	private byte[] readFile(String file) {
         ByteArrayOutputStream bos = null;
         try {
@@ -36,6 +48,9 @@ public class Image {
         }
         return bos != null ? bos.toByteArray() : null;
     }
+	
+	
+	
 	ArrayList<String> find_metadata(String path)
 	{
 		/* we consider that we follow the same path for metadata files and the actual image files 
@@ -75,7 +90,7 @@ public class Image {
 			meta.add(title); 
 			meta.add(author); 
 		
-		}catch (Exception e) {
+		} catch (Exception e) {
 			/* if there existed none of such files then probably some 
 			 default values shall be set and passed on in the given fields.
 			 */

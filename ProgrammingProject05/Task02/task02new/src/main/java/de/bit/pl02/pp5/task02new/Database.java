@@ -10,6 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class Database {
 	private String name;
@@ -39,6 +43,7 @@ public class Database {
 		}
 	}
 	public void make_table()
+	// TO DO handle if table already exists 
 	{ 
 		try {
 			Statement stmt = this.con.createStatement(); // try to query with the help of certain statements.
@@ -68,6 +73,8 @@ public class Database {
 		return commands; 
 		
 	}
+	
+	
 	public void see_table() throws SQLException
 	{ 	System.out.println("printing"); 
 		Statement smt = this.con.createStatement(); 
@@ -86,6 +93,88 @@ public class Database {
 	   	smt.close(); 
 	   
 	}
+	
+	/** Takes a String with value of column AUTHOR and return the byte array contained
+	 * in column PICTURE blob as a generator 
+	 * 
+	 * @params value is the String of the value of column AUTHOR or TITLE in the database
+	 * @throws SQLException
+	 * 
+	 * TODO handle multiple hits, with ArrayList<byte[]> ?
+	 */
+	public byte[] get_byteImage(String value, String column_name) {
+		Statement stmt = this.con.createStatement();
+		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE "
+				+ column_name +
+				" LIKE " + value;
+		ResultSet rs = smt.executeQuery(query);
+		// TODO Handle multiple hits 
+		//while (rs.next()) {
+		try {
+			byte[] bImage = rs.getBinaryStream("PICTURE blob");
+			return bImage;
+		 catch (SQLException e ) {
+	        JDBCTutorialUtilities.printSQLException(e);
+	    } finally {
+	        if (stmt != null) { stmt.close(); }
+	}
+	    
+    /** Takes a String with value of column AUTHOR and TITLE and return the byte array contained
+	 * in column PICTURE blob as a generator 
+	 * 
+	 * @params column_author is the String of the value of column AUTHOR 
+	 * @params column_title is the String of the value of column TITLE 
+	 * @throws SQLException
+	 * 
+	 * TODO handle multiple hits, with ArrayList<byte[]> ?
+	 */
+	public byte[] get_byteImage2(String column_author, String column_title) {
+		Statement stmt = this.con.createStatement();
+		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE AUTHOR LIKE " 
+				+ column_author + " AND TITLE LIKE"  
+				+ column_title;
+		ResultSet rs = stmt.executeQuery(query);
+		try {
+			byte[] bImage = rs.getBinaryStream("PICTURE blob");
+			return bImage;
+		 catch (SQLException e ) {
+	        JDBCTutorialUtilities.printSQLException(e);
+	    } finally {
+	        if (stmt != null) { stmt.close(); }
+	}
+
+	    
+	/** Takes value of AUTHOR or TITLE column and saves the
+	 * corresponding metadata as a .txt file
+	 * 
+	 * @params value is the value of the specified column
+	 * @column_name is either AUTHOR or TITLE
+	 */
+	public void get_meta(String value, String column_name) {
+		Statement stmt = this.con.createStatement();
+		// create temporary database without PICTURE blob column
+		String query1 = "SELECT * INTO TempTable FROM IMAGES";
+		String query2 = "ALTER TABLE TempTable";
+		String query3 = "DROP COLUMN PICTURE blob";
+		String query = "SELECT * FROM TempTable WHERE " +
+				column_name + " LIKE " + value;
+		//String query5 = "DROP TABLE TempTable";
+		ResultSet rs = stmt.executeQuery(query);
+		while (rs.next())
+	   	{  String author = rs.getString("AUTHOR"); 
+		   String title = rs.getString("TITLE");   
+	   	}
+		String id = author.substring(0,3)+title.substring(0,3);
+		String metadata = "Author: " + author + "\nTitle: " + title;
+		FileUtils.writeStringToFile(new File(id+".txt"), metadata);
+	}
+	    
+	/** Reads the files of a directory, finds the images and its corresponding metadata
+	 * Inserts the metadata of ID, TITLE and AUTHOR into the database
+	 * 
+	 * @params dir is the path of the directory 
+	 * @throws Exception if image could not be inserted into database
+	 */
 	public ArrayList<String> read_director(String dir) throws SQLException
 	{  
 		Statement smt = this.con.createStatement(); 
@@ -119,6 +208,7 @@ public class Database {
 	}
 	public static void main(String[] args) throws SQLException
 	{ 
+		// TO DO command line interface instance 
 		Scanner input = new Scanner(System.in); 
 		System.out.println("Enter the name of the database you want to make/see"); 
 		String name = input.nextLine(); 
