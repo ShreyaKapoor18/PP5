@@ -84,8 +84,13 @@ public class CommandLineInterface {
 	 */
 	public static void readfile (CommandLine cmd, String path) throws IOException{
 		// Assuming that the existing metadata file is in the same directory as the image
-		// and differs only in the extention .meta
-		String metapath = path.split(".")[0] + ".meta";
+		// and differs only in the extension .meta
+		String directory = cmd.getOptionValue("d");
+		System.out.println("Reading file in directory "+ directory);
+		String[] tmp = path.split(".");
+		for (String a : tmp) {
+            System.out.println(a); } 
+		String metapath = directory + "/" + path.split(".")[0] + ".meta";
 		FileReader filer = new FileReader(metapath);
 		BufferedReader buffr = new BufferedReader(filer);
 		boolean eof = false;
@@ -117,6 +122,7 @@ public class CommandLineInterface {
 		// improvements write in the form of a class in the file.
 		
 		Metadata metadata = new Metadata();
+		String directory = cmd.getOptionValue("d");
 		String[] metavalues = cmd.getOptionValues("im");
 		String author = metavalues[0];
 		String title = metavalues[1];
@@ -128,7 +134,7 @@ public class CommandLineInterface {
 		metadata.setInfographic(infographic);
 		
 		// Write metadata to file
-		String metapath = newfile.split(".")[0]+".meta";
+		String metapath = directory + "/" + newfile.split(".")[0] + ".meta";
 		FileWriter os = new FileWriter(metapath); 
 		os.write("Author: " + author + "\n");
 		os.write("Title: " + title + "\n");
@@ -155,7 +161,7 @@ public class CommandLineInterface {
 		File newfile = new File(path); 
 		newfile.createNewFile(); 
 		FileReader filer = new FileReader(newfile); 
-		//filer.close();
+		filer.close();
 		return newfile; 
 			}
 		}	
@@ -172,6 +178,7 @@ public class CommandLineInterface {
 		// Print the metadata file content if metadata file exists
 		if (cmd.hasOption("p")) {
 			String path = cmd.getOptionValue("if");
+			System.out.println("File path: " + path);
 			CommandLineInterface.readfile(cmd, path);
 			}
 		
