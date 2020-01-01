@@ -353,40 +353,6 @@ public class Database {
 	 */
 	public static void main(String[] args) throws SQLException
 	{ 
-		CommandLineInterface cli = new CommandLineInterface();
-		/** create command line options */
-		Options options = cli.make_options();
-		/** parse command line for options */
-		CommandLine cmd = cli.parse_commandline(options, args);
-		
-		/** Check command line options and do corresponding methods */
-		if (cmd.hasOption("m")){
-			cli.option_m();
-		}
-		
-		if (cmd.hasOption("s")){
-			cli.option_s();
-		}
-		
-		if (cmd.hasOption("gia")){
-			cli.option_gia();
-		}
-		
-		if (cmd.hasOption("git")){
-			cli.option_git();
-		}
-		
-		if (cmd.hasOption("giat")){
-			cli.option_giat();
-		}
-		
-		if (cmd.hasOption("gma")){
-			cli.option_gma();
-		}
-		
-		if (cmd.hasOption("gmt")){
-			cli.option_gmt();
-		}
 		
 		/** Previous main method
 		Scanner input = new Scanner(System.in); 
