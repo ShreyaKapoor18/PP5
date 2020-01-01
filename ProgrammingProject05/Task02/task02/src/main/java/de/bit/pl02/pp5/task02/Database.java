@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,7 +20,8 @@ import org.apache.commons.cli.CommandLine;
 
 
 
-/** A class of a database to store images in binary format and their meta information.
+/** A class which can create database objects and helps to interact 
+ *  with them. 
  * 	Columns: 
  * 		AUTHOR			the name of the author
  * 		TITLE			the name of the title
@@ -36,16 +38,18 @@ public class Database {
 
 	/** the name of the database */
 	private String name;
-	/** TODO (giving an error when something goes wrong with the database) */
-	private int error_code;  
-	/** Connection to the SQLite database file*/
-	private Connection con;  
+	private int error_code; // giving an error when something goes wrong with the database. 
+	private Connection con; 
+	private static int id; 
+	private static int dir_count; // count of how many directories have been added
+	  
 	
 	/** Constructor method
 	 * 
 	 * @param name	the name of the database
 	 */
 	Database(String name) {
+
 		this.name = name;
 		try {
 			this.con = this.Connect_db();
@@ -64,42 +68,13 @@ public class Database {
 		Connection con = null; 
 		try {
 			Class.forName("org.sqlite.JDBC"); 
-			con = DriverManager.getConnection("jdbc:sqlite:test.db"); 
+			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
 			try {
 			// Check if TABLE Images is already present 
 			Statement smt = con.createStatement(); 
 			String presence = "SELECT * FROM sqlite_master WHERE type='TABLE' AND name='IMAGES'"; 
 			boolean present = smt.execute(presence);
 			
-			// Create Table Images with columns 
-			if (!present) {
-			String sql = "CREATE TABLE IMAGES " +
-				       "(ID TEXT PRIMARY KEY NOT NULL,"+ 
-				       "TITLE   TEXT NOT NULL, " + 
-				       "AUTHOR TEXT NOT NULL)";
-		   smt.execute(sql); 
-		   
-		   // Add Picture column of type blob to table 
-		   String sql1 = "ALTER TABLE IMAGES ADD COLUMN PICTURE blob"; 
-		   smt.execute(sql1); 
-		   readmetadata("//Users//shreyakapoor//Desktop//PP5", smt); 
-			} 
-		  
-		   //String sql = "INSERT INTO IMAGES (ID,TITLE)" + 
-		//		   "VALUES ('1xyz', 'Paul McArthur');"; 
-		  // smt.execute(sql); 
-		// look for a method to put metadata in these columns using the metadata file. 
-		   
-		   ResultSet rs = smt.executeQuery("SELECT * from IMAGES"); 
-		   while (rs.next())
-		   { 
-			   String x = rs.getString("ID"); 
-			   String s = rs.getString("TITLE");
-			   System.out.println(x+" "+s); 
-			   Statement smt = con.createStatement(); 
-			   String presence = "SELECT count(name) FROM sqlite_master WHERE type='TABLE' AND name='IMAGES'"; 
-			   smt.execute(presence);				
-			// look for a method to put metadata in these columns using the metadata file. 
 			   
 			   ResultSet rs = smt.executeQuery("SELECT * from IMAGES"); 
 			   	while (rs.next())
@@ -117,8 +92,8 @@ public class Database {
 				 String sql1 = "ALTER TABLE IMAGES ADD COLUMN PICTURE blob"; 
 				 smt.execute(sql1); 
 				 System.out.println(sql1); 
-				 readmetadata("//Users//shreyakapoor//Desktop//PP5"); 
-				e.printStackTrace();
+				 //readmetadata("//Users//shreyakapoor//Desktop//PP5"); 
+				
 			}
 
 			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
@@ -142,6 +117,7 @@ public class Database {
 				System.out.println("create tables!"); 
 				stmt.execute(sql); } 
 				catch (SQLException e) {
+					//System.out.println(sql + " got error with the query"); 
 					continue; // if there is an erro means it does contain the columns etc.
 				}
 			stmt.close(); 
@@ -161,7 +137,7 @@ public class Database {
 		// arraylist of SQL commands which can be given to the program so that the execution gets up and running. 
 		ArrayList<String> commands = new ArrayList<String>();
 		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
-		commands.add("ALTER TABLE IMAGES PICTURE ADD COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
+		commands.add("ALTER TABLE IMAGES PICTURE ADD IF NOT EXISTS COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
 		
 		return commands; 	
 	}
@@ -177,10 +153,10 @@ public class Database {
 	 * @param smt is an instance of Connection.createStatement() 
 	 */
 
-	public static void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
+	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
 		Class.forName("org.sqlite.JDBC"); 
 	
-		Connection con = DriverManager.getConnection("jdbc:sqlite:test.db");
+		Connection con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");
 		Statement smt = con.createStatement();
 		smt.execute("SELECT * FROM IMAGES"); 
 	}
@@ -220,13 +196,17 @@ public class Database {
 	{  
 		Statement smt = this.con.createStatement(); 
 		File dir1 = new File(dir); 
+		System.out.println(dir); 
     	File[] filesindir = dir1.listFiles();
+    	System.out.println(filesindir); 
     	ArrayList<String> arr = new ArrayList<String>();
     	for (File f: filesindir)
     	{ 	String imgname = f.getName();
+    		System.out.println(imgname); 
     		if (imgname.contains(".png")|| imgname.contains(".jpg") || imgname.contains(".jpeg")){ 
     			Image img = new Image(f.getAbsolutePath(), imgname); 
     			ArrayList<String> meta = img.find_metadata(f.getAbsolutePath()); 
+    			if (meta!= null) {
     			arr.add("INSERT INTO IMAGES (ID,TITLE, AUTHOR)" + "VALUES ('"+ meta.get(0)+ "','"+ meta.get(1) + "'," + meta.get(2) +"')"); 
     			try {
     				String id = "'"+ meta.get(0)+ "'"; 
@@ -236,45 +216,74 @@ public class Database {
     		
     				String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR) VALUES ("+ id + "," + title +  "," + author + ")";
     				smt.execute(sql);
+    				updatePicture(img, id, f.getAbsolutePath()); 
     				System.out.println(sql); 
     			}catch (Exception e) {
     				System.out.println(e.getMessage()); 
     				//continue; // only this particular image could not be inserted into the database.
     			}
-    			}
+    		 }
+    	  }
     	}
     	System.out.println("inserting images");
 
     	return arr; 
 	}
 	
+	/** Updates the database with the new image
+	   * 
+	   * @param Id			the value of the id column in the database
+	   * @param filename	the path of the image to be stored
+	   */
+	    public void updatePicture(Image img,String Id, String path) {
+	        // update sql
+	        String updateSQL = "UPDATE IMAGES " + "SET PICTURE =?"
+	                + "WHERE id=?";
+	        try  {
+	 
+            PreparedStatement pstmt = this.con.prepareStatement(updateSQL); 
+	            // set parameters
+	            pstmt.setBytes(1, img.readFile(path));
+	            pstmt.setString(2, Id);
+	 
+	            pstmt.executeUpdate();
+	            System.out.println("Stored the file in the BLOB column.");
+	 
+	        } catch (SQLException e) {
+	            System.out.println(e.getMessage());
+	        }
+	    }
+
 	/** Takes a String with value of column AUTHOR and return the blob contained
 	 * in column PICTURE blob 
 	 * 
 	 * @param value		the String of the value of column AUTHOR or TITLE in the database
-	 * @return bImage	blob of input image
-	 * 
-	 * TODO handle multiple hits, with ArrayList<byte[]> ?
 	 */
-	public InputStream get_byteImage(String value, String column_name) {
-		Statement stmt = this.con.createStatement();
-		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE "
-				+ column_name +
-				" LIKE " + value;
-		ResultSet rs;
+	public void get_byteImage(String value, String column_name) {
+		Statement stmt;
 		try {
-			ResultSet rs = stmt.executeQuery(query);
-			InputStream bImage = rs.getBinaryStream("PICTURE blob");	
-			// TODO Handle multiple hits 
-			//while (rs.next()) {
-		} catch (Exception e) {
-			System.out.println(e.getMessage()); }			
-	    finally {
-	        if (stmt != null) { stmt.close(); }}
-		// TODO Why can it not return?
-		return bImage;	
+			stmt = this.con.createStatement();
+			try {
+				String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE "
+						+ column_name +
+						" LIKE " + value;
+				ResultSet rs = stmt.executeQuery(query);
+				InputStream bImage = rs.getBinaryStream("PICTURE blob");	
+				// TODO Handle multiple hits 
+				//while (rs.next()) {
+			} catch (Exception e) {
+				System.out.println(e.getMessage()); }			
+		    finally {
+		        if (stmt != null) { stmt.close(); }}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}	
+		
+		// TODO Why can it not return, because the datatype has an issue!		
 		
 	}
+	
 	
 	    
     /** Takes a String with value of column AUTHOR and TITLE and return the byte array contained
@@ -286,8 +295,9 @@ public class Database {
 	 * 
 	 * 
 	 * TODO handle multiple hits, with ArrayList<byte[]> ?
+     * @throws SQLException 
 	 */
-	public InputStream get_byteImage2(String column_author, String column_title) {
+	public InputStream get_byteImage2(String column_author, String column_title) throws SQLException {
 		Statement stmt = this.con.createStatement();
 		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE AUTHOR LIKE " 
 				+ column_author + " AND TITLE LIKE"  
@@ -300,6 +310,7 @@ public class Database {
 				System.out.println(e.getMessage()); 
 	    } finally {
 	        if (stmt != null) { stmt.close(); }}
+		return null;
 	}
 
 	    
@@ -311,7 +322,7 @@ public class Database {
 	 * @throws IOException
 	 */
 	public void get_meta(String value, String column_name) {
-		Statement stmt;
+		Statement stmt = null;
 		try {
 			stmt = this.con.createStatement();
 		} catch (SQLException e1) {
@@ -327,21 +338,23 @@ public class Database {
 		ResultSet rs;
 		try {
 			rs = stmt.executeQuery(query);
+			try {
+				while (rs.next()) {
+					String author = rs.getString("AUTHOR"); 
+					String title = rs.getString("TITLE"); 
+					String id = author.substring(0,3)+title.substring(0,3);
+					String metadata = "Author: " + author + "\nTitle: " + title;
+					
+					BufferedWriter writer = new BufferedWriter(new FileWriter(id + ".txt", true));
+				    writer.append(metadata); }
+				} catch (IOException e) {
+					System.out.println(e.getMessage());
+			}
+			
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		try {
-			while (rs.next()) {
-				String author = rs.getString("AUTHOR"); 
-				String title = rs.getString("TITLE"); 
-				String id = author.substring(0,3)+title.substring(0,3);
-				String metadata = "Author: " + author + "\nTitle: " + title;
-				
-				BufferedWriter writer = new BufferedWriter(new FileWriter(id + ".txt", true));
-			    writer.append(metadata); }
-			} catch (IOException e) {
-				System.out.println(e.getMessage());
-		}
+		
 		  
 	}
 

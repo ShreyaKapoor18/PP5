@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
+
 
 /** Image is the class of images used to read in .jpg, .jpeg or .png files
  *  and to store these in a byte array in a database. These byte arrays can 
@@ -25,15 +27,14 @@ public class Image {
 	
 	/** image in byte array format to be stored in database column PICTURE blob */
 	private byte[] blob; 
-	/** TODO ??? */
+	/** the name of the image**/
 	private String name; 
-	/** Name of the file path */
-	private String path; 
-	
+	/** the path of the image in the machine **/ 
+	private String path;
 	/** Class constructor
 	 * 
-	 * @param path	the name of the file path of the image
-	 * @param name	??? TODO 
+	 * @param path	The location of the image in the file system
+	 * @param name  The name of the image file.
 	 */
 	
 	Image(String path, String name) {
@@ -43,12 +44,13 @@ public class Image {
 	}
 
 	/**Reads in an image file and converts it to its binary format
+	 * so that it can be entered into the database. 
 	 * Returns byte array of input image if not null
 	 * 
 	 * @param file	the file path of the .jpg or .png file
 	 * @return bos 	the byte array of the input image
 	 */
-	   private byte[] readFile(String file) {
+	  public byte[] readFile(String file) {
 	        ByteArrayOutputStream bos = null;
 	        try {
 	            File f = new File(file);
@@ -66,68 +68,8 @@ public class Image {
 	        return bos != null ? bos.toByteArray() : null;
 	    }
 
-	/** Establishes a connection to the SQLite database file images2 
-	 * via the Java Database Connectivity (JDBC)
-	 * 
-	 * @return conn	the connection to the database
-	 */
-	   private Connection connect() {
-	        // SQLite connection string
-	        String url = "jdbc:sqlite:images2.db";
-	        Connection conn = null;
-	        try {
-	            conn = DriverManager.getConnection(url);
-	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
-	        }
-	        return conn;
-	    }
-	   
-	  /** Updates the database with the new image
-	   * 
-	   * @param Id			the value of the id column in the database
-	   * @param filename	the path of the image to be stored
-	   */
-	    public void updatePicture(String Id, String filename) {
-	        // update sql
-	        String updateSQL = "UPDATE IMAGES " + "SET PICTURE =?"
-	                + "WHERE id=?";
-	 
-	        try  {
-	        	Connection conn = connect();
-                PreparedStatement pstmt = conn.prepareStatement(updateSQL); 
-	            // set parameters
-	            pstmt.setBytes(1, readFile(filename));
-	            pstmt.setString(2, Id);
-	 
-	            pstmt.executeUpdate();
-	            System.out.println("Stored the file in the BLOB column.");
-	 
-	        } catch (SQLException e) {
-	            System.out.println(e.getMessage());
-	        }
-	    }
+	  
 	    
-	   /** Main method
-	    *  
-	    * ???
-	    * 
-	    * @param args
-	    */
-	    public static void main(String[] args) {
-	    	File dir = new File("//Users//shreyakapoor//Desktop//PP5"); 
-	    	File[] filesindir = dir.listFiles();
-	    	if (filesindir!= null) { 
-	    		for (File child: filesindir )
-	    		{ 	String filename = child.getName(); 
-	    			if (filename.contains("jpg") || filename.contains("png") || filename.contains("jpeg")){
-	    				Image app = new Image();
-	    				// how to put the id of the images!
-	    				app.updatePicture(filename, child.getAbsolutePath());
-	    			} 
-	    		} 
-	    	} 
-	    }
 
 	/** Reads in all .meta files in a folder with specified path
 	 *  and returns the meta information found about author and title
@@ -189,4 +131,3 @@ public class Image {
 }
 	
 
-}

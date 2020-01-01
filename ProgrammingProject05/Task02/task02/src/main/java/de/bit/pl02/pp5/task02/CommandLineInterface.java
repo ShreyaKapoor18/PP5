@@ -12,6 +12,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import java.io.*; 
 import java.net.*;
+import java.sql.SQLException;
 import java.util.Scanner; 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,23 +102,41 @@ public class CommandLineInterface {
 	
 	
 	/** Create the database
+	 * @throws SQLException 
 	 * 
+<<<<<<< HEAD
 	 *
 	public static void option_m() {
+=======
+	 */
+	public static void option_m() throws SQLException {
+>>>>>>> 78dfd3c2e6ae14d5681c94b672cb6c1eab35080e
 		String name = cmd.getOptionValue("makedb");
 		Database Db = new Database(name); 
 		Db.make_table();
 	    } */
 		
 	/** Store metadata from directory 
+	 * @throws SQLException 
 	 * 
 	 */
+<<<<<<< HEAD
 	public static void option_s() {
 		String dir = cmd.getOptionValue("store");
 		String name = cmd.getOptionValue("location");
+=======
+	public static void option_s(){
+		String dir = cmd.getOptionValue("makedb");
+		String name = cmd.getOptionValue("store");
+>>>>>>> 78dfd3c2e6ae14d5681c94b672cb6c1eab35080e
 		Database Db = new Database(name); 
 		Db.make_table();
-		Db.read_director(dir); 
+		try {
+			Db.read_director(dir);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		/*try {
 			Db.see_table(); // cam be done with the help of command line parameters, whether these options shall be present or not. 
 		} catch (SQLException e) {
