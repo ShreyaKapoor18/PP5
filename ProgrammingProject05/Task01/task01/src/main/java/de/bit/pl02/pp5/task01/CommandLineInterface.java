@@ -86,25 +86,15 @@ public class CommandLineInterface {
 	 * 
 	 * @param cmd	an instance of CommandLine
 	 * @param name  the name of the input picture 
+	 * @throws FileNotFoundException 
 	 */
-	public static void readfile (CommandLine cmd, String filename){
-		// Assuming that the existing metadata file is in the same directory as the image
-		// and differs only in the extension .meta
-		String directory = cmd.getOptionValue("d");
-		//String absolutePath = new File(directory).getAbsolutePath();
-		System.out.println("Reading file in directory, the absolute path is: "+ directory);
-		String[] tmp = filename.split("\\."); //split through the last dot 
-		//System.out.println(tmp); 
-		String metapath = directory + "/" + tmp[0] + ".meta";
-		System.out.println(metapath); 
-		FileReader filer;
-		try {
-			filer = new FileReader(metapath);
+	public static void readfile (CommandLine cmd, File file) throws FileNotFoundException{
+	
+		FileReader filer;	
+			filer = new FileReader(file);
 			BufferedReader buffr = new BufferedReader(filer);
 			boolean eof = false;
 			System.out.println("Printing the metadata file! \nContents:"); 
-			{
-			
 			try {
 				String s;
 				while ((!eof) && cmd.hasOption("p")) {
@@ -122,15 +112,6 @@ public class CommandLineInterface {
 				System.out.println("The metadata file cannot be read!"); 
 				//System.exit(0); 
 			}
-			
-			}
-			
-		} catch (FileNotFoundException e1) {
-			System.out.println("No metafile exists in the directory you provided"); 
-			System.exit(2);// TO DO, see what the exit status can be.
-		}
-
-	
 	}
 	/** Get input from the user about author, title and infographic as a tuple, separated by a comma.
 	 * 	Saves a .txt file of the metadata. If a file does not already exist, create a new file
@@ -174,33 +155,34 @@ public class CommandLineInterface {
 	 * @return newfile	TODO
 	 * @throws IOException
 	 */
-	public static File checkmetafile(CommandLine cmd, String path){
+	public static File checkmetafile(CommandLine cmd, String filename){
+		// Assuming that the existing metadata file is in the same directory as the image
+		// and differs only in the extension .meta
+		String directory = cmd.getOptionValue("d");
+		//String absolutePath = new File(directory).getAbsolutePath();
+		System.out.println("Reading file in directory, the absolute path is: "+ directory);
+		String[] tmp = filename.split("\\."); //split through the last dot 
+		//System.out.println(tmp); 
+		String path = directory + "/" + tmp[0] + ".meta";
+		System.out.println(path); 
 		try {
 			File oldfile = new File(path); 
-			readfile(cmd, path);
+			readfile(cmd, oldfile);
 			return oldfile; 
-			} catch (Exception e){ 
+			} catch (FileNotFoundException e){ 
 			System.out.println("No metadata file found for this filename, making a new file for the metadata"); 
 			File newfile = new File(path); 
-			try {
-			   newfile.createNewFile();
-				FileReader filer = new FileReader(newfile); 
-				return newfile; 
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not create a new metafile"); 
-				System.exit(0);
-			} 
-			
-				}
-		return null;
+			System.out.println(path); 
+			return newfile; 
+		 }
+		
 			}
 
 
 		
 	
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws FileNotFoundException{
 		// TODO Which exceptions have to be thrown?
 		
 		/** create command line options */
@@ -211,12 +193,14 @@ public class CommandLineInterface {
 		// Print the metadata file content if metadata file exists
 		if (cmd.hasOption("p")) {
 			String filename = cmd.getOptionValue("ip");
-			System.out.println("File path: " + filename);
-			CommandLineInterface.readfile(cmd, filename);
+			System.out.println("File name: " + filename);
+			String directory = cmd.getOptionValue("d");
+			File metafile = CommandLineInterface.checkmetafile(cmd, directory+'/'+ filename); 
+			
 			}
 		
 		// Save the input of the user as a .txt file if metadata file does not yet exist 
-		if (cmd.hasOption("im")) {
+		if (cmd.hasOption("im") && cmd.hasOption("m")) {
 			String imagename = cmd.getOptionValue("ip");
 			try {
 				CommandLineInterface.getMetaUser(imagename);
