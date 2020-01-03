@@ -53,6 +53,7 @@ public class CommandLineInterface {
 		options.addOption(importfile); 
 		options.addOption(meta); 
 		options.addOption(print); 
+		options.addOption(inputmeta); 
 		directory.setRequired(true); // It is mandatory to specify the directory, terminate otherwise
 		importfile.setRequired(true); // Mandatory to specify the input file, terminate otherwise
 		
@@ -102,9 +103,11 @@ public class CommandLineInterface {
 			BufferedReader buffr = new BufferedReader(filer);
 			boolean eof = false;
 			System.out.println("Printing the metadata file! \nContents:"); 
-			while ((!eof) && cmd.hasOption("p")){
-			String s;
+			{
+			
 			try {
+				String s;
+				while ((!eof) && cmd.hasOption("p")) {
 				s = buffr.readLine();
 				if(s == null){
 				      eof = true;
@@ -112,12 +115,12 @@ public class CommandLineInterface {
 				 else{
 				      System.out.println(s);
 				  }
-				buffr.close();
-				
-			}catch (IOException e) {
+				}
+			buffr.close();
+			} catch (IOException e) {
 				System.out.println(StringUtils.repeat("=", 50)); 
-				System.out.println("The metadata file cannot be read anymore! Exiting the application"); 
-				System.exit(0);
+				System.out.println("The metadata file cannot be read!"); 
+				//System.exit(0); 
 			}
 			
 			}
@@ -146,15 +149,17 @@ public class CommandLineInterface {
 		String[] metavalues = cmd.getOptionValues("im");
 		String author = metavalues[0];
 		String title = metavalues[1];
-		int infographic = Integer.parseInt(metavalues[2]);
+		String db = metavalues[2];
+		int infographic = Integer.parseInt(metavalues[3]);
 		
 		// Set input by user as attributes of metadata instance
 		metadata.setAuthor(author);
 		metadata.setTitle(title);
 		metadata.setInfographic(infographic);
-		
+		metadata.setAuthor(db);
 		// Write metadata to file
-		String metapath = directory + "//" + newfile.split(".")[0] + ".meta";
+		String metapath = directory + "/" + newfile.split("\\.")[0] + ".meta";
+		System.out.println("metadata path"+ metapath); 
 		FileWriter os = new FileWriter(metapath); 
 		os.write(metadata.toString()); 
 		os.close();
@@ -212,7 +217,7 @@ public class CommandLineInterface {
 		
 		// Save the input of the user as a .txt file if metadata file does not yet exist 
 		if (cmd.hasOption("im")) {
-			String imagename = cmd.getOptionValue("if");
+			String imagename = cmd.getOptionValue("ip");
 			try {
 				CommandLineInterface.getMetaUser(imagename);
 			} catch (IOException e) {

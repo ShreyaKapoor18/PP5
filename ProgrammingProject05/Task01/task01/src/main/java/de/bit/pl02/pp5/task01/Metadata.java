@@ -41,6 +41,7 @@ public class Metadata implements Serializable {
 	public void setInfographic(int infographic) {
 		this.infographic = infographic;
 	} 
+	
 	@Override
 	public String toString() {
 		return "Title:" + title + "\nAuthor:" + author + "\nDatabase: " + database + "\nInfographic";
