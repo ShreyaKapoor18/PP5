@@ -156,10 +156,7 @@ public class CommandLineInterface {
 		// Write metadata to file
 		String metapath = absolutePath + "/" + newfile.split(".")[0] + ".meta";
 		FileWriter os = new FileWriter(metapath); 
-		os.write("Author: " + author + "\n");
-		os.write("Title: " + title + "\n");
-		os.write("Infographic: " + infographic + "\n");
-
+		os.write(metadata.toString()); 
 		os.close();
 	}
 	
