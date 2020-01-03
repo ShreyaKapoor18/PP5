@@ -92,7 +92,7 @@ public class CommandLineInterface {
 		String directory = cmd.getOptionValue("d");
 		String absolutePath = new File(directory).getAbsolutePath();
 		System.out.println("Reading file in directory, the absolute path is: "+ absolutePath);
-		String[] tmp = filename.split("\\.(?=[^\\\\.]+$)"); //split through the last dot 
+		String[] tmp = filename.split("\\.(?=[^\\.]+$)"); //split through the last dot 
 		String metapath = absolutePath + "/" + tmp[0] + ".meta";
 		FileReader filer;
 		try {
