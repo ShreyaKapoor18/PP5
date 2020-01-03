@@ -133,9 +133,10 @@ public class CommandLineInterface {
 		
 	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String)}
 	 *  and save as .jpg file with the specified path by the user.
+	 * @throws IOException 
 	 *  
 	 */
-	public static void option_gia() { 
+	public static void option_gia() throws IOException { 
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthor");
 		String author = imageValues[0];
 		String imageOutputPath = imageValues[1];
@@ -147,7 +148,7 @@ public class CommandLineInterface {
 		byte[] bytes = Db.get_byteImage(author, "AUTHOR");
 		ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		byteImage.byteToImage(bytes, imageOutputPath);
+		ByteImage.byteToImage(bytes, imageOutputPath);
 	}
 		
 	/** Retrieve an image from the database by title and save as .jpg file.
@@ -165,13 +166,19 @@ public class CommandLineInterface {
 		byte[] bytes = Db.get_byteImage(title, "TITLE");
 		ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		byteImage.byteToImage(bytes, imageOutputPath);
+		try {
+			byteImage.byteToImage(bytes, imageOutputPath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 		
 	/** Get image by author and title and save as .jpg file
+	 * @throws SQLException 
 	 * 
 	 */
-	public static void option_giat() {
+	public static void option_giat() throws SQLException {
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthorTitle");
 		String author = imageValues[0];
 		String title = imageValues[1];
@@ -184,7 +191,12 @@ public class CommandLineInterface {
 		byte[] bytes = Db.get_byteImage2(author, title);
 		ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		byteImage.byteToImage(bytes, imageOutputPath);
+		try {
+			byteImage.byteToImage(bytes, imageOutputPath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 			
 	/** Get metadata by author and save as .txt file
@@ -210,7 +222,7 @@ public class CommandLineInterface {
 	}
 		
 	
-	public static void main() {
+	public static void main(String[] args) {
 	
 		/** create command line options */
 		Options options = CommandLineInterface.make_options();
@@ -225,7 +237,12 @@ public class CommandLineInterface {
 		}
 		
 		if (cmd.hasOption("gia")){
-			CommandLineInterface.option_gia();
+			try {
+				CommandLineInterface.option_gia();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (cmd.hasOption("git")){
@@ -233,7 +250,12 @@ public class CommandLineInterface {
 		}
 		
 		if (cmd.hasOption("giat")){
-			CommandLineInterface.option_giat();
+			try {
+				CommandLineInterface.option_giat();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (cmd.hasOption("gma")){

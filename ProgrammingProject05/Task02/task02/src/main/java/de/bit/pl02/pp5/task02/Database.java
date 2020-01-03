@@ -264,8 +264,9 @@ public class Database {
 	 * in column PICTURE blob 
 	 * 
 	 * @param value		the String of the value of column AUTHOR or TITLE in the database
+	 * @return 
 	 */
-	public void get_byteImage(String value, String column_name) {
+	public byte[] get_byteImage(String value, String column_name) {
 		Statement stmt;
 		try {
 			stmt = this.con.createStatement();
@@ -275,7 +276,7 @@ public class Database {
 						" LIKE " + value;
 				ResultSet rs = stmt.executeQuery(query);
 				byte[] bImage = rs.getBytes("PICTURE blob");	
-				
+				return bImage;
 				// TODO Handle multiple hits 
 				//while (rs.next()) {
 			} catch (Exception e) {
@@ -291,9 +292,9 @@ public class Database {
 		
 	}
 	  
-	/** TODO do we need this?
+
     /** Takes a String with value of column AUTHOR and TITLE and return the byte array contained
-	 * in column PICTURE blob as a generator 
+	 * in column PICTURE blob 
 	 * 
 	 * @param column_author	the String of the value of column AUTHOR 
 	 * @param column_title		the String of the value of column TITLE 
@@ -302,22 +303,22 @@ public class Database {
 	 * 
 	 * TODO handle multiple hits, with ArrayList<byte[]> ?
      * @throws SQLException 
-	 *
-	public InputStream get_byteImage2(String column_author, String column_title) throws SQLException {
+	 */
+	public byte[] get_byteImage2(String column_author, String column_title) throws SQLException {
 		Statement stmt = this.con.createStatement();
 		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE AUTHOR LIKE " 
 				+ column_author + " AND TITLE LIKE"  
 				+ column_title;
 		ResultSet rs = stmt.executeQuery(query);
 		try {
-			InputStream bImage = rs.getBinaryStream("PICTURE blob");
+			byte[] bImage = rs.getBytes("PICTURE blob");
 			return bImage;
 			} catch (Exception e) {
 				System.out.println(e.getMessage()); 
 	    } finally {
 	        if (stmt != null) { stmt.close(); }}
 		return null;
-	}*/
+	}
     
 	/** Takes value of AUTHOR or TITLE column and saves the
 	 * corresponding metadata as a .txt file
@@ -368,7 +369,7 @@ public class Database {
 	 * TODO instance of CLI, get athor title from user use as input for Database query
 	 * @param args	
 	 * 
-	 */
+	 *
 	public static void main(String[] args) throws SQLException
 	{ 
 		
@@ -392,4 +393,4 @@ public class Database {
 		}*/
 	}
 
-}
+
