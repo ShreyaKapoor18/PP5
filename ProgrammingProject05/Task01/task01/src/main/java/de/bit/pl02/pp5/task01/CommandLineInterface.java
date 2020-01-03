@@ -44,9 +44,9 @@ public class CommandLineInterface {
 		Option importfile = new Option("ip", "inputfile", true, "Enter the name of the input file"); 
 		Option print = new Option("p", "print", false,"If you want to print the entire information" ); 
 		Option meta = new Option("m", "meta", false, "If you want to add meta information"); 
-		Option inputmeta = new Option("im", "inputmeta", false, "Enter the value of author, title and infographic separated by a comma");
+		Option inputmeta = new Option("im", "inputmeta", false, "Enter the value of author, title, database and infographic separated by a comma");
 		
-		inputmeta.setArgs(3);
+		inputmeta.setArgs(4);
 		inputmeta.setValueSeparator(',');
 		
 		options.addOption(directory);
@@ -90,16 +90,18 @@ public class CommandLineInterface {
 		// Assuming that the existing metadata file is in the same directory as the image
 		// and differs only in the extension .meta
 		String directory = cmd.getOptionValue("d");
-		String absolutePath = new File(directory).getAbsolutePath();
-		System.out.println("Reading file in directory, the absolute path is: "+ absolutePath);
-		String[] tmp = filename.split("\\.(?=[^\\.]+$)"); //split through the last dot 
-		String metapath = absolutePath + "/" + tmp[0] + ".meta";
+		//String absolutePath = new File(directory).getAbsolutePath();
+		System.out.println("Reading file in directory, the absolute path is: "+ directory);
+		String[] tmp = filename.split("\\."); //split through the last dot 
+		//System.out.println(tmp); 
+		String metapath = directory + "/" + tmp[0] + ".meta";
+		System.out.println(metapath); 
 		FileReader filer;
 		try {
 			filer = new FileReader(metapath);
 			BufferedReader buffr = new BufferedReader(filer);
 			boolean eof = false;
-			System.out.println("Printing the metadata file!"); 
+			System.out.println("Printing the metadata file! \nContents:"); 
 			while ((!eof) && cmd.hasOption("p")){
 			String s;
 			try {
@@ -113,8 +115,8 @@ public class CommandLineInterface {
 				buffr.close();
 				
 			}catch (IOException e) {
-				System.out.println(StringUtils.repeat("=", 10)); 
-				System.out.println("The metadata file cannot be read! Exiting the application"); 
+				System.out.println(StringUtils.repeat("=", 50)); 
+				System.out.println("The metadata file cannot be read anymore! Exiting the application"); 
 				System.exit(0);
 			}
 			
@@ -128,21 +130,19 @@ public class CommandLineInterface {
 	
 	}
 	/** Get input from the user about author, title and infographic as a tuple, separated by a comma.
-	 * 	Saves a .txt file of the metadata.
+	 * 	Saves a .txt file of the metadata. If a file does not already exist, create a new file
+	 *   if a file exists add contents to that one
 	 * 
 	 * 
 	 * @param newfile	path of the new metadata file to be saved at 
 	 * @throws IOException
 	 */
 	public static void getMetaUser(String newfile) throws IOException {
-		/* if a file does not already exist, create a new file
-		  if a file exists add contents to that one
-	 	*/
 		// improvements write in the form of a class in the file.
 		
 		Metadata metadata = new Metadata();
 		String directory = cmd.getOptionValue("d");
-		String absolutePath = new File(directory).getAbsolutePath();
+		//String absolutePath = new File(directory).getAbsolutePath();
 		String[] metavalues = cmd.getOptionValues("im");
 		String author = metavalues[0];
 		String title = metavalues[1];
@@ -154,7 +154,7 @@ public class CommandLineInterface {
 		metadata.setInfographic(infographic);
 		
 		// Write metadata to file
-		String metapath = absolutePath + "/" + newfile.split(".")[0] + ".meta";
+		String metapath = directory + "//" + newfile.split(".")[0] + ".meta";
 		FileWriter os = new FileWriter(metapath); 
 		os.write(metadata.toString()); 
 		os.close();
@@ -205,7 +205,7 @@ public class CommandLineInterface {
 			
 		// Print the metadata file content if metadata file exists
 		if (cmd.hasOption("p")) {
-			String filename = cmd.getOptionValue("if");
+			String filename = cmd.getOptionValue("ip");
 			System.out.println("File path: " + filename);
 			CommandLineInterface.readfile(cmd, filename);
 			}
