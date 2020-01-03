@@ -41,7 +41,7 @@ public class CommandLineInterface {
 	 */
 	public static Options make_options() {
 		Options options = new Options(); 
-		Option makedb = new Option("m", "makedb", true, "Enter the name of the database you want to make/see");
+		Option location = new Option("l", "location", true, "Enter the name of the database you want to make/see");
 		Option store = new Option("s", "store", true, "Enter the file directory from which you want to store the images"); 
 		// TO DO: give 2 command line option values for image name and output path
 		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", false, "Enter the name of the author from which you want the image and the output path it should have" );
@@ -104,20 +104,31 @@ public class CommandLineInterface {
 	/** Create the database
 	 * @throws SQLException 
 	 * 
+<<<<<<< HEAD
+	 *
+	public static void option_m() {
+=======
 	 */
 	public static void option_m() throws SQLException {
+>>>>>>> 78dfd3c2e6ae14d5681c94b672cb6c1eab35080e
 		String name = cmd.getOptionValue("makedb");
 		Database Db = new Database(name); 
 		Db.make_table();
-	    }
+	    } */
 		
 	/** Store metadata from directory 
 	 * @throws SQLException 
 	 * 
 	 */
+<<<<<<< HEAD
+	public static void option_s() {
+		String dir = cmd.getOptionValue("store");
+		String name = cmd.getOptionValue("location");
+=======
 	public static void option_s(){
 		String dir = cmd.getOptionValue("makedb");
 		String name = cmd.getOptionValue("store");
+>>>>>>> 78dfd3c2e6ae14d5681c94b672cb6c1eab35080e
 		Database Db = new Database(name); 
 		Db.make_table();
 		try {
@@ -143,7 +154,7 @@ public class CommandLineInterface {
 		String imageOutputPath = imageValues[1];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
-		String dbname = cmd.getOptionValue("makedb");
+		String dbname = cmd.getOptionValue("location");
 		Database Db = new Database(dbname);
 		// get byte array from table 
 		byte[] bytes = Db.get_byteImage(author, "AUTHOR");
@@ -180,7 +191,7 @@ public class CommandLineInterface {
 		String imageOutputPath = imageValues[2];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
-		String dbname = cmd.getOptionValue("makedb");
+		String dbname = cmd.getOptionValue("location");
 		Database Db = new Database(dbname);
 		// get byte array from table 
 		byte[] bytes = Db.get_byteImage2(author, title);
@@ -205,13 +216,47 @@ public class CommandLineInterface {
 	 */
 	public static void option_gmt() {
 		String title = cmd.getOptionValue("getMetabyTitle");
-		String dbname = cmd.getOptionValue("makedb");
+		String dbname = cmd.getOptionValue("location");
 		Database Db = new Database(dbname);
 		// get meta info from table and save as txt file
 		Db.get_meta(title, "TITLE");
 	}
 		
 	
+	public static void main() {
+	
+		/** create command line options */
+		Options options = CommandLineInterface.make_options();
+		/** parse command line for options */
+		CommandLine cmd = CommandLineInterface.parse_commandline(options, args);
+		
+		/** Check command line options and do corresponding methods */
+
+		
+		if (cmd.hasOption("s")){
+			cli.option_s();
+		}
+		
+		if (cmd.hasOption("gia")){
+			cli.option_gia();
+		}
+		
+		if (cmd.hasOption("git")){
+			cli.option_git();
+		}
+		
+		if (cmd.hasOption("giat")){
+			cli.option_giat();
+		}
+		
+		if (cmd.hasOption("gma")){
+			cli.option_gma();
+		}
+		
+		if (cmd.hasOption("gmt")){
+			cli.option_gmt();
+		}
+	}
 	
 
 }
