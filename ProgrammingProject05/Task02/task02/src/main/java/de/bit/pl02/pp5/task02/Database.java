@@ -20,8 +20,17 @@ import org.apache.commons.cli.CommandLine;
 
 
 
-/** A class which can create database objects and helps to interact 
- *  with them. 
+/** The class Database can be used to create database objects and helps the user to interact
+ *  with them. The user can give a directory in the {@link #read_director(String)} method from which
+ *  a table will be created with the images and the corresponding metadata. 
+ *  It is possible to print the values of the created table with the method {@link #see_table()}.
+ *  If the user only wants the metadata of a specific sample, then the metadata can be retrieved by specifying
+ *  either the author or the title with the {@link #get_meta(String, String)} method and be saved as a .txt file.
+ *  The user can add images with the {@link #updatePicture(Image, String, String)} method to the table.
+ *  
+ *  
+ *  
+ *   
  * 	Columns: 
  * 		AUTHOR			the name of the author
  * 		TITLE			the name of the title
@@ -132,8 +141,8 @@ public class Database {
 	 * 
 	 * @return commands	the SQL commands 
 	 */
-	public ArrayList<String> insert_fields()
-	{ 	System.out.println("adding the fields"); 
+	public ArrayList<String> insert_fields() { 	
+		System.out.println("adding the fields"); 
 		// arraylist of SQL commands which can be given to the program so that the execution gets up and running. 
 		ArrayList<String> commands = new ArrayList<String>();
 		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
@@ -142,27 +151,21 @@ public class Database {
 		return commands; 	
 	}
 
-	/**
+	/** TODO What is the goal of the method?
+	 * 
 	 * Reads in the files of the given directory.
-	 * Creates an unique ID consisting of Author, Title and Filename
-	 * (if the metadata files contain the String "Title" or "Author, 
-	 * their value is used for the ID).
-	 * Inserts the values of ID, Title and Author into the TABLE Images 
 	 * 
 	 * @param dir is the path for the folder in which the metadata files are located
-	 * @param smt is an instance of Connection.createStatement() 
 	 */
-
 	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
 		Class.forName("org.sqlite.JDBC"); 
-	
 		Connection con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");
 		Statement smt = con.createStatement();
 		smt.execute("SELECT * FROM IMAGES"); 
 	}
 
-	/** Prints the values of the table IMAGES
-	 *  of column ID, TITLE and AUTHOR
+	/** Prints the values of the table IMAGES of column ID, TITLE and AUTHOR.
+	 *  TODO check after creating integer ID if this is still valid
 	 * 
 	 * @throws SQLException
 	 */
@@ -186,7 +189,9 @@ public class Database {
 	}
 
 	/** Reads the files of a directory, finds the images and its corresponding metadata
-	 * Inserts the metadata of ID, TITLE and AUTHOR into the database
+	 * Inserts the metadata of ID, TITLE and AUTHOR into the database and inserts the 
+	 * image into the PICTURE blob column via the {@link #updatePicture(Image, String, String)} method.
+	 * TODO check after creating integer ID that this still works
 	 * 
 	 * @param dir	the path of the directory 
 	 * @return arr	TODO 
@@ -230,18 +235,19 @@ public class Database {
     	return arr; 
 	}
 	
-	/** Updates the database with the new image
-	   * 
-	   * @param Id			the value of the id column in the database
-	   * @param filename	the path of the image to be stored
-	   */
-	    public void updatePicture(Image img,String Id, String path) {
-	        // update sql
-	        String updateSQL = "UPDATE IMAGES " + "SET PICTURE =?"
-	                + "WHERE id=?";
+	/** Updates the database with the new image by using the method {@link Image#readFile(String)}
+	 * to read in an image file and store it as a byte array.
+     * TODO check ID
+     * @param Id			the value of the id column in the database
+     * @param filename	the path of the image to be stored
+     */
+	public void updatePicture(Image img, String Id, String path) {
+	    // update sql
+	    String updateSQL = "UPDATE IMAGES " + "SET PICTURE =?"
+	            + "WHERE id=?";
 	        try  {
 	 
-            PreparedStatement pstmt = this.con.prepareStatement(updateSQL); 
+	        PreparedStatement pstmt = this.con.prepareStatement(updateSQL); 
 	            // set parameters
 	            pstmt.setBytes(1, img.readFile(path));
 	            pstmt.setString(2, Id);
@@ -254,7 +260,7 @@ public class Database {
 	        }
 	    }
 
-	/** Takes a String with value of column AUTHOR and return the blob contained
+	/** Takes a String with value of column AUTHOR and return the byte array contained
 	 * in column PICTURE blob 
 	 * 
 	 * @param value		the String of the value of column AUTHOR or TITLE in the database
@@ -268,7 +274,8 @@ public class Database {
 						+ column_name +
 						" LIKE " + value;
 				ResultSet rs = stmt.executeQuery(query);
-				InputStream bImage = rs.getBinaryStream("PICTURE blob");	
+				byte[] bImage = rs.getBytes("PICTURE blob");	
+				
 				// TODO Handle multiple hits 
 				//while (rs.next()) {
 			} catch (Exception e) {
@@ -283,9 +290,8 @@ public class Database {
 		// TODO Why can it not return, because the datatype has an issue!		
 		
 	}
-	
-	
-	    
+	  
+	/** TODO do we need this?
     /** Takes a String with value of column AUTHOR and TITLE and return the byte array contained
 	 * in column PICTURE blob as a generator 
 	 * 
@@ -296,7 +302,7 @@ public class Database {
 	 * 
 	 * TODO handle multiple hits, with ArrayList<byte[]> ?
      * @throws SQLException 
-	 */
+	 *
 	public InputStream get_byteImage2(String column_author, String column_title) throws SQLException {
 		Statement stmt = this.con.createStatement();
 		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE AUTHOR LIKE " 
@@ -311,9 +317,8 @@ public class Database {
 	    } finally {
 	        if (stmt != null) { stmt.close(); }}
 		return null;
-	}
-
-	    
+	}*/
+    
 	/** Takes value of AUTHOR or TITLE column and saves the
 	 * corresponding metadata as a .txt file
 	 * 
