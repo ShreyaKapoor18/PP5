@@ -9,10 +9,27 @@ from several open and free studies, articles or other sources. Some of them have
 <H1> Getting Started </H1> 
 
 <H1> Description </H1> 
+<H5> Main class </H5> <br> 
+Command Line Interface 
+    Parameters from command line 
+    *  -d or --directory : for specifying the path to the directory containing the images
+    * -ip or --inputfile : the name of the input file you want to deal with 
+    * -p or --print      : if you want to print the meta information or not 
+    * -m or --meta       : if you want to add the meta information
+    * -im or --inputmeta : the values of metainformation you want to enter
+    Mandatory commands needed for the application to run
+    * -d or --directory 
+    * -ip or --inputfile 
+    
+<H5> Subsidiary Class </H5> 
+Metadata
 
 <H1> Prerequisites </H1> 
 
 <H2> Dependencies </H2> 
+*  Apache Commons cli -- version 1.4 
+*  Apache commons lang3 -- version 3.4 
+*  Maven jar plugin 
 <H1> Running tests </H1> 
 
 <H1> Built With </H1> 
