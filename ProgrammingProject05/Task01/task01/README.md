@@ -10,16 +10,16 @@ from several open and free studies, articles or other sources. Some of them have
 
 <H1> Description </H1> 
 <H5> Main class </H5> <br> 
-Command Line Interface 
+Command Line Interface <br> 
     Parameters from command line 
-    *  -d or --directory : for specifying the path to the directory containing the images
-    * -ip or --inputfile : the name of the input file you want to deal with 
-    * -p or --print      : if you want to print the meta information or not 
-    * -m or --meta       : if you want to add the meta information
-    * -im or --inputmeta : the values of metainformation you want to enter
-    Mandatory commands needed for the application to run
-    * -d or --directory 
-    * -ip or --inputfile 
+    *  -d or --directory : for specifying the path to the directory containing the images <br>
+    * -ip or --inputfile : the name of the input file you want to deal with <br>
+    * -p or --print      : if you want to print the meta information or not <br>
+    * -m or --meta       : if you want to add the meta information <br>
+    * -im or --inputmeta : the values of metainformation you want to enter <br>
+    Mandatory commands needed for the application to run <br> 
+    * -d or --directory <br>
+    * -ip or --inputfile <br> 
     
 <H5> Subsidiary Class </H5> 
 Metadata
@@ -27,9 +27,10 @@ Metadata
 <H1> Prerequisites </H1> 
 
 <H2> Dependencies </H2> 
-*  Apache Commons cli -- version 1.4 
-*  Apache commons lang3 -- version 3.4 
-*  Maven jar plugin 
+*  Apache Commons cli -- version 1.4 <br> 
+*  Apache commons lang3 -- version 3.4 <br> 
+*  Maven jar plugin <br> 
+
 <H1> Running tests </H1> 
 
 <H1> Built With </H1> 
