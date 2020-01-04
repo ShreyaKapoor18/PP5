@@ -14,9 +14,9 @@ It is possible to print the values of the created table. If the user only wants 
 
 ## Getting Started
 
-
-
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+#TODO
 
 ### Prerequisites
 
@@ -31,6 +31,7 @@ commons-io	Version 2.6
 
 by adding the according dependencies to the pom.xml file:
 
+```
 <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -55,81 +56,77 @@ by adding the according dependencies to the pom.xml file:
     	<artifactId>commons-io</artifactId>
     	<version>2.6</version>
  </dependency>
-
-```
-Give examples
 ```
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+In order to get the application running you will need to download the repository from gitlab from the following link.
 
 ```
-Give the example
+https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20/group-03-descartes/tree/master/ProgrammingProject05
 ```
+How to set up an working environment for this application:
 
-And repeat
+###1) Installing SQLite
 
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+Before trying to install, please check whether the installation has already been made.
 
 ```
-Give an example
-``
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+$ sqlite3
 ```
 
+If SQLite is already installed, you should get the following message:
+
+```
+SQLite version 3.29.0 2019-07-10 17:32:03
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite>
+```
+
+If not, please follow these instructions to install SQLite.
+
+Go to the SQLite webpage (https://www.sqlite.org/download.html) and download the most recent version of **SQLite-autoconf-*.tar.gz**.
+Type the following commands into the command line to unzip and install the package.
+
+```
+$ tar xvfz SQLite-autoconf-*.tar.gz
+
+$ cd SQLite-autoconf-*
+
+$ ./configure --prefix = /usr/local
+
+$ make
+
+$ make install
+```
+
+Confirm successful installation by typing again
+
+```
+$ sqlite3
+```
+
+###2) Installing Spring
+
+#TODO
+  
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
 * [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+* **Shreya Kapoor**
+**Sophia Krix**
+**Gemma van der Voort**
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
 
 
