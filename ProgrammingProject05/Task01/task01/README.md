@@ -10,27 +10,30 @@ from several open and free studies, articles or other sources. Some of them have
 <H1> Getting Started </H1> 
 
 <H1> Description </H1> 
-<H5> Main class </H5> 
+<H3> Main class </H3> 
 <B>Command Line Interface</B> <br> 
-    Parameters from command line <br> 
-        <B>    -d or --directory</B>   : for specifying the path to the directory containing the images <br>
-        <B>    -ip or --inputfile</B>  : the name of the input file you want to deal with <br>
-        <B>    -p or --print </B>      : if you want to print the meta information or not <br>
-        <B>    -m or --meta </B>       : if you want to add the meta information <br>
-        <B>    -im or --inputmeta</B>  : the values of metainformation you want to enter <br>
+      Parameters from command line <br> 
+
+*   <B>    -d or --directory</B>   : for specifying the path to the directory containing the images <br>
+*   <B>    -ip or --inputfile</B>  : the name of the input file you want to deal with <br>  
+*   <B>    -p or --print</B>       : if you want to print the meta information or not <br>  
+*   <B>    -m or --meta</B>        : if you want to add the meta information <br> 
+*   <B>    -im or --inputmeta</B>  : the values of metainformation you want to enter <br>
+
     Mandatory commands needed for the application to run <br> 
-        <B>   -d or --directory</B> <br>
-        <B>   -ip or --inputfile</B> <br> 
-    
-<H5> Subsidiary Class </H5> 
+*   <B>    -d or --directory</B> <br>
+*   <B>    -ip or --inputfile</B> <br> 
+   
+
+<H3> Subsidiary Class </H3> 
 Metadata
 
 <H1> Prerequisites </H1> 
 
 <H2> Dependencies </H2> 
-* <B>    Apache Commons cli </B> -- version 1.4   <br> 
-* <B>     Apache commons lang3 </B> -- version 3.4   <br>
-* <B>    Maven jar plugin </B> <br>
+*       <B>    Apache Commons cli </B> -- version 1.4   <br> 
+*       <B>     Apache commons lang3 </B> -- version 3.4   <br>
+*       <B>    Maven jar plugin </B> <br>
 
 <H1> Running tests </H1> 
 
