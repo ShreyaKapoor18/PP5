@@ -80,7 +80,7 @@ public class Image {
 	 */
 	ArrayList<String> find_metadata(String path) {
 		ArrayList<String> meta = new ArrayList<String>(); 
-		String metapath = this.path.split("\\.")[0]+ ".meta";
+		String metapath = this.path.split("\\.(?=[^\\\\.]+$)")[0]+ ".meta";
 		try { 
 			FileReader filer = new FileReader(metapath);
 			BufferedReader buffr = new BufferedReader(filer);
