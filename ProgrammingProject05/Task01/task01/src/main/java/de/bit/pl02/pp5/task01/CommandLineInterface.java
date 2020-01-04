@@ -26,6 +26,37 @@ public class CommandLineInterface {
     /** The command line to receive arguments from the user, static method because at once 
      * only one command line will run from this class.  */
     static CommandLine cmd;
+    
+    /** Checks if a metadata file exists already, otherwise creates 
+     * a new metadata file with the same name as the image file and 
+     * stores it with an extension .meta 
+     * 
+     * @param cmd		an instance of CommandLine
+     * @param path		the path of the input file
+     * @return file		if the oldfile exists return it else return newfile
+     */
+    public static File checkmetafile(CommandLine cmd, String filename) {
+        // Assuming that the existing metadata file is in the same directory as the image
+        // and differs only in the extension .meta
+        String directory = cmd.getOptionValue("d");
+        //String absolutePath = new File(directory).getAbsolutePath();
+        System.out.println("Reading file in directory, the absolute path is: " + directory);
+        String[] tmp = filename.split("\\."); //split through the last dot 
+        //System.out.println(tmp); 
+        String path = directory + "/" + tmp[0] + ".meta";
+        System.out.println(path);
+        try {
+            File oldfile = new File(path);
+            readfile(cmd, oldfile);
+            return oldfile;
+        } catch (FileNotFoundException e) {
+            System.out.println("No metadata file found for this filename, making a new file for the metadata");
+            File newfile = new File(path);
+            System.out.println(path);
+            return newfile;
+        }
+
+    }
 
     /** Reads an input file and prints the content if option "p" is specified
      * 
@@ -98,36 +129,7 @@ public class CommandLineInterface {
 
     }
 
-    /** Checks if a metadata file exists already, otherwise creates 
-     * a new metadata file with the same name as the image file and 
-     * stores it with an extension .meta 
-     * 
-     * @param cmd		an instance of CommandLine
-     * @param path		the path of the input file
-     * @return file		if the oldfile exists return it else return newfile
-     */
-    public static File checkmetafile(CommandLine cmd, String filename) {
-        // Assuming that the existing metadata file is in the same directory as the image
-        // and differs only in the extension .meta
-        String directory = cmd.getOptionValue("d");
-        //String absolutePath = new File(directory).getAbsolutePath();
-        System.out.println("Reading file in directory, the absolute path is: " + directory);
-        String[] tmp = filename.split("\\."); //split through the last dot 
-        //System.out.println(tmp); 
-        String path = directory + "/" + tmp[0] + ".meta";
-        System.out.println(path);
-        try {
-            File oldfile = new File(path);
-            readfile(cmd, oldfile);
-            return oldfile;
-        } catch (FileNotFoundException e) {
-            System.out.println("No metadata file found for this filename, making a new file for the metadata");
-            File newfile = new File(path);
-            System.out.println(path);
-            return newfile;
-        }
 
-    }
 
 
     /** Creates command line options to make a database, store images in it
