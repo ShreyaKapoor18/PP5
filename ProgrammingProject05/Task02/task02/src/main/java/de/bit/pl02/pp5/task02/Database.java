@@ -14,9 +14,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
+
 import java.io.IOException;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.CommandLine; 
+import java.sql.Blob;
 
 
 
@@ -266,30 +270,31 @@ public class Database {
 	 * @param value		the String of the value of column AUTHOR or TITLE in the database
 	 * @return 
 	 */
-	public byte[] get_byteImage(String value, String column_name) {
+	public byte[] get_byteImage (String value, String column_name) {
 		Statement stmt;
+		byte[] bImage = null;
 		try {
 			stmt = this.con.createStatement();
 			try {
 				String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE "
 						+ column_name +
 						" LIKE " + value;
-				ResultSet rs = stmt.executeQuery(query);
-				byte[] bImage = rs.getBytes("PICTURE blob");	
-				return bImage;
-				// TODO Handle multiple hits 
-				//while (rs.next()) {
+				ResultSet rs = stmt.executeQuery(query);  	
+				while (rs.next()) { 
+					Blob blob = rs.getBlob("PICTURE blob");
+					int blobLength = (int) blob.length();
+					bImage = blob.getBytes(1, blobLength);					
+				}
 			} catch (Exception e) {
-				System.out.println(e.getMessage()); }			
+				System.out.println(e.getMessage());
+				}			
 		    finally {
-		        if (stmt != null) { stmt.close(); }}
+		        if (stmt != null) { stmt.close();
+		        }}
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e1.printStackTrace();	
 		}	
-		
-		// TODO Why can it not return, because the datatype has an issue!		
-		
+		return bImage != null ? bImage : null;
 	}
 	  
 
@@ -306,18 +311,22 @@ public class Database {
 	 */
 	public byte[] get_byteImage2(String column_author, String column_title) throws SQLException {
 		Statement stmt = this.con.createStatement();
+		byte[] bImage = null;
 		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE AUTHOR LIKE " 
 				+ column_author + " AND TITLE LIKE"  
 				+ column_title;
 		ResultSet rs = stmt.executeQuery(query);
 		try {
-			byte[] bImage = rs.getBytes("PICTURE blob");
-			return bImage;
+			while (rs.next()) { 
+				Blob blob = rs.getBlob("PICTURE blob");
+				int blobLength = (int) blob.length();
+				bImage = blob.getBytes(1, blobLength);					
+			}
 			} catch (Exception e) {
 				System.out.println(e.getMessage()); 
 	    } finally {
 	        if (stmt != null) { stmt.close(); }}
-		return null;
+		return bImage != null ? bImage : null;
 	}
     
 	/** Takes value of AUTHOR or TITLE column and saves the
