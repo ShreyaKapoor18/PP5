@@ -6,11 +6,11 @@
 This application helps the user to create database objects and interact with them. The user can provide a directory on which a database object can be based. This directory should contain image files (.jpg, .jpeg or .png) and corresponding metadata files (.txt) carrying the same file name. The images are stored in the database along with the corresponding metadata.
 
 **Columns**:   
->	AUHTOR>		the author name   
->	TITLE>		the title of the image   
->	WEBLINK>	the URL related to the image   
->	PICTURE blob> 	the image stored as a byte array   
->	INFOGRAPHIC>	the type of the image   
+AUHTOR		(the author name)   
+TITLE		(the title of the image)   
+WEBLINK	(the URL related to the image)   
+PICTURE blob 	(the image stored as a byte array)   
+INFOGRAPHIC	(the type of the image)   
 
 It is possible to print the values of the created table. If the user only wants the metadata of a specific sample, then the metadata can be retrieved by specifying either the author or the title and the metadata will be saved as a .txt file.
 
@@ -26,10 +26,10 @@ The Java Version 1.8.0_231 is used for this application. Apache Maven Version 3.
 
 The following dependencies were added to Maven:
 
-**JUnit**> 		Version 3.8.1   
-**SQLite-JDBC**> 	Version 3.18.0   
-**commons-cli**>	Version 1.4   
-**commons-io**>	Version 2.6   
+**JUnit** 		Version 3.8.1   
+**SQLite-JDBC** 	Version 3.18.0   
+**commons-cli**	Version 1.4   
+**commons-io**	Version 2.6   
 
 by adding the according dependencies to the pom.xml file:
 
