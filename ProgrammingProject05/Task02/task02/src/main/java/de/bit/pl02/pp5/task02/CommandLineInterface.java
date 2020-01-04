@@ -1,8 +1,6 @@
 package de.bit.pl02.pp5.task02;
 import de.bit.pl02.pp5.task02.*; 
 
-
-
 import org.apache.commons.cli.Option; 
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.CommandLine; 
@@ -11,12 +9,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter; 
 import org.apache.commons.cli.ParseException;
 import java.io.*; 
-import java.net.*;
 import java.sql.SQLException;
-import java.util.Scanner; 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 /** The class CommandLineInterface provides an interface for the user and helps to interact.
  * 	With this, it is possible to create a database on the basis of the directory given by the user at {@link #store}.
@@ -116,7 +110,7 @@ public class CommandLineInterface {
 		String dir = cmd.getOptionValue("store");
 		String name = cmd.getOptionValue("location");
 		Database Db = new Database(name); 
-		Db.make_table();
+		Db.make_table(name);
 		try {
 			Db.read_director(dir);
 		} catch (SQLException e) {
@@ -142,8 +136,8 @@ public class CommandLineInterface {
 		String imageOutputPath = imageValues[1];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
-		String dbname = cmd.getOptionValue("location");
-		Database Db = new Database(dbname);
+		String tablename = cmd.getOptionValue("location");
+		Database Db = new Database(tablename);
 		// get byte array from table 
 		byte[] bytes = Db.get_byteImage(author, "AUTHOR");
 		ByteImage byteImage = new ByteImage(bytes);
@@ -160,8 +154,8 @@ public class CommandLineInterface {
 		String imageOutputPath = imageValues[1];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
-		String dbname = cmd.getOptionValue("makedb");
-		Database Db = new Database(dbname);
+		String tablename = cmd.getOptionValue("location");
+		Database Db = new Database(tablename);
 		// get byte array from table 
 		byte[] bytes = Db.get_byteImage(title, "TITLE");
 		ByteImage byteImage = new ByteImage(bytes);
@@ -204,10 +198,10 @@ public class CommandLineInterface {
 	 */
 	public static void option_gma() {
 		String author = cmd.getOptionValue("getMetabyAuthor");
-		String dbname = cmd.getOptionValue("makedb");
-		Database Db = new Database(dbname);
+		String tablename = cmd.getOptionValue("location");
+		Database Db = new Database(tablename);
 		// get meta info from table and save as txt file
-		Db.get_meta(author, "AUTHOR");
+		Db.get_meta(author, "AUTHOR", tablename);
 	}
 			
 	/** Get metadata by title and save as .txt file
@@ -215,10 +209,10 @@ public class CommandLineInterface {
 	 */
 	public static void option_gmt() {
 		String title = cmd.getOptionValue("getMetabyTitle");
-		String dbname = cmd.getOptionValue("location");
-		Database Db = new Database(dbname);
+		String tablename = cmd.getOptionValue("location");
+		Database Db = new Database(tablename);
 		// get meta info from table and save as txt file
-		Db.get_meta(title, "TITLE");
+		Db.get_meta(title, "TITLE", tablename);
 	}
 		
 	
@@ -260,6 +254,7 @@ public class CommandLineInterface {
 		
 		if (cmd.hasOption("gma")){
 			CommandLineInterface.option_gma();
+			System.out.println("Successfull retrieval of metainfo.");
 		}
 		
 		if (cmd.hasOption("gmt")){

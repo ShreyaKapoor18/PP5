@@ -1,11 +1,8 @@
 package de.bit.pl02.pp5.task02;
 import de.bit.pl02.pp5.task02.*; 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,13 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import javax.imageio.ImageIO;
-
 import java.io.IOException;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.CommandLine; 
 import java.sql.Blob;
 
 
@@ -104,9 +95,7 @@ public class Database {
 				smt.execute(sql); 
 				 String sql1 = "ALTER TABLE IMAGES ADD COLUMN PICTURE blob"; 
 				 smt.execute(sql1); 
-				 System.out.println(sql1); 
-				 //readmetadata("//Users//shreyakapoor//Desktop//PP5"); 
-				
+				 System.out.println(sql1);			
 			}
 
 			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
@@ -117,13 +106,14 @@ public class Database {
 		}
 		
 	/** Creates a table as a database
+	 *@param tablename	the name of the database 
 	 *  TODO is this complete?
 	 */
-	public void make_table()
+	public void make_table(String tablename)
 	{ 
 		try {
 			Statement stmt = this.con.createStatement(); // try to query with the help of certain statements.
-			ArrayList<String> sqls = this.insert_fields(); 
+			ArrayList<String> sqls = this.insert_fields(tablename); 
 			for (String sql: sqls) { 
 				try { 
 				// See if these are getting added or not.
@@ -145,12 +135,12 @@ public class Database {
 	 * 
 	 * @return commands	the SQL commands 
 	 */
-	public ArrayList<String> insert_fields() { 	
+	public ArrayList<String> insert_fields(String tablename) { 	
 		System.out.println("adding the fields"); 
 		// arraylist of SQL commands which can be given to the program so that the execution gets up and running. 
 		ArrayList<String> commands = new ArrayList<String>();
-		commands.add("CREATE TABLE IF NOT EXISTS IMAGES " +"(ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
-		commands.add("ALTER TABLE IMAGES PICTURE ADD IF NOT EXISTS COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
+		commands.add("CREATE TABLE IF NOT EXISTS " + tablename + "(ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
+		commands.add("ALTER TABLE " + tablename + " PICTURE ADD IF NOT EXISTS COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
 		
 		return commands; 	
 	}
@@ -159,13 +149,14 @@ public class Database {
 	 * 
 	 * Reads in the files of the given directory.
 	 * 
-	 * @param dir is the path for the folder in which the metadata files are located
+	 * @param dir		the path for the folder in which the metadata files are located
+	 * @param tablename the name of the database
 	 */
-	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
+	public void readmetadata(String dir, String tablename) throws IOException, SQLException, ClassNotFoundException { 	
 		Class.forName("org.sqlite.JDBC"); 
 		Connection con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");
 		Statement smt = con.createStatement();
-		smt.execute("SELECT * FROM IMAGES"); 
+		smt.execute("SELECT * FROM " + tablename); 
 	}
 
 	/** Prints the values of the table IMAGES of column ID, TITLE and AUTHOR.
@@ -334,9 +325,10 @@ public class Database {
 	 * 
 	 * @param value			the value of the specified column
 	 * @param column_name	either AUTHOR or TITLE
+	 * @param tablename		the name of the database
 	 * @throws IOException
 	 */
-	public void get_meta(String value, String column_name) {
+	public void get_meta(String value, String column_name, String tablename) {
 		Statement stmt = null;
 		try {
 			stmt = this.con.createStatement();
@@ -344,14 +336,19 @@ public class Database {
 			e1.printStackTrace();
 		}
 		// create temporary database without PICTURE blob column
-		String query1 = "SELECT * INTO TempTable FROM IMAGES";
+		/**String query0 = "CREATE TABLE TempTable";
+		String query1 = "SELECT * INTO TempTable FROM " + tablename;
 		String query2 = "ALTER TABLE TempTable";
-		String query3 = "DROP COLUMN PICTURE blob";
-		String query = "SELECT * FROM TempTable WHERE " +
+		String query3 = "DROP COLUMN PICTURE blob";*/
+		String query = "SELECT * FROM " + tablename + " WHERE " +
 				column_name + " LIKE " + value;
 		//String query5 = "DROP TABLE TempTable";
 		ResultSet rs;
 		try {
+			/*stmt.executeQuery(query0);
+			stmt.executeQuery(query1);
+			stmt.executeQuery(query2);
+			stmt.executeQuery(query3);*/
 			rs = stmt.executeQuery(query);
 			try {
 				while (rs.next()) {
@@ -359,7 +356,7 @@ public class Database {
 					String title = rs.getString("TITLE"); 
 					String id = author.substring(0,3)+title.substring(0,3);
 					String metadata = "Author: " + author + "\nTitle: " + title;
-					
+					System.out.println("Author: " + author + "\nTitle: " + title + "\nSuccessful retrieval of metadata");
 					BufferedWriter writer = new BufferedWriter(new FileWriter(id + ".txt", true));
 				    writer.append(metadata); }
 				} catch (IOException e) {

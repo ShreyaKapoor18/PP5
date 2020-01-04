@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.*;
 import java.util.ArrayList;
 
 
@@ -95,7 +94,7 @@ public class Image {
 			    eof = true;
 			       }
 			  else{
-			    System.out.println(s);
+			    //System.out.println(s);
 			    if (s.contains("Title:")){
 			    	title = s.split(":")[1]; }
 			    else if (s.contains("Author:")) { 
