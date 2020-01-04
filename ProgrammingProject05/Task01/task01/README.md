@@ -1,5 +1,6 @@
 <H1> Task 1 </H1> 
-<br> 
+ 
+<H2> Problem assigned </H2>
 Check on GitLab for a folder containing example images. These images are taken
 from several open and free studies, articles or other sources. Some of them have explicit or implicit meta data annotations.<br> 
     1. Check the meta data (EXIF, filename, ...) and write a concept which metadata needs to be passed as additional information. <br> 
@@ -9,9 +10,9 @@ from several open and free studies, articles or other sources. Some of them have
 <H1> Getting Started </H1> 
 
 <H1> Description </H1> 
-<H5> Main class </H5> <br> 
+<H5> Main class </H5> 
 Command Line Interface <br> 
-    Parameters from command line 
+    Parameters from command line <br> 
     *  -d or --directory : for specifying the path to the directory containing the images <br>
     * -ip or --inputfile : the name of the input file you want to deal with <br>
     * -p or --print      : if you want to print the meta information or not <br>
