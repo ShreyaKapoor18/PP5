@@ -1,5 +1,5 @@
 <H1> Task 02 </H1> 
-# SQLite Database
+## SQLite Database
 
 This application helps the user to create database objects and interact with them. The user can provide a directory on which a database object can be based. This directory should contain image files (.jpg, .jpeg or .png) and corresponding metadata files (.txt) carrying the same file name. The images are stored in the database along with the corresponding metadata.
 
@@ -16,7 +16,7 @@ It is possible to print the values of the created table. If the user only wants 
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-#TODO
+# TODO
 
 ### Prerequisites
 
@@ -67,7 +67,7 @@ https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20
 ```
 How to set up an working environment for this application:
 
-###1) Installing SQLite
+### 1) Installing SQLite
 
 Before trying to install, please check whether the installation has already been made.
 
@@ -108,9 +108,9 @@ Confirm successful installation by typing again
 $ sqlite3
 ```
 
-###2) Installing Spring
+### 2) Installing Spring
 
-#TODO
+# TODO
   
 ## Deployment
 
