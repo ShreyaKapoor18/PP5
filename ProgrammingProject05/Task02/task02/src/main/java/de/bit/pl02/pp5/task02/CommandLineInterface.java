@@ -18,7 +18,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
+/** The class CommandLineInterface provides an interface for the user and helps to interact.
+ * 	With this, it is possible to create a database on the basis of the directory given by the user at {@link #store}.
+ *  This directory should contain image files (.png, .jpg or .jpeg) and corresponding metadata files (.txt).
+ *  The user can query the database by giving the name of the author or title to retrieve an image or
+ *  additional metadata information.
+ * 
  * 
  * @author Shreya Kapoor
  * @author Sophia Krix
@@ -37,7 +42,7 @@ public class CommandLineInterface {
 	/** Creates command line options to make a database, store images in it
 	 * and retrieve image and metadata information
 	 * 
-	 * @return options	the commandline arguments
+	 * @return options	the command line arguments
 	 */
 	public static Options make_options() {
 		Options options = new Options(); 
@@ -65,7 +70,7 @@ public class CommandLineInterface {
 		//getMetabyAuthorTitle.setArgs(2);
 		//getMetabyAuthorTitle.setValueSeparator(",");
 
-		options.addOption(makedb); 
+		options.addOption(location); 
 		options.addOption(store); 
 		options.addOption(getImagebyAuthor);
 		options.addOption(getImagebyTitle);
@@ -73,10 +78,11 @@ public class CommandLineInterface {
 		options.addOption(getMetabyAuthor);
 		options.addOption(getMetabyTitle);
 
-		makedb.setRequired(true);
+		location.setRequired(true);
+		store.setRequired(true);
+		
 		
 		return options;
-		
 	}
 	
 	/** Parses command line options for arguments
@@ -90,8 +96,7 @@ public class CommandLineInterface {
 		
 		CommandLineParser parser = new DefaultParser(); 
 		HelpFormatter formatter = new HelpFormatter(); 
-		try {
-			// String dir = "/Users/sophiakrix/Documents/Life_Science_Informatics/3.Semester/ProgrammingLabII/information/PP/PP5"; // directory which you want to start with. 
+		try { 
 			cmd = parser.parse(options, args); 	
 			} 
 			catch (ParseException e) { 
@@ -100,35 +105,16 @@ public class CommandLineInterface {
 			}
 		return cmd; }
 	
-	
-	/** Create the database
-	 * @throws SQLException 
-	 * 
-<<<<<<< HEAD
-	 *
-	public static void option_m() {
-=======
-	 */
-	public static void option_m() throws SQLException {
->>>>>>> 78dfd3c2e6ae14d5681c94b672cb6c1eab35080e
-		String name = cmd.getOptionValue("makedb");
-		Database Db = new Database(name); 
-		Db.make_table();
-	    } */
 		
-	/** Store metadata from directory 
-	 * @throws SQLException 
+	/** Creates a database with the method {@link Database#make_table()}, 
+	 *  reads the files of the specified directory and inserts the metadata of 
+	 *  ID, TITLE and AUTHOR into the database with the method {@link Database#read_director(String)}.
 	 * 
-	 */
-<<<<<<< HEAD
-	public static void option_s() {
+	 * @throws SQLException 
+	 */		
+	public static void option_s(){
 		String dir = cmd.getOptionValue("store");
 		String name = cmd.getOptionValue("location");
-=======
-	public static void option_s(){
-		String dir = cmd.getOptionValue("makedb");
-		String name = cmd.getOptionValue("store");
->>>>>>> 78dfd3c2e6ae14d5681c94b672cb6c1eab35080e
 		Database Db = new Database(name); 
 		Db.make_table();
 		try {
@@ -145,10 +131,12 @@ public class CommandLineInterface {
 		}*/
 		}
 		
-	/** Get image by author and save as .jpg file
-	 * 
+	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String)}
+	 *  and save as .jpg file with the specified path by the user.
+	 * @throws IOException 
+	 *  
 	 */
-	public static void option_gia() { 
+	public static void option_gia() throws IOException { 
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthor");
 		String author = imageValues[0];
 		String imageOutputPath = imageValues[1];
@@ -160,10 +148,10 @@ public class CommandLineInterface {
 		byte[] bytes = Db.get_byteImage(author, "AUTHOR");
 		ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		byteImage.byteToImage(bytes, imageOutputPath);
+		ByteImage.byteToImage(bytes, imageOutputPath);
 	}
 		
-	/** Get image by title and save as .jpg file
+	/** Retrieve an image from the database by title and save as .jpg file.
 	 * 
 	 */
 	public static void option_git() {
@@ -178,13 +166,19 @@ public class CommandLineInterface {
 		byte[] bytes = Db.get_byteImage(title, "TITLE");
 		ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		byteImage.byteToImage(bytes, imageOutputPath);
+		try {
+			byteImage.byteToImage(bytes, imageOutputPath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 		
 	/** Get image by author and title and save as .jpg file
+	 * @throws SQLException 
 	 * 
 	 */
-	public static void option_giat() {
+	public static void option_giat() throws SQLException {
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthorTitle");
 		String author = imageValues[0];
 		String title = imageValues[1];
@@ -197,7 +191,12 @@ public class CommandLineInterface {
 		byte[] bytes = Db.get_byteImage2(author, title);
 		ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		byteImage.byteToImage(bytes, imageOutputPath);
+		try {
+			byteImage.byteToImage(bytes, imageOutputPath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 			
 	/** Get metadata by author and save as .txt file
@@ -223,7 +222,7 @@ public class CommandLineInterface {
 	}
 		
 	
-	public static void main() {
+	public static void main(String[] args) {
 	
 		/** create command line options */
 		Options options = CommandLineInterface.make_options();
@@ -234,27 +233,37 @@ public class CommandLineInterface {
 
 		
 		if (cmd.hasOption("s")){
-			cli.option_s();
+			CommandLineInterface.option_s();
 		}
 		
 		if (cmd.hasOption("gia")){
-			cli.option_gia();
+			try {
+				CommandLineInterface.option_gia();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (cmd.hasOption("git")){
-			cli.option_git();
+			CommandLineInterface.option_git();
 		}
 		
 		if (cmd.hasOption("giat")){
-			cli.option_giat();
+			try {
+				CommandLineInterface.option_giat();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (cmd.hasOption("gma")){
-			cli.option_gma();
+			CommandLineInterface.option_gma();
 		}
 		
 		if (cmd.hasOption("gmt")){
-			cli.option_gmt();
+			CommandLineInterface.option_gmt();
 		}
 	}
 	
