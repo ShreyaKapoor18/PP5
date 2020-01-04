@@ -40,8 +40,8 @@ public class CommandLineInterface {
         // and differs only in the extension .meta
         String directory = cmd.getOptionValue("d");
         //String absolutePath = new File(directory).getAbsolutePath();
-        System.out.println("Reading file in directory, the absolute path is: " + directory);
-        String[] tmp = filename.split("\\."); //split through the last dot 
+        System.out.println("Reading file in directory, path is: " + directory);
+        String[] tmp = filename.split("\\.(?=[^\\.]+$)"); //split through the last dot 
         //System.out.println(tmp); 
         String path = directory + "/" + tmp[0] + ".meta";
         System.out.println(path);
@@ -194,7 +194,7 @@ public class CommandLineInterface {
         if (cmd.hasOption("p")) {
             String filename = cmd.getOptionValue("ip");
             System.out.println("File name: " + filename);
-            String directory = cmd.getOptionValue("d");
+            String directory = cmd.getOptionValue("d"); // user needs to enter absolute path
             File metafile = CommandLineInterface.checkmetafile(cmd, directory + '/' + filename);
         }
 
