@@ -1,7 +1,7 @@
 package de.bit.pl02.pp5.task01;
 import java.io.Serializable;
 
-/** This calss is used so that an object can be written and 
+/** This class is used so that an object can be written and 
  * extracted from text files. This makes the retrieval of the 
  * metadata standardised.
  * 
@@ -12,9 +12,13 @@ import java.io.Serializable;
 
 public class Metadata implements Serializable {
 	private static final long serialVersionUID = 1L;
+	/** Title of the image/article related to it **/
 	private String title; 
+	/** Name of the author related to the image or article **/
 	private String author; 
+	/** The database from where the image came **/
 	private String database;
+	/** What is the information about **/ 
 	private int infographic; 
 	
 	public String getTitle() {
