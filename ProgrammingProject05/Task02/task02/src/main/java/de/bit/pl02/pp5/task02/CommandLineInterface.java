@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 
 /** The class CommandLineInterface provides an interface for the user and helps to interact.
- * 	With this, it is possible to create a database on the basis of the directory given by the user at {@link #store}.
+ * 	With this, it is possible to create a database on the basis of the directory given by the user at {@link #directory}.
  *  This directory should contain image files (.png, .jpg or .jpeg) and corresponding metadata files (.txt).
  *  The user can query the database by giving the name of the author or title to retrieve an image or
  *  additional metadata information.
@@ -40,8 +40,9 @@ public class CommandLineInterface {
 	 */
 	public static Options make_options() {
 		Options options = new Options(); 
-		Option location = new Option("l", "location", true, "Enter the name of the database you want to make/see");
-		Option store = new Option("s", "store", true, "Enter the file directory from which you want to store the images"); 
+		Option name = new Option("n", "name", true, "Enter the name of the database you want to make/see");
+		//directory
+		Option directory = new Option("d", "directory", true, "Enter the file directory from which you want to store the images"); 
 		// TO DO: give 2 command line option values for image name and output path
 		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", false, "Enter the name of the author from which you want the image and the output path it should have" );
 		Option getImagebyTitle = new Option("git", "getImagebyTitle", false, "Enter the name of the title from which you want the image and the output path it should have" );
@@ -64,16 +65,16 @@ public class CommandLineInterface {
 		//getMetabyAuthorTitle.setArgs(2);
 		//getMetabyAuthorTitle.setValueSeparator(",");
 
-		options.addOption(location); 
-		options.addOption(store); 
+		options.addOption(name); 
+		options.addOption(directory); 
 		options.addOption(getImagebyAuthor);
 		options.addOption(getImagebyTitle);
 		options.addOption(getImagebyAuthorTitle);
 		options.addOption(getMetabyAuthor);
 		options.addOption(getMetabyTitle);
 
-		location.setRequired(true);
-		store.setRequired(true);
+		name.setRequired(true);
+		directory.setRequired(true);
 		
 		
 		return options;
@@ -107,10 +108,10 @@ public class CommandLineInterface {
 	 * @throws SQLException 
 	 */		
 	public static void option_s(){
-		String dir = cmd.getOptionValue("store");
-		String name = cmd.getOptionValue("location");
+		String dir = cmd.getOptionValue("directory");
+		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name); 
-		Db.make_table(name);
+		Db.make_table();
 		try {
 			Db.read_director(dir);
 		} catch (SQLException e) {
@@ -136,8 +137,8 @@ public class CommandLineInterface {
 		String imageOutputPath = imageValues[1];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
-		String tablename = cmd.getOptionValue("location");
-		Database Db = new Database(tablename);
+		String name = cmd.getOptionValue("name");
+		Database Db = new Database(name);
 		// get byte array from table 
 		byte[] bytes = Db.get_byteImage(author, "AUTHOR");
 		ByteImage byteImage = new ByteImage(bytes);
@@ -154,8 +155,8 @@ public class CommandLineInterface {
 		String imageOutputPath = imageValues[1];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
-		String tablename = cmd.getOptionValue("location");
-		Database Db = new Database(tablename);
+		String name = cmd.getOptionValue("name");
+		Database Db = new Database(name);
 		// get byte array from table 
 		byte[] bytes = Db.get_byteImage(title, "TITLE");
 		ByteImage byteImage = new ByteImage(bytes);
@@ -179,8 +180,8 @@ public class CommandLineInterface {
 		String imageOutputPath = imageValues[2];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
-		String dbname = cmd.getOptionValue("location");
-		Database Db = new Database(dbname);
+		String name = cmd.getOptionValue("name");
+		Database Db = new Database(name);
 		// get byte array from table 
 		byte[] bytes = Db.get_byteImage2(author, title);
 		ByteImage byteImage = new ByteImage(bytes);
@@ -198,10 +199,10 @@ public class CommandLineInterface {
 	 */
 	public static void option_gma() {
 		String author = cmd.getOptionValue("getMetabyAuthor");
-		String tablename = cmd.getOptionValue("location");
-		Database Db = new Database(tablename);
+		String name = cmd.getOptionValue("name");
+		Database Db = new Database(name);
 		// get meta info from table and save as txt file
-		Db.get_meta(author, "AUTHOR", tablename);
+		Db.get_meta(author, "AUTHOR");
 	}
 			
 	/** Get metadata by title and save as .txt file
@@ -209,10 +210,10 @@ public class CommandLineInterface {
 	 */
 	public static void option_gmt() {
 		String title = cmd.getOptionValue("getMetabyTitle");
-		String tablename = cmd.getOptionValue("location");
-		Database Db = new Database(tablename);
+		String name = cmd.getOptionValue("name");
+		Database Db = new Database(name);
 		// get meta info from table and save as txt file
-		Db.get_meta(title, "TITLE", tablename);
+		Db.get_meta(title, "TITLE");
 	}
 		
 	
@@ -224,9 +225,8 @@ public class CommandLineInterface {
 		CommandLine cmd = CommandLineInterface.parse_commandline(options, args);
 		
 		/** Check command line options and do corresponding methods */
-
 		
-		if (cmd.hasOption("s")){
+		if (cmd.hasOption("d")){
 			CommandLineInterface.option_s();
 		}
 		
@@ -254,7 +254,7 @@ public class CommandLineInterface {
 		
 		if (cmd.hasOption("gma")){
 			CommandLineInterface.option_gma();
-			System.out.println("Successfull retrieval of metainfo.");
+			//System.out.println("Successfull retrieval of metainfo.");
 		}
 		
 		if (cmd.hasOption("gmt")){

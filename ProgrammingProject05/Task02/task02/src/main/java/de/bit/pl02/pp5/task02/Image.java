@@ -86,7 +86,9 @@ public class Image {
 			boolean eof = false;
 			String author = "xx"; 
 			String title = "yyzz"; 
+			//TODO change id
 			String Id; 
+			String link = "no link";
 			while ((!eof))
 			{
 			  String s = buffr.readLine();
@@ -99,8 +101,13 @@ public class Image {
 			    	title = s.split(":")[1]; }
 			    else if (s.contains("Author:")) { 
 			    	author = s.split(":")[1]; }
+			    //TODO check if link works
+			    else if (s.contains("http")) {
+			    	link = s;
+			    }
 			   }
 			}
+			//TODO change id
 			if ( author.length()>=2 && title.length()>=5){
 				Id = author.substring(0, 2)+title.substring(0,4)+this.name.split("\\.(?=[^\\.]+$)")[0];
 			} 
@@ -109,7 +116,8 @@ public class Image {
 			}
 			meta.add(Id);
 			meta.add(title); 
-			meta.add(author); 
+			meta.add(author);
+			meta.add(link);
 		
 			} catch (Exception e) {
 			/* if there existed none of such files then probably some 
