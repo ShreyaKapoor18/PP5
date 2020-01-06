@@ -58,7 +58,7 @@ public class Metadata implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "Title:" + title + "\nAuthor:" + author + "\nDatabase: " + database + "\nInfographic:" + infographic;
+		return  "Author:" + author + "\nTitle:" + title + "\nDatabase: " + database + "\nInfographic:" + infographic;
 	}
 	
 	

@@ -10,6 +10,9 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -26,36 +29,41 @@ public class CommandLineInterface {
     /** The command line to receive arguments from the user, static method because at once 
      * only one command line will run from this class.  */
     static CommandLine cmd;
-    
+    /** To keep a track of certain errors throughout the program
+     * 1. Means that the metafile didn't exist and the program made it.**/
+    public static int error_code;
     /** Checks if a metadata file exists already, otherwise creates 
      * a new metadata file with the same name as the image file and 
      * stores it with an extension .meta 
      * 
-     * @param cmd		an instance of CommandLine
-     * @param path		the path of the input file
+     * 
+     * @param  filename	the name of the input file
      * @return file		if the oldfile exists return it else return newfile
      */
-    public static File checkmetafile(CommandLine cmd, String filename) {
+    public static File checkmetafile(String filename) {
         // Assuming that the existing metadata file is in the same directory as the image
         // and differs only in the extension .meta
         String directory = cmd.getOptionValue("d");
-        //String absolutePath = new File(directory).getAbsolutePath();
-        System.out.println("Reading file in directory, path is: " + directory);
+        //String absolutePath = new File(directory).getAbsolutePath(); 
         String[] tmp = filename.split("\\.(?=[^\\.]+$)"); //split through the last dot 
         //System.out.println(tmp); 
         String path = directory + "/" + tmp[0] + ".meta";
-        System.out.println(path);
-        try {
-            File oldfile = new File(path);
-            readfile(cmd, oldfile);
-            return oldfile;
-        } catch (FileNotFoundException e) {
-            System.out.println("No metadata file found for this filename, making a new file for the metadata");
-            File newfile = new File(path);
-            System.out.println(path);
-            return newfile;
+        System.out.println("Reading file in directory, path is: " + path);
+      
+        File file = new File(path); 
+        if (file.exists()) { 
+        	System.out.println("Files exists, will append to this file"); 
         }
-
+        else {
+        	error_code = 1; 
+        	try {
+				file.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("The file did not exist before, program has created a new one"); 
+			} 
+        }
+        return file;
     }
 
     /** Reads an input file and prints the content if option "p" is specified
@@ -65,29 +73,47 @@ public class CommandLineInterface {
      * @param name  the name of the input picture 
      * @throws FileNotFoundException 
      */
-    public static void readfile(CommandLine cmd, File file) throws FileNotFoundException {
+    public static List<String> readfile(File file) throws FileNotFoundException {
 
         FileReader filer;
         filer = new FileReader(file);
         BufferedReader buffr = new BufferedReader(filer);
         boolean eof = false;
-        System.out.println("Printing the metadata file! \nContents:");
-        try {
-            String s;
-            while ((!eof) && cmd.hasOption("p")) {
-                s = buffr.readLine();
-                if (s == null) {
-                    eof = true;
-                } else {
-                    System.out.println(s);
-                }
-            }
-            buffr.close();
-        } catch (IOException e) {
-            System.out.println(StringUtils.repeat("=", 20) + "ERROR" + StringUtils.repeat("=", 20));
-            System.out.println("The metadata file cannot be read!");
-            //System.exit(0); 
+        List<String> array = new ArrayList<String>();
+        List<String> checklist = Arrays.asList("Title", "Author", "Database", "Infographic");
+        if (error_code!=1) { 
+        	System.out.println("\nContents:\n");
+	        try {
+	            String s;
+	            while ((!eof) && cmd.hasOption("p")) {
+	                s = buffr.readLine();
+	                if (s == null) {
+	                    eof = true;
+	                } else {
+	                    System.out.println(s);
+	                    for (String a: checklist) {
+	                      if (s.contains(a)) {
+	                        String tmp = s.split(":")[0]; 
+	                        array.add(tmp);
+	                      } 
+	                    }
+	                }
+	            }
+	            buffr.close();
+	        } catch (IOException e) {
+	            System.out.println(StringUtils.repeat("=", 20) + "ERROR" + StringUtils.repeat("=", 20));
+	            System.out.println("The metadata file cannot be read!");
+	            //System.exit(0); 
+	        }
+       } 
+        else { 
+        	System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
+        	System.out.println("The metafile didn't exist before so nothing to print");
+        	error_code = 0; // will reuse this function when we want to print the file with the new metadata!
         }
+       
+       
+	return array;
     }
     /** Get input from the user about author, title and infographic as a tuple, separated by a comma.
      * 	Saves a .txt file of the metadata. If a file does not already exist, create a new file
@@ -97,34 +123,37 @@ public class CommandLineInterface {
      * @param newfile	path of the new metadata file to be saved at 
      * @throws IOException
      */
-    public static void getMetaUser(String newfile) {
+    public static void getMetaUser(File file, List<String> array, Boolean overwrite) {
         // improvements write in the form of a class in the file.
 
         Metadata metadata = new Metadata();
         String directory = cmd.getOptionValue("d");
-        //String absolutePath = new File(directory).getAbsolutePath();
+        
         String[] metavalues = cmd.getOptionValues("im");
+        //System.out.println("Print values: "+ metavalues[0] + metavalues[1] + metavalues[2] + metavalues[3] );  
+        
         String author = metavalues[0];
         String title = metavalues[1];
         String db = metavalues[2];
         int infographic = Integer.parseInt(metavalues[3]);
-
         // Set input by user as attributes of metadata instance
         metadata.setAuthor(author);
         metadata.setTitle(title);
         metadata.setInfographic(infographic);
-        metadata.setAuthor(db);
+        metadata.setDatabase(db);
+        //System.out.println("metad" + metadata); 
         // Write metadata to file, split from the last line to get the meta path
-        String metapath = directory + "/" + newfile.split("\\.(?=[^\\.]+$)")[0] + ".meta";
-        System.out.println("metadata path" + metapath);
         FileWriter os;
-        try {
-            os = new FileWriter(metapath);
-            os.write(metadata.toString());
-            os.close();
-        } catch (IOException e) {
-            System.out.println(StringUtils.repeat("=", 20) + "ERROR" + StringUtils.repeat("=", 20));
-            System.out.println("Could not write to the path related to the file");
+        // only write to the file if the author tile etc. have not been entered or if overwrite option entered
+        if (array.isEmpty()|| overwrite) {
+	        try {
+	            os = new FileWriter(file, true);
+	            os.write(metadata.toString());
+	            os.close();
+	        } catch (IOException e) {
+	            System.out.println(StringUtils.repeat("=", 20) + "ERROR" + StringUtils.repeat("=", 20));
+	            System.out.println("Could not write to the path related to the file");
+	        }
         }
 
     }
@@ -144,13 +173,12 @@ public class CommandLineInterface {
         Option print = new Option("p", "print", false, "If you want to print the entire information");
         Option meta = new Option("m", "meta", false, "If you want to add meta information");
         Option inputmeta = new Option("im", "inputmeta", false, "Enter the value of author, title, database and infographic separated by a comma");
+        Option overwrite = new Option("o", "overwrite", false, "If you want to overwrite the original contents"); 
 
-        directory.setType(String.class); // the datatype of the directoryname must be string
-        importfile.setType(String.class); // the datatype of the inputfile must be string
-        print.setType(Boolean.class); 
-        meta.setType(Boolean.class); // the datatype of the meta parameter must be boolean
-        
-        
+        //directory.setType(String.class); // the datatype of the directoryname must be string
+        //importfile.setType(String.class); // the datatype of the inputfile must be string
+        //overwrite.setType(Boolean.class); // overwrite option has to be a true/false statement!
+ 
         inputmeta.setArgs(4);
         inputmeta.setValueSeparator(',');
         
@@ -160,6 +188,7 @@ public class CommandLineInterface {
         options.addOption(meta);
         options.addOption(print);
         options.addOption(inputmeta);
+        options.addOption(overwrite); 
         directory.setRequired(true); // It is mandatory to specify the directory, terminate otherwise
         importfile.setRequired(true); // Mandatory to specify the input file, terminate otherwise
 
@@ -190,7 +219,7 @@ public class CommandLineInterface {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         /** create command line options */
         Options options = CommandLineInterface.make_options(); // for static method of the class
         /** parse command line for options */
@@ -203,14 +232,25 @@ public class CommandLineInterface {
             String filename = cmd.getOptionValue("ip");
             System.out.println("File name: " + filename);
             String directory = cmd.getOptionValue("d"); // user needs to enter absolute path
-            File metafile = CommandLineInterface.checkmetafile(cmd, directory + '/' + filename);
+            File metafile = CommandLineInterface.checkmetafile(filename);
+            try {
+				List<String> containers = readfile(metafile);
+				// Save the input of the user as a .txt file if metadata file does not yet exist 
+	            if (cmd.hasOption("im") && cmd.hasOption("m")) {
+	                String imagename = cmd.getOptionValue("ip");
+	                Boolean overwrite = Boolean.parseBoolean(cmd.getOptionValue("o")); 
+	                CommandLineInterface.getMetaUser(metafile, containers, overwrite);
+	                System.out.println("After dealing with your meta options the new file is: \n"); 
+	                List<String> containers2 = readfile(metafile); 
+	            }
+			} catch (FileNotFoundException e) {
+				System.out.println(StringUtils.repeat("=", 20) + "FATAL ERROR" + StringUtils.repeat("=", 20));
+				System.out.println("Could not connect to the metadata file!"); 
+			} 
+        
         }
 
-        // Save the input of the user as a .txt file if metadata file does not yet exist 
-        if (cmd.hasOption("im") && cmd.hasOption("m")) {
-            String imagename = cmd.getOptionValue("ip");
-            CommandLineInterface.getMetaUser(imagename);
-        }
+        
 
 
     }
