@@ -86,13 +86,15 @@ public class Database {
 			   	{ 
 				   String x = rs.getString("ID"); 
 				   String s = rs.getString("TITLE");
-				   System.out.println("ID:"+x+"\nTITLE: "+s);   
+				   //System.out.println("ID:"+x+"\nTITLE: "+s);   
 			   	}
 			} catch(Exception e) {
 				Statement smt = con.createStatement(); 
-				String sql = "CREATE TABLE IMAGES " +
-						       "(ID TEXT PRIMARY KEY NOT NULL,"+ 
-							"TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL, LINK TEXT NOT NULL)";
+				String sql = "CREATE TABLE IMAGES "
+						    + "(ID INTEGER PRIMARY KEY NOT NULL,"
+							+ "TITLE TEXT NOT NULL, "
+							+ "AUTHOR TEXT NOT NULL, "
+							+ "LINK TEXT NOT NULL);";
 				smt.execute(sql); 
 				 String sql1 = "ALTER TABLE IMAGES ADD COLUMN PICTURE blob"; 
 				 smt.execute(sql1); 
@@ -122,7 +124,7 @@ public class Database {
 				stmt.execute(sql); } 
 				catch (SQLException e) {
 					System.out.println(sql + " got error with the query"); 
-					continue; // if there is an erro means it does contain the columns etc.
+					continue; // if there is an error means it does contain the columns etc.
 				}
 			stmt.close(); 
 			}
@@ -141,8 +143,12 @@ public class Database {
 		// arraylist of SQL commands which can be given to the program so that the execution gets up and running. 
 		ArrayList<String> commands = new ArrayList<String>();
 		//TODO IMAGES
-		commands.add("CREATE TABLE IF NOT EXISTS IMAGES (ID TEXT PRIMARY KEY NOT NULL,"+ "TITLE   TEXT NOT NULL, AUTHOR TEXT NOT NULL)"); 
-		commands.add("ALTER TABLE IMAGES PICTURE ADD IF NOT EXISTS COLUMN PICTURE blob"); // add a column so that pictures can be stored there.
+		commands.add("CREATE TABLE IF NOT EXISTS IMAGES "
+				+ "(ID INTEGER PRIMARY KEY NOT NULL,"
+				+ "TITLE TEXT NOT NULL, "
+				+ "AUTHOR TEXT NOT NULL, "
+				+ "LINK TEXT NOT NULL);"); 
+		commands.add("ALTER TABLE IMAGES PICTURE ADD IF NOT EXISTS COLUMN PICTURE blob;"); // add a column so that pictures can be stored there.
 		
 		return commands; 	
 	}
@@ -175,11 +181,14 @@ public class Database {
 		   String x = rs.getString("ID"); 
 		   String s = rs.getString("TITLE");
 		   String a = rs.getString("AUTHOR"); 
-		   System.out.println("ID: "+x+"\nAUTHOR: "+a+"\nTITLE: "+s);   
+		   String l = rs.getString("LINK");
+		   System.out.println("Printing table:");
+		   System.out.println("ID: "+x+"\nAUTHOR: "+a+"\nTITLE: "+s+"\nLINK: "+l);   
 	   	}
 	   	ResultSet rs2 = smt.executeQuery("PRAGMA table_info('IMAGES')"); 
 	   	while (rs2.next())
-	   	{  //System.out.println("result set2!");    
+	   	{  
+	   		//System.out.println("result set2!");    
 	   	}
 	   	smt.close(); 
 	   
@@ -204,7 +213,7 @@ public class Database {
     	ArrayList<String> arr = new ArrayList<String>();
     	for (File f: filesindir)
     	{ 	String imgname = f.getName();
-    		System.out.println("Imagename: "+imgname); 
+    		//System.out.println("Imagename: "+imgname); 
     		if (imgname.contains(".png")|| imgname.contains(".jpg") || imgname.contains(".jpeg")){ 
     			Image img = new Image(f.getAbsolutePath(), imgname); 
     			ArrayList<String> meta = img.find_metadata(f.getAbsolutePath()); 
@@ -350,6 +359,7 @@ public class Database {
 		String query = "SELECT * FROM IMAGES WHERE " +
 				column_name + " LIKE " + value+";";
 
+		
 		ResultSet rs;
 		try {
 			rs = stmt.executeQuery(query);
@@ -357,10 +367,10 @@ public class Database {
 				while (rs.next()) {
 					String author = rs.getString("AUTHOR"); 
 					String title = rs.getString("TITLE"); 
-					//TODO link
+					String link = rs.getString("LINK");
 					String id = author.substring(0,3)+title.substring(0,3);
-					String metadata = "Author: " + author + "\nTitle: " + title;
-					System.out.println("Author: " + author + "\nTitle: " + title + "\nSuccessful retrieval of metadata");
+					String metadata = "Author: " + author + "\nTitle: " + title + "\nLink: " + link;
+					System.out.println("Author: " + author + "\nTitle: " + title + "\nLink: " + "\nSuccessful retrieval of metadata");
 					BufferedWriter writer = new BufferedWriter(new FileWriter(id + ".txt", true));
 				    writer.append(metadata); }
 				} catch (IOException e) {

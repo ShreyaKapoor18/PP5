@@ -51,7 +51,7 @@ public class CommandLineInterface {
 		Option getMetabyAuthor = new Option("gma", "getMetabyAuthor", false, "Enter the name of the author of which you want to retrieve the metadata");
 		Option getMetabyTitle = new Option("gmt", "getMetabyTitle", false, "Enter the name of the title of which you want to retrieve the metadata");
 		//Option getMetabyAuthorTitle = new Option("gmat", "getMetabyAuthorTitle", false, "Enter the name of the author and of the title of which you want to retrieve the metadata");
-		
+		Option print = new Option("p", "print", false, "Printing all content of the table");
 		// Option should take two arguments separeted by ","
 		getImagebyAuthor.setArgs(2);
 		getImagebyAuthor.setValueSeparator(',');
@@ -72,6 +72,7 @@ public class CommandLineInterface {
 		options.addOption(getImagebyAuthorTitle);
 		options.addOption(getMetabyAuthor);
 		options.addOption(getMetabyTitle);
+		options.addOption(print);
 
 		name.setRequired(true);
 		directory.setRequired(true);
@@ -216,6 +217,16 @@ public class CommandLineInterface {
 		Db.get_meta(title, "TITLE");
 	}
 		
+	public static void option_p() {
+		String name = cmd.getOptionValue("name");
+		Database Db = new Database(name);
+		try {
+			Db.see_table();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
 	
 	public static void main(String[] args) {
 	
@@ -259,6 +270,10 @@ public class CommandLineInterface {
 		
 		if (cmd.hasOption("gmt")){
 			CommandLineInterface.option_gmt();
+		}
+		
+		if (cmd.hasOption("p")) {
+			CommandLineInterface.option_p();
 		}
 	}
 	
