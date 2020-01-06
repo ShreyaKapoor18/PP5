@@ -119,13 +119,7 @@ public class CommandLineInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		/*try {
-			Db.see_table(); // cam be done with the help of command line parameters, whether these options shall be present or not. 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		}
+	}
 		
 	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String)}
 	 *  and save as .jpg file with the specified path by the user.

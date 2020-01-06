@@ -43,7 +43,17 @@ public class Metadata implements Serializable {
 		return infographic;
 	}
 	public void setInfographic(int infographic) {
-		this.infographic = infographic;
+		/*
+		 * We accept infographic values only of the range 1 to 4. 
+		 * Values 
+		 * 1. Implies image of a cell/tissue
+		 * 2. Implies image of a biological process
+		 * 3. Implies that the image is a graph
+		 * 4. Implies the type of the image doesn't fit into the above classification
+		 */
+		if (infographic >=1 && infographic <=4) {
+		   this.infographic = infographic;
+		} 
 	} 
 	
 	@Override

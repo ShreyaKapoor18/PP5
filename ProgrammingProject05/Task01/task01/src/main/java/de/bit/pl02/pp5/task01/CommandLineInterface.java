@@ -149,7 +149,7 @@ public class CommandLineInterface {
         importfile.setType(String.class); // the datatype of the inputfile must be string
         print.setType(Boolean.class); 
         meta.setType(Boolean.class); // the datatype of the meta parameter must be boolean
-        inputmeta.setType(type);
+        
         
         inputmeta.setArgs(4);
         inputmeta.setValueSeparator(',');
@@ -164,17 +164,6 @@ public class CommandLineInterface {
         importfile.setRequired(true); // Mandatory to specify the input file, terminate otherwise
 
         return options;
-    }
-    /** Checks if option parameters are correct!
-     * @return options	the command line options
-     */
-    public static int check_options() { 
-    	int error = 0;
-    	int infographic = cmd.getOptionValue("im")[3]; 
-    	if ( infographic >= 1 && infographic <= 4) {
-    		error+=1 ; 
-    	}
-    	return error; 
     }
     
     /** Parses command line options for arguments
@@ -205,7 +194,7 @@ public class CommandLineInterface {
         /** create command line options */
         Options options = CommandLineInterface.make_options(); // for static method of the class
         /** parse command line for options */
-        CommandLine cmd = CommandLineInterface.parse_commandline(options, args); // Parse the input given by the user
+        cmd = CommandLineInterface.parse_commandline(options, args); // Parse the input given by the user
 
         /* Print the metadata file content if metadata file exists
          * if it doesn't exist then a new file will be created

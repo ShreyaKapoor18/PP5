@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import org.sqlite.util.StringUtils;
+
 import java.io.IOException;
 import java.sql.Blob;
 
@@ -59,8 +62,9 @@ public class Database {
 		try {
 			this.con = this.Connect_db();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			System.out.println(StringUtils.repeat("=", 20) + " ERROR " + StringUtils.repeat("=", 20)); 
+			System.out.println(" Could not connect to the database using predefined method"); 
 		} 
 	}
 	
@@ -86,7 +90,7 @@ public class Database {
 			   	{ 
 				   String x = rs.getString("ID"); 
 				   String s = rs.getString("TITLE");
-				   //System.out.println("ID:"+x+"\nTITLE: "+s);   
+				   System.out.println("ID:"+x+"\nTITLE: "+s);   
 			   	}
 			} catch(Exception e) {
 				Statement smt = con.createStatement(); 
@@ -103,7 +107,8 @@ public class Database {
 
 			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
 			return con; } catch (ClassNotFoundException e) { 
-				e.printStackTrace();
+				System.out.println(StringUtils.repeat("=", 20) + " ERROR " + StringUtils.repeat("=", 20)); 
+				System.out.println(" Could not find the class"); //TODO 
 				return null; 
 			}
 		}
@@ -153,7 +158,7 @@ public class Database {
 		return commands; 	
 	}
 
-	/** TODO What is the goal of the method?
+	/** Selects all the facts from the images, don't actually need this
 	 * 
 	 * Reads in the files of the given directory.
 	 * 
@@ -161,9 +166,9 @@ public class Database {
 	 * @param tablename the name of the database
 	 */
 	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
-		Class.forName("org.sqlite.JDBC"); 
-		Connection con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");
-		Statement smt = con.createStatement();
+		// Class.forName("org.sqlite.JDBC");  no need to use this
+		// Connection con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");
+		Statement smt = this.con.createStatement();
 		smt.execute("SELECT * FROM IMAGES"); 
 	}
 
@@ -172,7 +177,7 @@ public class Database {
 	 * 
 	 * @throws SQLException
 	 */
-	public void see_table() throws SQLException
+	public void see_table()
 	{ 	//System.out.println("printing"); 
 		Statement smt = this.con.createStatement(); 
 		ResultSet rs = smt.executeQuery("SELECT * from IMAGES"); 
