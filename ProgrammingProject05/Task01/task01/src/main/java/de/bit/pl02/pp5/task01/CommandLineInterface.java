@@ -145,8 +145,15 @@ public class CommandLineInterface {
         Option meta = new Option("m", "meta", false, "If you want to add meta information");
         Option inputmeta = new Option("im", "inputmeta", false, "Enter the value of author, title, database and infographic separated by a comma");
 
+        directory.setType(String.class); // the datatype of the directoryname must be string
+        importfile.setType(String.class); // the datatype of the inputfile must be string
+        print.setType(Boolean.class); 
+        meta.setType(Boolean.class); // the datatype of the meta parameter must be boolean
+        inputmeta.setType(type);
+        
         inputmeta.setArgs(4);
         inputmeta.setValueSeparator(',');
+        
 
         options.addOption(directory);
         options.addOption(importfile);
@@ -158,6 +165,18 @@ public class CommandLineInterface {
 
         return options;
     }
+    /** Checks if option parameters are correct!
+     * @return options	the command line options
+     */
+    public static int check_options() { 
+    	int error = 0;
+    	int infographic = cmd.getOptionValue("im")[3]; 
+    	if ( infographic >= 1 && infographic <= 4) {
+    		error+=1 ; 
+    	}
+    	return error; 
+    }
+    
     /** Parses command line options for arguments
      * 	and returns the corresponding options and values. 
      * Exits the application if the input file is not found.
