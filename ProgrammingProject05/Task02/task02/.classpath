@@ -24,6 +24,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Library/Java/JavaVirtualMachines/jdk1.8.0_231.jdk/Contents/Home/lib/commons-io-2.6/commons-io-2.6.jar"/>
-	<classpathentry kind="lib" path="/Library/Java/JavaVirtualMachines/jdk1.8.0_231.jdk/Contents/Home/lib/commons-cli-1.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

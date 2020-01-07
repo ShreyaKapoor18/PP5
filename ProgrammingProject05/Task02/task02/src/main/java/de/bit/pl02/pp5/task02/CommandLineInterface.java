@@ -75,7 +75,7 @@ public class CommandLineInterface {
 		options.addOption(print);
 
 		name.setRequired(true);
-		directory.setRequired(true);
+		//directory.setRequired(true); We wouldn't want to insert a directory in the database everytume
 		
 		
 		return options;
@@ -211,18 +211,14 @@ public class CommandLineInterface {
 		Db.get_meta(title, "TITLE");
 	}
 		
-	public static void option_p() {
+	public static void option_p() throws SQLException {
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
-		try {
-			Db.see_table();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		Db.see_table();
 
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 	
 		/** create command line options */
 		Options options = CommandLineInterface.make_options();

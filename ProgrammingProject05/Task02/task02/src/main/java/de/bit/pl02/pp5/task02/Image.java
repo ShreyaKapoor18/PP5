@@ -86,8 +86,6 @@ public class Image {
 			boolean eof = false;
 			String author = "xx"; 
 			String title = "yyzz"; 
-			//TODO change id
-			String Id; 
 			String link = "no link";
 			while ((!eof))
 			{
@@ -107,14 +105,6 @@ public class Image {
 			    }
 			   }
 			}
-			//TODO change id
-			if ( author.length()>=2 && title.length()>=5){
-				Id = author.substring(0, 2)+title.substring(0,4)+this.name.split("\\.(?=[^\\.]+$)")[0];
-			} 
-			else {
-				Id = this.name.split("\\.(?=[^\\.]+$)")[0]; // dot followed by a number of non fos
-			}
-			meta.add(Id);
 			meta.add(title); 
 			meta.add(author);
 			meta.add(link);
@@ -123,9 +113,9 @@ public class Image {
 			/* if there existed none of such files then probably some 
 			 default values shall be set and passed on in the given fields.
 			 */
-			meta.add(this.name.split("\\.(?=[^\\.]+$)")[0]); 
 			meta.add("xx"); 
 			meta.add("yyzz"); 
+			meta.add("https"); 
 		}
 		return meta;
 	}
