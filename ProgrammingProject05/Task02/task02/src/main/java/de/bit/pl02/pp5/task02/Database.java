@@ -2,6 +2,7 @@ package de.bit.pl02.pp5.task02;
 import de.bit.pl02.pp5.task02.*; 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,8 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.stream.BaseStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.portable.InputStream;
+
 import java.io.IOException;
 import java.sql.Blob;
 
@@ -268,20 +272,30 @@ public class Database {
 	 * @param value		the String of the value of column AUTHOR or TITLE in the database
 	 * @return 
 	 */
-	public byte[] get_byteImage (String value, String column_name) {
+	public void get_byteImage (String value, String column_name) {
 		Statement stmt;
 		byte[] bImage = null;
 		try {
 			stmt = this.con.createStatement();
 			try {
-				String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE "
-						+ column_name +
-						" LIKE " + value;
+				String query = "SELECT *,'"+value+"' AS "+ column_name+ " FROM IMAGES";
 				ResultSet rs = stmt.executeQuery(query);  	
+				System.out.println("executed:" + query);
 				while (rs.next()) { 
-					Blob blob = rs.getBlob("PICTURE blob");
-					int blobLength = (int) blob.length();
-					bImage = blob.getBytes(1, blobLength);					
+					//Blob blob = rs.getBlob("PICTURE");
+					System.out.println("executed: get binary stream ");
+					String id = rs.getString("ID");
+					File image = new File(id + ".png");
+				    FileOutputStream fos = new FileOutputStream(image);
+				    byte[] buffer = new byte[1];
+				    java.io.InputStream is = rs.getBinaryStream("PICTURE");
+				      while (is.read(buffer) > 0) {
+				        fos.write(buffer);
+				      }
+				    fos.close();
+					//int blobLength = (int) blob.length();
+					//bImage = blob.getBytes(1, blobLength);	
+					
 				}
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
@@ -292,7 +306,7 @@ public class Database {
 		} catch (SQLException e1) {
 			e1.printStackTrace();	
 		}	
-		return bImage != null ? bImage : null;
+		//return bImage != null ? bImage : null;
 	}
 	  
 
@@ -342,20 +356,8 @@ public class Database {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		// create temporary database without PICTURE blob column
-		
-				/*"CREATE TABLE IF NOT EXISTS TempTable "
-				+ "(ID INTEGER PRIMARY KEY,"
-			    +" TITLE TEXT NOT NULL,"
-			    +" AUTHOR TEXT NOT NULL,"
-			    +" LINK TEXT NOT NULL);"
-			    +"SELECT * INTO TempTable FROM IMAGES;"
-				+"ALTER TABLE TempTable"
-				+"DROP COLUMN PICTURE blob;"*/
 		String query = "SELECT *,'"+value+"' AS "+ column_name+ " FROM IMAGES"; 
-		System.out.println(query); 
-
-		
+		// System.out.println(query); 
 		ResultSet rs;
 		try {
 			rs = stmt.executeQuery(query);
@@ -363,50 +365,39 @@ public class Database {
 				while (rs.next()) {
 					String author = rs.getString("AUTHOR"); 
 					String title = rs.getString("TITLE"); 
-					String link = rs.getString("LINK");
-					
+					String link = rs.getString("LINK");	
 					String metadata = "Author: " + author + "\nTitle: " + title + "\nLink: " + link;
-					System.out.println("Author: " + author + "\nTitle: " + title + "\nLink: " + "\nSuccessful retrieval of metadata");
-					BufferedWriter writer = new BufferedWriter(new FileWriter(id + ".txt", true));
-				    writer.append(metadata); }
+					System.out.println("Author: " + author + "\nTitle: " + title + "\nLink: " + link);
+		
+					//BufferedWriter writer = new BufferedWriter(new FileWriter(author+id + ".txt", true));
+				    //writer.append(metadata);
+				    FileWriter writer = new FileWriter(author+id + ".txt");
+				    try {
+				        BufferedWriter buff = new BufferedWriter(writer);
+				        try {
+				                buff.append(metadata);
+				            }
+				        finally {
+				            buff.flush();
+				            buff.close();
+				        }
+				    } finally {
+				        writer.close();}
+				    }
+
 				} catch (IOException e) {
 					System.out.println(e.getMessage());
-			}
-			
-		} catch (SQLException e1) {
+				}	
+		 catch (SQLException e1) {
 			e1.printStackTrace();
-		}
-		
-		  
-	}
-
+		 	}	  
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		} 
 	
-	/** Main method
-	 * TODO instance of CLI, get athor title from user use as input for Database query
-	 * @param args	
-	 * 
-	 *
-	public static void main(String[] args) throws SQLException
-	{ 
-		
-		/** Previous main method
-		Scanner input = new Scanner(System.in); 
-		System.out.println("Enter the name of the database you want to make/see"); 
-		String name = input.nextLine(); 
-		Database Db = new Database(name); 
-		Db.make_table(); 
-		//get the path of the directory where you want to insert all the images from!
-		Scanner input2 = new Scanner(System.in); 
-		System.out.println("Enter the file directory from which you want the images"); // also need to connect this to restful API
-		String dir = input2.nextLine(); 
-		input2.close();
-		Db.read_director(dir); 
-		try {
-			Db.see_table(); // cam be done with the help of command line parameters, whether these options shall be present or not. 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 	}
+}
+	
+	
 
 

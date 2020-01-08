@@ -135,10 +135,11 @@ public class CommandLineInterface {
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get byte array from table 
-		byte[] bytes = Db.get_byteImage(author, "AUTHOR");
-		ByteImage byteImage = new ByteImage(bytes);
+		//byte[] bytes = 
+		Db.get_byteImage("AUTHOR", author);
+		//ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		ByteImage.byteToImage(bytes, imageOutputPath);
+		//byteImage.byteToImage(bytes, imageOutputPath);
 	}
 		
 	/** Retrieve an image from the database by title and save as .jpg file.
@@ -153,15 +154,16 @@ public class CommandLineInterface {
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get byte array from table 
-		byte[] bytes = Db.get_byteImage(title, "TITLE");
-		ByteImage byteImage = new ByteImage(bytes);
+		//byte[] bytes = 
+		Db.get_byteImage("TITLE", title);
+		//ByteImage byteImage = new ByteImage(bytes);
 		// convert byte array to jpg file and save at imageOutputPath
-		try {
+		/*try {
 			byteImage.byteToImage(bytes, imageOutputPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 		
 	/** Get image by author and title and save as .jpg file
@@ -194,11 +196,10 @@ public class CommandLineInterface {
 	 */
 	public static void option_gma() {
 		String author = cmd.getOptionValue("gma");
-		System.out.println("Author: "+ author); 
-		String name = cmd.getOptionValue("n");
+		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get meta info from table and save as txt file
-		Db.get_meta(author, "AUTHOR");
+		Db.get_meta("AUTHOR", author);
 	}
 			
 	/** Get metadata by title and save as .txt file
@@ -209,7 +210,7 @@ public class CommandLineInterface {
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get meta info from table and save as txt file
-		Db.get_meta(title, "TITLE");
+		Db.get_meta("TITLE", title);
 	}
 		
 	public static void option_p() throws SQLException {
@@ -249,16 +250,12 @@ public class CommandLineInterface {
 			try {
 				CommandLineInterface.option_giat();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
 		if (cmd.hasOption("gma")){
-			System.out.println("n :"+ cmd.getOptionValue("n")); 
-			System.out.println("gma" + cmd.getOptionValue("gma")); 
 			CommandLineInterface.option_gma();
-			//System.out.println("Successfull retrieval of metainfo.");
 		}
 		
 		if (cmd.hasOption("gmt")){

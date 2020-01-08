@@ -39,7 +39,7 @@ public class ByteImage {
 	 * 			the binary form of the image to be converted  
 	 * @params outputpath is the path for the .jpg file to be saved at 
 	 */
-	public static void byteToImage(byte[] byte_array, String outputpath) throws IOException {
+	public void byteToImage(byte[] byte_array, String outputpath) throws IOException {
 		//BufferedImage bImage = ImageIO.read(new File(bytefile));
 		//ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
