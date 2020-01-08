@@ -76,21 +76,13 @@ public class Database {
 			try {
 			// Check if TABLE Images is already present 
 			Statement smt = con.createStatement(); 
-			String count_query = "SELECT COUNT(*) FROM sqlite_master WHERE type='TABLE' AND name='IMAGES'"; 
+			String count_query = "SELECT COUNT(*) from 'IMAGES'"; 
 			ResultSet r1 = smt.executeQuery(count_query); 
 			//r1.next(); 
 			int count = r1.getInt("COUNT(*)"); 
-			System.out.println("The database currently contains " + count + "elements"); 
+			System.out.println("The database currently contains " + count + " elements"); 
 			int id = count; 
-			System.out.println("Printing all the contents from the table if it exits!"); 
-			   
-			   ResultSet rs = smt.executeQuery("SELECT * from IMAGES"); 
-			   	while (rs.next())
-			   	{ 
-				   String x = rs.getString("ID"); 
-				   String s = rs.getString("TITLE");
-				   System.out.println("ID:"+x+"\nTITLE: "+s);   
-			   	}
+			
 			} catch(Exception e) {
 				Statement smt = con.createStatement(); 
 				String sql = "CREATE TABLE IMAGES "
@@ -360,8 +352,8 @@ public class Database {
 			    +"SELECT * INTO TempTable FROM IMAGES;"
 				+"ALTER TABLE TempTable"
 				+"DROP COLUMN PICTURE blob;"*/
-		String query = "SELECT * FROM IMAGES WHERE " +
-				column_name + " LIKE " + value+";";
+		String query = "SELECT *,'"+value+"' AS "+ column_name+ " FROM IMAGES"; 
+		System.out.println(query); 
 
 		
 		ResultSet rs;
@@ -372,7 +364,7 @@ public class Database {
 					String author = rs.getString("AUTHOR"); 
 					String title = rs.getString("TITLE"); 
 					String link = rs.getString("LINK");
-					String id = author.substring(0,3)+title.substring(0,3);
+					
 					String metadata = "Author: " + author + "\nTitle: " + title + "\nLink: " + link;
 					System.out.println("Author: " + author + "\nTitle: " + title + "\nLink: " + "\nSuccessful retrieval of metadata");
 					BufferedWriter writer = new BufferedWriter(new FileWriter(id + ".txt", true));

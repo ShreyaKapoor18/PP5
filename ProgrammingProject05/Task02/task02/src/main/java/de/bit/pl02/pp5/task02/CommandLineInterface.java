@@ -44,12 +44,12 @@ public class CommandLineInterface {
 		//directory
 		Option directory = new Option("d", "directory", true, "Enter the file directory from which you want to store the images"); 
 		// TO DO: give 2 command line option values for image name and output path
-		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", false, "Enter the name of the author from which you want the image and the output path it should have" );
-		Option getImagebyTitle = new Option("git", "getImagebyTitle", false, "Enter the name of the title from which you want the image and the output path it should have" );
-		Option getImagebyAuthorTitle = new Option("giat", "getImagebyAuthorTitle", false, "Enter the name of the author and title from which you want the image and the output path it should have" );
+		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image and the output path it should have" );
+		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image and the output path it should have" );
+		Option getImagebyAuthorTitle = new Option("giat", "getImagebyAuthorTitle", true, "Enter the name of the author and title from which you want the image and the output path it should have" );
 		// TO DO Split up into author and title 
-		Option getMetabyAuthor = new Option("gma", "getMetabyAuthor", false, "Enter the name of the author of which you want to retrieve the metadata");
-		Option getMetabyTitle = new Option("gmt", "getMetabyTitle", false, "Enter the name of the title of which you want to retrieve the metadata");
+		Option getMetabyAuthor = new Option("gma", "getMetabyAuthor", true, "Enter the name of the author of which you want to retrieve the metadata");
+		Option getMetabyTitle = new Option("gmt", "getMetabyTitle", true, "Enter the name of the title of which you want to retrieve the metadata");
 		//Option getMetabyAuthorTitle = new Option("gmat", "getMetabyAuthorTitle", false, "Enter the name of the author and of the title of which you want to retrieve the metadata");
 		Option print = new Option("p", "print", false, "Printing all content of the table");
 		// Option should take two arguments separeted by ","
@@ -195,7 +195,7 @@ public class CommandLineInterface {
 	public static void option_gma() {
 		String author = cmd.getOptionValue("gma");
 		System.out.println("Author: "+ author); 
-		String name = cmd.getOptionValue("name");
+		String name = cmd.getOptionValue("n");
 		Database Db = new Database(name);
 		// get meta info from table and save as txt file
 		Db.get_meta(author, "AUTHOR");
@@ -224,7 +224,7 @@ public class CommandLineInterface {
 		/** create command line options */
 		Options options = CommandLineInterface.make_options();
 		/** parse command line for options */
-		CommandLine cmd = CommandLineInterface.parse_commandline(options, args);
+		cmd = CommandLineInterface.parse_commandline(options, args);
 		
 		/** Check command line options and do corresponding methods */
 		
@@ -255,6 +255,8 @@ public class CommandLineInterface {
 		}
 		
 		if (cmd.hasOption("gma")){
+			System.out.println("n :"+ cmd.getOptionValue("n")); 
+			System.out.println("gma" + cmd.getOptionValue("gma")); 
 			CommandLineInterface.option_gma();
 			//System.out.println("Successfull retrieval of metainfo.");
 		}
