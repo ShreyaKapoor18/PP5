@@ -193,7 +193,8 @@ public class CommandLineInterface {
 	 * 
 	 */
 	public static void option_gma() {
-		String author = cmd.getOptionValue("getMetabyAuthor");
+		String author = cmd.getOptionValue("gma");
+		System.out.println("Author: "+ author); 
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get meta info from table and save as txt file

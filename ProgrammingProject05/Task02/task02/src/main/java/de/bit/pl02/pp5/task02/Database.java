@@ -78,7 +78,7 @@ public class Database {
 			Statement smt = con.createStatement(); 
 			String count_query = "SELECT COUNT(*) FROM sqlite_master WHERE type='TABLE' AND name='IMAGES'"; 
 			ResultSet r1 = smt.executeQuery(count_query); 
-			r1.next(); 
+			//r1.next(); 
 			int count = r1.getInt("COUNT(*)"); 
 			System.out.println("The database currently contains " + count + "elements"); 
 			int id = count; 
@@ -233,7 +233,7 @@ public class Database {
     				String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK) VALUES ("+ id + "," + title +  "," + author + "," + link + ")";
     				smt.execute(sql);
     				updatePicture(img, id, f.getAbsolutePath()); 
-    				//System.out.println(sql); 
+    				System.out.println(sql); 
     			}catch (Exception e) {
     				System.out.println(e.getMessage()); 
     				//continue; // only this particular image could not be inserted into the database.
@@ -262,9 +262,8 @@ public class Database {
 	            // set parameters
 	            pstmt.setBytes(1, img.readFile(path));
 	            pstmt.setInt(2, Id);
-	 
 	            pstmt.executeUpdate();
-	            //System.out.println("Stored the file in the BLOB column.");
+	            System.out.println("Stored the file in the BLOB column.");
 	 
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
