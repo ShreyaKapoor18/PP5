@@ -9,6 +9,18 @@ from several open and free studies, articles or other sources. Some of them have
     
 <H1> Getting Started </H1> 
 
+Steps to get the application running
+1. Git clone the repository
+2. Open Eclipse 
+    *  Direct the workspace to /group-03-descartes/ProgrammingProject05
+    *  Import existing maven project
+    *  Select the de.bit.pl02.task01 pom xml for importing the existing maven project. 
+    *  Do a maven install 
+3. After the application is installed you will see a task01-0.0.1-SNAPSHOT.jar in the /target folder
+4. To execut the jar use the following command
+    *  java -cp <Path to Programming Project>/ProgrammingProject05/Task01/task01/target/task01-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task01.CommandLineInterface <options> <arguments> 
+     
+
 <H1> Description </H1> 
 <H3> Main class </H3> 
 <B>Command Line Interface</B> <br> 
@@ -33,7 +45,9 @@ Metadata
 <H2> Dependencies </H2> 
 *       <B>    Apache Commons cli </B> -- version 1.4   <br> 
 *       <B>     Apache commons lang3 </B> -- version 3.4   <br>
-*       <B>    Maven jar plugin </B> <br>
+<H2> Plugins </H2> 
+*       <B>    Maven jar plugin </B> -- version 1.4   <br> 
+*       <B>    Maven shade plugin </B> -- version 3.4   <br>  
 
 <H1> Running tests </H1> 
 
