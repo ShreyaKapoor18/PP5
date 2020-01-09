@@ -18,7 +18,7 @@ Steps to get the application running
     *  Do a maven install 
 3. After the application is installed you will see a task01-0.0.1-SNAPSHOT.jar in the /target folder
 4. To execut the jar use the following command
-    *  java -cp <Path to Programming Project>/ProgrammingProject05/Task01/task01/target/task01-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task01.CommandLineInterface <options> <arguments> 
+    *  java -cp <Path to Programming Project>/ProgrammingProject05/Task01/task01/target/task01-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task01.CommandLineInterface __\<options>__ __\<arguments>__
      
 
 <H1> Description </H1> 
