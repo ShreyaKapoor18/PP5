@@ -19,6 +19,7 @@ It is possible to print the values of the created table. If the user only wants 
 ## Getting Started
 
 For the program to be running you need to specify the name of the database you want to make or the database you want to see that you have already created. Therefore use the option
+
 **-n** or **--name**: "Enter the name of the database you want to make/see
 ```
 -n your_database_name
@@ -34,39 +35,41 @@ LINK: xxx (only for files that contain a link)
 ```
 This is the structure you will get with the application in Task01.
 Therefore use the option
+
 **-d** or **--directory**: Enter the file directory from which you want to store the images
 ```
 -d your_directory_path
 ```
 
 Now you can choose how you want to query the database. You can either retrieve metadata information or the image as a .jpg file.
-* Retrieval of metadata information
-** You can give information about the author or the title to retrieve additional metadata. 
-** To query by the author use the option
+* **Retrieval of metadata information**
+  * You can give information about the author or the title to retrieve additional metadata. 
+  * To query by the author use the option
+
 ** **-gma** or **-getMetabyAuthor**: Enter the name of the author of which you want to retrieve the metadata
 ```
 -gma author_name
 ```
-** To query by the title use the option
-** **-gmt** or **getMetabyTitle**: Enter the name of the title of which you want to retrieve the metadata
+  * To query by the title use the option
+**-gmt** or **getMetabyTitle**: Enter the name of the title of which you want to retrieve the metadata
 ```
 -gmt title_name
 ```
 
 
-* Retrieval of images
-** You can give information about the author and/or title to retrieve the images.
-** To query by the author use the option
+* **Retrieval of images**
+  * You can give information about the author and/or title to retrieve the images.
+  * To query by the author use the option
 **-gia** or **-getImagebyAuthor**: Enter the name of the author from which you want the image
 ```
 -gia author_name
 ```
-** To query by the title use the option
+ * To query by the title use the option
 **-git** or **--getImagebyTitle**: Enter the name of the title from which you want the image
 ```
 -git title_name
 ```
-** To query by the author and the title use the option
+  * To query by the author and the title use the option
 **-giat** or **--getImagebyAuthorTitle**: Enter the name of the author and title from which you want the image
 ```
 -giat author_name title_name
