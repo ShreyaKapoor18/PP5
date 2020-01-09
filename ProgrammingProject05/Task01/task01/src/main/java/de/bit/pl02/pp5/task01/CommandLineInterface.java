@@ -181,10 +181,10 @@ public class CommandLineInterface {
         Option inputmeta = new Option("im", "inputmeta", false, "Enter the value of author, title and infographic separated by a comma");
         Option overwrite = new Option("o", "overwrite", false, "If you want to overwrite the original contents"); 
 
-        //directory.setType(String.class); // the datatype of the directoryname must be string
-        //importfile.setType(String.class); // the datatype of the inputfile must be string
+        directory.setType(String.class); // the datatype of the directoryname must be string
+        importfile.setType(String.class); // the datatype of the inputfile must be string
         //overwrite.setType(Boolean.class); // overwrite option has to be a true/false statement!
- 
+        inputmeta.setType(String.class);
         inputmeta.setArgs(4);
         inputmeta.setValueSeparator(',');
         
@@ -236,6 +236,7 @@ public class CommandLineInterface {
          */
         if (cmd.hasOption("p")) {
             String filename = cmd.getOptionValue("ip");
+            System.out.println(StringUtils.repeat("*", 60)); 
             System.out.println("File name: " + filename);
             String directory = cmd.getOptionValue("d"); // user needs to enter absolute path
             File metafile = CommandLineInterface.checkmetafile(filename);

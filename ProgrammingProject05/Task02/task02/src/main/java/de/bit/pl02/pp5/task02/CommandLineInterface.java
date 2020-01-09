@@ -44,22 +44,22 @@ public class CommandLineInterface {
 		//directory
 		Option directory = new Option("d", "directory", true, "Enter the file directory from which you want to store the images"); 
 		// TO DO: give 2 command line option values for image name and output path
-		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image and the output path it should have" );
-		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image and the output path it should have" );
-		Option getImagebyAuthorTitle = new Option("giat", "getImagebyAuthorTitle", true, "Enter the name of the author and title from which you want the image and the output path it should have" );
+		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image" );
+		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image" );
+		Option getImagebyAuthorTitle = new Option("giat", "getImagebyAuthorTitle", true, "Enter the name of the author and title from which you want the image" );
 		// TO DO Split up into author and title 
 		Option getMetabyAuthor = new Option("gma", "getMetabyAuthor", true, "Enter the name of the author of which you want to retrieve the metadata");
 		Option getMetabyTitle = new Option("gmt", "getMetabyTitle", true, "Enter the name of the title of which you want to retrieve the metadata");
 		//Option getMetabyAuthorTitle = new Option("gmat", "getMetabyAuthorTitle", false, "Enter the name of the author and of the title of which you want to retrieve the metadata");
 		Option print = new Option("p", "print", false, "Printing all content of the table");
 		// Option should take two arguments separeted by ","
-		getImagebyAuthor.setArgs(2);
-		getImagebyAuthor.setValueSeparator(',');
+		//getImagebyAuthor.setArgs(2);
+		//getImagebyAuthor.setValueSeparator(',');
+		
+		//getImagebyTitle.setArgs(2);
+		//getImagebyTitle.setValueSeparator(',');
 		
 		getImagebyTitle.setArgs(2);
-		getImagebyTitle.setValueSeparator(',');
-		
-		getImagebyTitle.setArgs(3);
 		getImagebyTitle.setValueSeparator(',');
 		
 		//getMetabyAuthorTitle.setArgs(2);
@@ -127,9 +127,9 @@ public class CommandLineInterface {
 	 *  
 	 */
 	public static void option_gia() throws IOException { 
-		String[] imageValues = cmd.getOptionValues("getImagebyAuthor");
-		String author = imageValues[0];
-		String imageOutputPath = imageValues[1];
+		//String[] imageValues = cmd.getOptionValues("getImagebyAuthor");
+		String author = cmd.getOptionValue("getImagebyAuthor");
+		//String imageOutputPath = imageValues[1];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
@@ -146,9 +146,9 @@ public class CommandLineInterface {
 	 * 
 	 */
 	public static void option_git() {
-		String[] imageValues = cmd.getOptionValues("getImagebyTitle");
-		String title = imageValues[0];
-		String imageOutputPath = imageValues[1];
+		//String[] imageValues = cmd.getOptionValues("getImagebyTitle");
+		String title = cmd.getOptionValue("getImagebyTitle");
+		//String imageOutputPath = imageValues[1];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
@@ -174,21 +174,16 @@ public class CommandLineInterface {
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthorTitle");
 		String author = imageValues[0];
 		String title = imageValues[1];
-		String imageOutputPath = imageValues[2];
+		//String imageOutputPath = imageValues[2];
 		// TODO: create sql to select image from database, convert into jpg and save as output file
 		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get byte array from table 
-		byte[] bytes = Db.get_byteImage2(author, title);
-		ByteImage byteImage = new ByteImage(bytes);
+		Db.get_byteImage2(author, title);
+		
 		// convert byte array to jpg file and save at imageOutputPath
-		try {
-			byteImage.byteToImage(bytes, imageOutputPath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 			
 	/** Get metadata by author and save as .txt file
@@ -196,6 +191,7 @@ public class CommandLineInterface {
 	 */
 	public static void option_gma() {
 		String author = cmd.getOptionValue("gma");
+		System.out.println("Author name: "+ author); 
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get meta info from table and save as txt file

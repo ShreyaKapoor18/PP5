@@ -214,10 +214,11 @@ public class Database {
     	ArrayList<String> arr = new ArrayList<String>();
     	for (File f: filesindir)
     	{ 	String imgname = f.getName();
-    		System.out.println("Imagename: "+imgname); 
+    		
     		if (imgname.contains(".png")|| imgname.contains(".jpg") || imgname.contains(".jpeg")){ 
     			Image img = new Image(f.getAbsolutePath(), imgname);
     			id +=1; 
+    			System.out.println(id + " " +imgname); 
     			ArrayList<String> meta = img.find_metadata(f.getAbsolutePath()); 
     			if (meta!= null) {
     			arr.add("INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK)" + "VALUES ('"+ id + "','"+ meta.get(0) + "'," + meta.get(1) +"','"+meta.get(2)+ "')"); 
@@ -229,7 +230,7 @@ public class Database {
     				String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK) VALUES ("+ id + "," + title +  "," + author + "," + link + ")";
     				smt.execute(sql);
     				updatePicture(img, id, f.getAbsolutePath()); 
-    				System.out.println(sql); 
+    				//System.out.println(sql); 
     			}catch (Exception e) {
     				System.out.println(e.getMessage()); 
     				//continue; // only this particular image could not be inserted into the database.
@@ -259,7 +260,7 @@ public class Database {
 	            pstmt.setBytes(1, img.readFile(path));
 	            pstmt.setInt(2, Id);
 	            pstmt.executeUpdate();
-	            System.out.println("Stored the file in the BLOB column.");
+	            //System.out.println("Stored the file in the BLOB column.");
 	 
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
@@ -272,20 +273,23 @@ public class Database {
 	 * @param value		the String of the value of column AUTHOR or TITLE in the database
 	 * @return 
 	 */
-	public void get_byteImage (String value, String column_name) {
+	public void get_byteImage (String column_name, String value) {
 		Statement stmt;
 		byte[] bImage = null;
 		try {
 			stmt = this.con.createStatement();
 			try {
-				String query = "SELECT *,'"+value+"' AS "+ column_name+ " FROM IMAGES";
+				String query = "SELECT * FROM IMAGES WHERE "+ column_name+ "='" + value+"';";  
 				ResultSet rs = stmt.executeQuery(query);  	
 				System.out.println("executed:" + query);
 				while (rs.next()) { 
 					//Blob blob = rs.getBlob("PICTURE");
 					System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
-					File image = new File(id + ".png");
+					String author = rs.getString("AUTHOR"); 
+					File dir = new File("imgresults"); 
+					dir.mkdir();
+					File image = new File("imgresults/"+author+id + ".png");
 				    FileOutputStream fos = new FileOutputStream(image);
 				    byte[] buffer = new byte[1];
 				    java.io.InputStream is = rs.getBinaryStream("PICTURE");
@@ -321,24 +325,35 @@ public class Database {
 	 * TODO handle multiple hits, with ArrayList<byte[]> ?
      * @throws SQLException 
 	 */
-	public byte[] get_byteImage2(String column_author, String column_title) throws SQLException {
+	public void get_byteImage2(String column_author, String column_title) throws SQLException {
 		Statement stmt = this.con.createStatement();
-		byte[] bImage = null;
-		String query = "SELECT PICTURE blob FROM TABLE IMAGES WHERE AUTHOR LIKE " 
-				+ column_author + " AND TITLE LIKE"  
-				+ column_title;
+		//byte[] bImage = null;
+		String query = "SELECT * FROM TABLE IMAGES WHERE AUTHOR='" 
+				+ column_author + "' AND TITLE='"  
+				+ column_title+"'";
 		ResultSet rs = stmt.executeQuery(query);
 		try {
 			while (rs.next()) { 
-				Blob blob = rs.getBlob("PICTURE blob");
-				int blobLength = (int) blob.length();
-				bImage = blob.getBytes(1, blobLength);					
+				System.out.println("executed: get binary stream ");
+				String id = rs.getString("ID");
+				String author = rs.getString("AUTHOR"); 
+				File dir = new File("imgresults"); 
+				dir.mkdir();
+				File image = new File("imgresults/"+author+id + ".png");
+			    FileOutputStream fos = new FileOutputStream(image);
+			    byte[] buffer = new byte[1];
+			    java.io.InputStream is = rs.getBinaryStream("PICTURE");
+			      while (is.read(buffer) > 0) {
+			        fos.write(buffer);
+			      }
+			    fos.close();
+				
 			}
 			} catch (Exception e) {
 				System.out.println(e.getMessage()); 
 	    } finally {
 	        if (stmt != null) { stmt.close(); }}
-		return bImage != null ? bImage : null;
+		//return bImage != null ? bImage : null;
 	}
     
 	/** Takes value of AUTHOR or TITLE column and saves the
@@ -346,18 +361,18 @@ public class Database {
 	 * 
 	 * @param value			the value of the specified column
 	 * @param column_name	either AUTHOR or TITLE
-	 * @param tablename		the name of the database
+	 * 
 	 * @throws IOException
 	 */
-	public void get_meta(String value, String column_name) {
+	public void get_meta(String column_name, String value) {
 		Statement stmt = null;
 		try {
 			stmt = this.con.createStatement();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		String query = "SELECT *,'"+value+"' AS "+ column_name+ " FROM IMAGES"; 
-		// System.out.println(query); 
+		String query = "SELECT * FROM IMAGES WHERE "+ column_name+ "='" + value+"';";  
+		System.out.println(query); 
 		ResultSet rs;
 		try {
 			rs = stmt.executeQuery(query);
@@ -371,7 +386,10 @@ public class Database {
 		
 					//BufferedWriter writer = new BufferedWriter(new FileWriter(author+id + ".txt", true));
 				    //writer.append(metadata);
-				    FileWriter writer = new FileWriter(author+id + ".txt");
+					File dir = new File("txtresults"); 
+					dir.mkdir();
+					
+				    FileWriter writer = new FileWriter("txtresults/"+author+id + ".txt");
 				    try {
 				        BufferedWriter buff = new BufferedWriter(writer);
 				        try {

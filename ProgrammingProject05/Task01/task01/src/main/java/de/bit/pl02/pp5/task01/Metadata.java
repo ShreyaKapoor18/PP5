@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  */
 
-public class Metadata implements Serializable {
+class Metadata implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** Title of the image/article related to it **/
 	private String title; 
