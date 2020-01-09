@@ -52,7 +52,9 @@ public class CommandLineInterface {
       
         File file = new File(path); 
         if (file.exists()) { 
-        	System.out.println("Files exists, will append to this file"); 
+        	System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
+        	System.out.println("Metafile exists, will deal with existing metafile"); 
+        	System.out.println(StringUtils.repeat("-", 50));
         }
         else {
         	error_code = 1; 
@@ -60,7 +62,9 @@ public class CommandLineInterface {
 				file.createNewFile();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
 				System.out.println("The file did not exist before, program has created a new one"); 
+				System.out.println(StringUtils.repeat("-", 50));
 			} 
         }
         return file;
@@ -82,7 +86,7 @@ public class CommandLineInterface {
         List<String> array = new ArrayList<String>();
         List<String> checklist = Arrays.asList("Title", "Author", "Database", "Infographic");
         if (error_code!=1) { 
-        	System.out.println("\nContents:\n");
+        	System.out.println("\nContents of the current file\n"+ StringUtils.repeat("=", 50));
 	        try {
 	            String s;
 	            while ((!eof) && cmd.hasOption("p")) {
@@ -99,6 +103,7 @@ public class CommandLineInterface {
 	                    }
 	                }
 	            }
+	            System.out.println(StringUtils.repeat("=", 50) + "\n"); 
 	            buffr.close();
 	        } catch (IOException e) {
 	            System.out.println(StringUtils.repeat("=", 20) + "ERROR" + StringUtils.repeat("=", 20));
@@ -109,6 +114,7 @@ public class CommandLineInterface {
         else { 
         	System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
         	System.out.println("The metafile didn't exist before so nothing to print");
+        	System.out.println(StringUtils.repeat("-", 40));
         	error_code = 0; // will reuse this function when we want to print the file with the new metadata!
         }
        
@@ -238,9 +244,14 @@ public class CommandLineInterface {
 				// Save the input of the user as a .txt file if metadata file does not yet exist 
 	            if (cmd.hasOption("im") && cmd.hasOption("m")) {
 	                String imagename = cmd.getOptionValue("ip");
-	                Boolean overwrite = Boolean.parseBoolean(cmd.getOptionValue("o")); 
+	                Boolean overwrite = Boolean.parseBoolean(cmd.getOptionValue("o"));
+	                if (overwrite) {
+	                	System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
+	                	System.out.println("Overwriting the file as selected"); 
+	                	System.out.println(StringUtils.repeat("-", 40));
+	                }
 	                CommandLineInterface.getMetaUser(metafile, containers, overwrite);
-	                System.out.println("After dealing with your meta options the new file is: \n"); 
+	                System.out.println("After dealing with your meta options the file will be displayed!"); 
 	                List<String> containers2 = readfile(metafile); 
 	            }
 			} catch (FileNotFoundException e) {
