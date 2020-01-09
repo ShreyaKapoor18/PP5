@@ -34,7 +34,7 @@ Steps to get the application running
 
     Mandatory commands needed for the application to run <br> 
 *   <B>    -d or --directory</B> <br>
-*   <B>    -ip or --inputfile</B> <br> 
+
    
 
 <H3> Subsidiary Class </H3> 
