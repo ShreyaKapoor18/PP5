@@ -21,9 +21,7 @@ This application helps the user to create database objects and interact with the
     *   <B>    -d or --directory</B> <br>
 
 
-## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ## Dependency Management
 
@@ -33,15 +31,15 @@ The Java Version 1.8.0_231 is used for this application. Apache Maven Version 3.
 
 The following dependencies were added to Maven:
 
-**JUnit** 		Version 3.8.1   
-**SQLite-JDBC** 	Version 3.18.0   
-**commons-cli**	Version 1.4   
-**commons-io**	Version 2.6   
-** commons-lang3** Version 3.4
+**JUnit** 		Version 3.8.1   <br>
+**SQLite-JDBC** 	Version 3.18.0   <br> 
+**commons-cli**	Version 1.4   <br>
+**commons-io**	Version 2.6   <br>
+**commons-lang3** Version 3.4 <br>
 
 The following plugins were used: 
-** maven jar plugin** 
-** maven shade plugin** 
+*  <B> Maven jar plugin </B> 
+*  <B> Maven shade plugin </B> 
 
 
 
