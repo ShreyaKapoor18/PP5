@@ -35,11 +35,11 @@ The following dependencies were added to Maven:
 **SQLite-JDBC** 	Version 3.18.0   <br> 
 **commons-cli**	Version 1.4   <br>
 **commons-io**	Version 2.6   <br>
-** commons-lang3** Version 3.4 <br>
+**commons-lang3** Version 3.4 <br>
 
 The following plugins were used: 
-** maven jar plugin**  <br>
-** maven shade plugin** <br>
+*  <B> Maven jar plugin </B> 
+*  <B> Maven shade plugin </B> 
 
 
 
