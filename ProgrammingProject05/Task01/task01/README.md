@@ -13,17 +13,38 @@ This application helps the user to create database objects and interact with the
 
 **Options**:  
 *   <B>    -d or --directory</B>   : for specifying the path to the directory containing the images <br>
+```
+Example: 
+-d  ~/PP5
+```
 *   <B>    -ip or --inputfile</B>  : the name of the input file you want to deal with <br>  
+```
+Example: 
+-ip BError1.PNG
+```
 *   <B>    -p or --print</B>       : if you want to print the meta information or not <br>  
+```
+    -p option if you want to print otherwise omit
+```
 *   <B>    -m or --meta</B>        : if you want to add the meta information <br> 
+```
+-m option if you want to add meta information, omit otherwise
+```
 *   <B>    -im or --inputmeta</B>  : the values of metainformation you want to enter <br>
+``` 
+-im Author,Title,Database_name,Infographic_number 
+```
+    *     Author - String 
+    *     Title - String 
+    *     Database_name - String
+    *    Infographic_numer - Integers in range 1 to 4 i.e. (1,2,3,4)
+
  Mandatory commands needed for the application to run <br>     
-    *   <B>    -d or --directory</B> <br>
+ *   <B>    -d or --directory</B> 
+ *   <B>    -ip or --inputfile</B> 
 
 
-## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ## Dependency Management
 
@@ -33,15 +54,15 @@ The Java Version 1.8.0_231 is used for this application. Apache Maven Version 3.
 
 The following dependencies were added to Maven:
 
-**JUnit** 		Version 3.8.1   
-**SQLite-JDBC** 	Version 3.18.0   
-**commons-cli**	Version 1.4   
-**commons-io**	Version 2.6   
-** commons-lang3** Version 3.4
+**JUnit** 		Version 3.8.1   <br>
+**SQLite-JDBC** 	Version 3.18.0   <br> 
+**commons-cli**	Version 1.4   <br>
+**commons-io**	Version 2.6   <br>
+**commons-lang3** Version 3.4 <br>
 
 The following plugins were used: 
-** maven jar plugin** 
-** maven shade plugin** 
+*  <B> Maven jar plugin </B> 
+*  <B> Maven shade plugin </B> 
 
 
 
