@@ -46,8 +46,8 @@ Metadata
 *       <B>    Apache Commons cli </B> -- version 1.4   <br> 
 *       <B>     Apache commons lang3 </B> -- version 3.4   <br>
 <H2> Plugins </H2> 
-*       <B>    Maven jar plugin </B> -- version 1.4   <br> 
-*       <B>    Maven shade plugin </B> -- version 3.4   <br>  
+*       <B>    Maven jar plugin </B>   <br> 
+*       <B>    Maven shade plugin </B>    <br>  
 
 <H1> Running tests </H1> 
 
