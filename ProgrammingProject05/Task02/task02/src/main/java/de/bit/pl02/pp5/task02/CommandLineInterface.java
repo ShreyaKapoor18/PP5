@@ -56,8 +56,8 @@ public class CommandLineInterface {
 		//getImagebyAuthor.setArgs(2);
 		//getImagebyAuthor.setValueSeparator(',');
 		
-		//getImagebyTitle.setArgs(2);
-		//getImagebyTitle.setValueSeparator(',');
+		getImagebyAuthorTitle.setArgs(2);
+		getImagebyAuthorTitle.setValueSeparator(',');
 		
 		getImagebyTitle.setArgs(2);
 		getImagebyTitle.setValueSeparator(',');
