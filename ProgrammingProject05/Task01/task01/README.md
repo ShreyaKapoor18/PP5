@@ -7,7 +7,7 @@ from several open and free studies, articles or other sources. Some of them have
     2. Your application should take several command line parameters. --import should take a image file name. --print is an option that prints all meta information on the screen without doing anything more. Define – and doc- ument! – the parameter --meta which takes additional meta information. How should user pass these information? You can also split this up in several parameters. <br> 
 
     
-<H1> Getting Started </H1> 
+<H1> Installation </H1> 
 
 Steps to get the application running
 1. Git clone the repository
@@ -17,8 +17,10 @@ Steps to get the application running
     *  Select the de.bit.pl02.task01 pom xml for importing the existing maven project. 
     *  Do a maven install 
 3. After the application is installed you will see a task01-0.0.1-SNAPSHOT.jar in the /target folder
+<H1> 
 4. To execut the jar use the following command
     *  java -cp <Path to Programming Project>/ProgrammingProject05/Task01/task01/target/task01-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task01.CommandLineInterface __\<options>__ __\<arguments>__
+
      
 
 <H1> Description </H1> 
@@ -49,6 +51,5 @@ Metadata
 *       <B>    Maven jar plugin </B>   <br> 
 *       <B>    Maven shade plugin </B>    <br>  
 
-<H1> Running tests </H1> 
 
 <H1> Built With </H1> 
