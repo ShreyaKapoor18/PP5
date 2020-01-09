@@ -178,7 +178,7 @@ public class CommandLineInterface {
         Option importfile = new Option("ip", "inputfile", true, "Enter the name of the input file");
         Option print = new Option("p", "print", false, "If you want to print the entire information");
         Option meta = new Option("m", "meta", false, "If you want to add meta information");
-        Option inputmeta = new Option("im", "inputmeta", false, "Enter the value of author, title, database and infographic separated by a comma");
+        Option inputmeta = new Option("im", "inputmeta", false, "Enter the value of author, title and infographic separated by a comma");
         Option overwrite = new Option("o", "overwrite", false, "If you want to overwrite the original contents"); 
 
         //directory.setType(String.class); // the datatype of the directoryname must be string

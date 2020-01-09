@@ -47,7 +47,7 @@ public class Metadata implements Serializable {
 		 * We accept infographic values only of the range 1 to 4. 
 		 * Values 
 		 * 1. Implies image of a cell/tissue
-		 * 2. Implies image of a biological process
+		 * 2. Implies image of a biological cartoon
 		 * 3. Implies that the image is a graph
 		 * 4. Implies the type of the image doesn't fit into the above classification
 		 */
