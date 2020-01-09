@@ -43,33 +43,16 @@ public class CommandLineInterface {
 		Option name = new Option("n", "name", true, "Enter the name of the database you want to make/see");
 		//directory
 		Option directory = new Option("d", "directory", true, "Enter the file directory from which you want to store the images"); 
-		// TO DO: give 2 command line option values for image name and output path
 		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image" );
-		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image" );
-		Option getImagebyAuthorTitle = new Option("giat", "getImagebyAuthorTitle", true, "Enter the name of the author and title from which you want the image" );
-		// TO DO Split up into author and title 
+		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image" ); 
 		Option getMetabyAuthor = new Option("gma", "getMetabyAuthor", true, "Enter the name of the author of which you want to retrieve the metadata");
 		Option getMetabyTitle = new Option("gmt", "getMetabyTitle", true, "Enter the name of the title of which you want to retrieve the metadata");
-		//Option getMetabyAuthorTitle = new Option("gmat", "getMetabyAuthorTitle", false, "Enter the name of the author and of the title of which you want to retrieve the metadata");
 		Option print = new Option("p", "print", false, "Printing all content of the table");
-		// Option should take two arguments separeted by ","
-		//getImagebyAuthor.setArgs(2);
-		//getImagebyAuthor.setValueSeparator(',');
-		
-		//getImagebyTitle.setArgs(2);
-		//getImagebyTitle.setValueSeparator(',');
-		
-		getImagebyTitle.setArgs(2);
-		getImagebyTitle.setValueSeparator(',');
-		
-		//getMetabyAuthorTitle.setArgs(2);
-		//getMetabyAuthorTitle.setValueSeparator(",");
 
 		options.addOption(name); 
 		options.addOption(directory); 
 		options.addOption(getImagebyAuthor);
 		options.addOption(getImagebyTitle);
-		options.addOption(getImagebyAuthorTitle);
 		options.addOption(getMetabyAuthor);
 		options.addOption(getMetabyTitle);
 		options.addOption(print);
