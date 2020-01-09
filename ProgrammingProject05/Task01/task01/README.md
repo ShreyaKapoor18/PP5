@@ -13,12 +13,35 @@ This application helps the user to create database objects and interact with the
 
 **Options**:  
 *   <B>    -d or --directory</B>   : for specifying the path to the directory containing the images <br>
+```
+Example: 
+-d  ~/PP5
+```
 *   <B>    -ip or --inputfile</B>  : the name of the input file you want to deal with <br>  
+```
+Example: 
+-ip BError1.PNG
+```
 *   <B>    -p or --print</B>       : if you want to print the meta information or not <br>  
+```
+    -p option if you want to print otherwise omit
+```
 *   <B>    -m or --meta</B>        : if you want to add the meta information <br> 
+```
+-m option if you want to add meta information, omit otherwise
+```
 *   <B>    -im or --inputmeta</B>  : the values of metainformation you want to enter <br>
+``` 
+-im Author,Title,Database_name,Infographic_number 
+```
+    *     Author - String 
+    *     Title - String 
+    *     Database_name - String
+    *    Infographic_numer - Integers in range 1 to 4 i.e. (1,2,3,4)
+
  Mandatory commands needed for the application to run <br>     
-    *   <B>    -d or --directory</B> <br>
+ *   <B>    -d or --directory</B> 
+ *   <B>    -ip or --inputfile</B> 
 
 
 
