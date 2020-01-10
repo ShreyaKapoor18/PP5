@@ -1,4 +1,4 @@
-﻿package de.bit.pl02.pp5.task01;
+package de.bit.pl02.pp5.task01;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -82,7 +82,7 @@ public class CommandLineInterface{
     public static void getMetaUser(File file, List<String> array, Boolean overwrite) {
         // improvements write in the form of a class in the file.
 
-        Metadata metadata = new Metadata();
+        MetaData metadata = new MetaData();
         String directory = cmd.getOptionValue("d");
         
         String[] metavalues = cmd.getOptionValues("im");
