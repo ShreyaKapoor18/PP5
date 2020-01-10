@@ -1,5 +1,5 @@
 package de.bit.pl02.pp5.task01;
-import java.io.Serializable;
+//import java.io.Serializable;
 
 /** This class is used so that an object can be written and 
  * extracted from text files. This makes the retrieval of the 
@@ -10,8 +10,8 @@ import java.io.Serializable;
  *
  */
 
-class Metadata implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Metadata{
+	//private static final long serialVersionUID =1L;
 	/** Title of the image/article related to it **/
 	private String title; 
 	/** Name of the author related to the image or article **/
@@ -20,6 +20,10 @@ class Metadata implements Serializable {
 	private String database;
 	/** What is the information about **/ 
 	private int infographic; 
+	
+	Metadata(){ 
+		
+	}
 	
 	public String getTitle() {
 		return title;
@@ -52,12 +56,10 @@ class Metadata implements Serializable {
 		 * 4. Implies the type of the image doesn't fit into the above classification
 		 */
 		if (infographic >=1 && infographic <=4) {
-		   this.infographic = infographic;
-		} 
+		   this.infographic = infographic; } 
 	} 
 	
-	@Override
-	public String toString() {
+	public String to_String() {
 		return  "Author:" + author + "\nTitle:" + title + "\nDatabase: " + database + "\nInfographic:" + infographic;
 	}
 	
