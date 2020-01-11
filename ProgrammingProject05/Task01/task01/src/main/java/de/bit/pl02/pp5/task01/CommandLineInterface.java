@@ -40,8 +40,8 @@ public class CommandLineInterface{
      * stores it with an extension .meta 
      * 
      * 
-     * @param  filename	the name of the input file
-     * @return file		if the oldfile exists return it else return newfile
+     * @param filename the name of the input file
+     * @return file if the oldfile exists return it else return newfile
      **/
     public static File checkmetafile(String filename) {
         // Assuming that the existing metadata file is in the same directory as the image
@@ -76,8 +76,9 @@ public class CommandLineInterface{
      *   if a file exists add contents to that one
      * 
      * 
-     * @param newfile	path of the new metadata file to be saved at 
-     * @throws IOException
+     * @param file the metadata returned file 
+     * @param array contains the attributes which are a present in the metadata file already
+     * @param overwrite if the user wants to overwrite the contents of the file or not
      */
     public static void getMetaUser(File file, List<String> array, Boolean overwrite) {
         // improvements write in the form of a class in the file.
@@ -113,48 +114,6 @@ public class CommandLineInterface{
         }
 
     }
-    public static void main(String[] args){
-        /** create command line options */
-        Options options = CommandLineInterface.make_options(); // for static method of the class
-        /** parse command line for options */
-        cmd = CommandLineInterface.parse_commandline(options, args); // Parse the input given by the user
-
-        /* Print the metadata file content if metadata file exists
-         * if it doesn't exist then a new file will be created
-         */
-        if (cmd.hasOption("p")) {
-            String filename = cmd.getOptionValue("ip");
-            System.out.println(StringUtils.repeat("*", 60)); 
-            System.out.println("File name: " + filename);
-            String directory = cmd.getOptionValue("d"); // user needs to enter absolute path
-            File metafile = CommandLineInterface.checkmetafile(filename);
-            try {
-				List<String> containers = readfile(metafile);
-				// Save the input of the user as a .txt file if metadata file does not yet exist 
-	            if (cmd.hasOption("im") && cmd.hasOption("m")) {
-	                String imagename = cmd.getOptionValue("ip");
-	                Boolean overwrite = Boolean.parseBoolean(cmd.getOptionValue("o"));
-	                if (overwrite) {
-	                	System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
-	                	System.out.println("Overwriting the file as selected"); 
-	                	System.out.println(StringUtils.repeat("-", 40));
-	                }
-	                CommandLineInterface.getMetaUser(metafile, containers, overwrite);
-	                System.out.println("After dealing with your meta options the file will be displayed!"); 
-	                List<String> containers2 = readfile(metafile); 
-	            }
-			} catch (FileNotFoundException e) {
-				System.out.println(StringUtils.repeat("=", 20) + "FATAL ERROR" + StringUtils.repeat("=", 20));
-				System.out.println("Could not connect to the metadata file!"); 
-			} 
-        
-        }
-
-    }
-
-
-
-
     /** Creates command line options to make a database, store images in it
      * and retrieve image and metadata information
      * 
@@ -216,9 +175,9 @@ public class CommandLineInterface{
     /** Reads an input file and prints the content if option "p" is specified
      * 
      * 
-     * @param cmd	an instance of CommandLine
-     * @param name  the name of the input picture 
-     * @throws FileNotFoundException 
+     * @param file  the file of the input picture 
+     * @throws FileNotFoundException the metadata file didnt exist before
+     * @return array the list of what metadata content is already present and might be overwritten
      */
     public static List<String> readfile(File file) throws FileNotFoundException {
 
@@ -263,5 +222,44 @@ public class CommandLineInterface{
        
        
 	return array;
+    }
+    
+    public static void main(String[] args){
+        /** create command line options */
+        Options options = CommandLineInterface.make_options(); // for static method of the class
+        /** parse command line for options */
+        cmd = CommandLineInterface.parse_commandline(options, args); // Parse the input given by the user
+
+        /* Print the metadata file content if metadata file exists
+         * if it doesn't exist then a new file will be created
+         */
+        if (cmd.hasOption("p")) {
+            String filename = cmd.getOptionValue("ip");
+            System.out.println(StringUtils.repeat("*", 60)); 
+            System.out.println("File name: " + filename);
+            String directory = cmd.getOptionValue("d"); // user needs to enter absolute path
+            File metafile = CommandLineInterface.checkmetafile(filename);
+            try {
+				List<String> containers = readfile(metafile);
+				// Save the input of the user as a .txt file if metadata file does not yet exist 
+	            if (cmd.hasOption("im") && cmd.hasOption("m")) {
+	                String imagename = cmd.getOptionValue("ip");
+	                Boolean overwrite = Boolean.parseBoolean(cmd.getOptionValue("o"));
+	                if (overwrite) {
+	                	System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
+	                	System.out.println("Overwriting the file as selected"); 
+	                	System.out.println(StringUtils.repeat("-", 40));
+	                }
+	                CommandLineInterface.getMetaUser(metafile, containers, overwrite);
+	                System.out.println("After dealing with your meta options the file will be displayed!"); 
+	                List<String> containers2 = readfile(metafile); 
+	            }
+			} catch (FileNotFoundException e) {
+				System.out.println(StringUtils.repeat("=", 20) + "FATAL ERROR" + StringUtils.repeat("=", 20));
+				System.out.println("Could not connect to the metadata file!"); 
+			} 
+        
+        }
+
     }
 }
