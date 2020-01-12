@@ -93,6 +93,8 @@ https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20
     
     
 ## Application Output 
+
+The results from the Commands in the Commands.txt file can be seen in the folder PP5 included in the repository. 
 1. You will be able to see .meta files for all the image files in the directory you supplied (PP5) in our case. 
 2. All the meta files will contain fields
     * Author 
