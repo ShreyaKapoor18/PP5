@@ -37,7 +37,7 @@ Example:
     *     Author - String 
     *     Title - String 
     *     Database_name - String
-    *    Infographic_numer - Integers in range 1 to 4 i.e. (1,2,3,4)
+    *     Infographic_numer - Integers in range 1 to 4 i.e. (1,2,3,4)
 
  Mandatory commands needed for the application to run <br>     
  *   <B>    -d or --directory</B> 
@@ -109,13 +109,14 @@ https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20
 
 ## Authors
 
-* **Shreya Kapoor**
-**Sophia Krix**
-**Gemma van der Voort**
+ **Shreya Kapoor** <br>
+**Sophia Krix** <br>
+**Gemma van der Voort**<br>
 
 ## Acknowledgments
-** Dr. Jens Dorpinghaus** 
-** Dr. Sebastian Schaaf**
+
+**Dr. Jens Dorpinghaus** <br>
+**Dr. Sebastian Schaaf**<br>
 
 
 
