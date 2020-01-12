@@ -11,14 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.stream.BaseStream;
-
 import org.apache.commons.lang3.StringUtils;
-import org.omg.CORBA.portable.InputStream;
-
 import java.io.IOException;
-import java.sql.Blob;
-
 
 /** The class Database can be used to create database objects and helps the user to interact
  *  with them. The user can give a directory in the {@link #read_director(String)} method from which
@@ -103,14 +97,12 @@ public class Database {
 			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
 			return con; } catch (ClassNotFoundException e) { 
 				System.out.println(StringUtils.repeat("=", 20) + " ERROR " + StringUtils.repeat("=", 20)); 
-				System.out.println(" Could not find the class"); //TODO 
+				System.out.println(" Could not find the class"); 
 				return null; 
 			}
 		}
 		
 	/** Creates a table as a database
-	 *@param tablename	the name of the database 
-	 *  TODO is this complete?
 	 */
 	public void make_table()
 	{ 
@@ -139,18 +131,15 @@ public class Database {
 	 * 
 	 * @return commands	the SQL commands 
 	 */
-	public ArrayList<String> insert_fields() { 	
-		//System.out.println("adding the fields"); 
+	public ArrayList<String> insert_fields() { 	 
 		// arraylist of SQL commands which can be given to the program so that the execution gets up and running. 
 		ArrayList<String> commands = new ArrayList<String>();
-		//TODO IMAGES
 		commands.add("CREATE TABLE IF NOT EXISTS IMAGES "
 				+ "(ID INTEGER PRIMARY KEY NOT NULL,"
 				+ "TITLE TEXT NOT NULL, "
 				+ "AUTHOR TEXT NOT NULL, "
 				+ "LINK TEXT NOT NULL, PICTURE blob );"); 
-		// commands.add("ALTER TABLE IMAGES PICTURE ADD COLUMN PICTURE blob;"); // add a column so that pictures can be stored there.
-		
+		// add a column so that pictures can be stored there.
 		return commands; 	
 	}
 
@@ -159,7 +148,6 @@ public class Database {
 	 * Reads in the files of the given directory.
 	 * 
 	 * @param dir		the path for the folder in which the metadata files are located
-	 * @param tablename the name of the database
 	 */
 	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
 		// Class.forName("org.sqlite.JDBC");  no need to use this
@@ -169,7 +157,6 @@ public class Database {
 	}
 
 	/** Prints the values of the table IMAGES of column ID, TITLE and AUTHOR.
-	 *  TODO check after creating integer ID if this is still valid
 	 * 
 	 * @throws SQLException
 	 */
@@ -198,10 +185,9 @@ public class Database {
 	/** Reads the files of a directory, finds the images and its corresponding metadata
 	 * Inserts the metadata of ID, TITLE and AUTHOR into the database and inserts the 
 	 * image into the PICTURE blob column via the {@link #updatePicture(Image, String, String)} method.
-	 * TODO check after creating integer ID that this still works
 	 * 
 	 * @param dir	the path of the directory 
-	 * @return arr	TODO 
+	 * @return arr	the SQL commands
 	 * @throws Exception if image could not be inserted into database
 	 */
 	public ArrayList<String> read_director(String dir) throws SQLException
@@ -209,8 +195,7 @@ public class Database {
 		Statement smt = this.con.createStatement(); 
 		File dir1 = new File(dir); 
 		System.out.println("Directory: "+dir); 
-    	File[] filesindir = dir1.listFiles();
-    	//System.out.println("Files: \n"+filesindir); 
+    	File[] filesindir = dir1.listFiles(); 
     	ArrayList<String> arr = new ArrayList<String>();
     	for (File f: filesindir)
     	{ 	String imgname = f.getName();
@@ -225,15 +210,12 @@ public class Database {
     			try {
     				String author = "'"+ meta.get(1)+ "'"; 
     				String title = "'"+ meta.get(0)+ "'"; 
-    				String link = "'"+ meta.get(2)+ "'";
-    				//System.out.println("inserting the image metadata here!" + id + title + author ); 
+    				String link = "'"+ meta.get(2)+ "'"; 
     				String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK) VALUES ("+ id + "," + title +  "," + author + "," + link + ")";
     				smt.execute(sql);
     				updatePicture(img, id, f.getAbsolutePath()); 
-    				//System.out.println(sql); 
     			}catch (Exception e) {
-    				System.out.println(e.getMessage()); 
-    				//continue; // only this particular image could not be inserted into the database.
+    				System.out.println(e.getMessage());
     			}
     		 }
     	  }
@@ -245,7 +227,7 @@ public class Database {
 	
 	/** Updates the database with the new image by using the method {@link Image#readFile(String)}
 	 * to read in an image file and store it as a byte array.
-     * TODO check ID
+	 *
      * @param Id			the value of the id column in the database
      * @param filename	the path of the image to be stored
      */
@@ -283,7 +265,6 @@ public class Database {
 				ResultSet rs = stmt.executeQuery(query);  	
 				System.out.println("executed:" + query);
 				while (rs.next()) { 
-					//Blob blob = rs.getBlob("PICTURE");
 					System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
 					String author = rs.getString("AUTHOR"); 
@@ -296,10 +277,7 @@ public class Database {
 				      while (is.read(buffer) > 0) {
 				        fos.write(buffer);
 				      }
-				    fos.close();
-					//int blobLength = (int) blob.length();
-					//bImage = blob.getBytes(1, blobLength);	
-					
+				    fos.close();					
 				}
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
@@ -321,13 +299,10 @@ public class Database {
 	 * @param column_title		the String of the value of column TITLE 
 	 * @return bImage			the byte array of the image
 	 * 
-	 * 
-	 * TODO handle multiple hits, with ArrayList<byte[]> ?
      * @throws SQLException 
 	 */
 	public void get_byteImage2(String column_author, String column_title) throws SQLException {
 		Statement stmt = this.con.createStatement();
-		//byte[] bImage = null;
 		String query = "SELECT * FROM TABLE IMAGES WHERE AUTHOR='" 
 				+ column_author + "' AND TITLE='"  
 				+ column_title+"'";
@@ -383,9 +358,7 @@ public class Database {
 					String link = rs.getString("LINK");	
 					String metadata = "Author: " + author + "\nTitle: " + title + "\nLink: " + link;
 					System.out.println("Author: " + author + "\nTitle: " + title + "\nLink: " + link);
-		
-					//BufferedWriter writer = new BufferedWriter(new FileWriter(author+id + ".txt", true));
-				    //writer.append(metadata);
+
 					File dir = new File("txtresults"); 
 					dir.mkdir();
 					
