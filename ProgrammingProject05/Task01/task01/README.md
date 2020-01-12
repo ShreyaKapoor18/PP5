@@ -28,11 +28,11 @@ Example:
 ```
 *   <B>    -m or --meta</B>        : if you want to add the meta information <br> 
 ```
--m option if you want to add meta information, omit otherwise
+    -m option if you want to add meta information, omit otherwise
 ```
 *   <B>    -im or --inputmeta</B>  : the values of metainformation you want to enter <br>
 ``` 
--im Author,Title,Database_name,Infographic_number 
+    -im Author,Title,Database_name,Infographic_number 
 ```
     *     Author - String 
     *     Title - String 
@@ -61,8 +61,8 @@ The following dependencies were added to Maven:
 **commons-lang3** Version 3.4 <br>
 
 The following plugins were used: 
-*  <B> Maven jar plugin </B> 
-*  <B> Maven shade plugin </B> 
+*  <B> Maven jar plugin  Version 1.4</B> 
+*  <B> Maven shade plugin  Version 3.2.0</B> 
 
 
 
@@ -109,12 +109,13 @@ https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20
 
 ## Authors
 
-* **Shreya Kapoor**   
-**Sophia Krix**   
-**Gemma van der Voort**   
+* **Shreya Kapoor**
+**Sophia Krix**
+**Gemma van der Voort**
 
 ## Acknowledgments
-
+** Dr. Jens Dorpinghaus** 
+** Dr. Sebastian Schaaf**
 
 
 

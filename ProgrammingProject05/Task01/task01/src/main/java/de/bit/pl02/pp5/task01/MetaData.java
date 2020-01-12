@@ -21,10 +21,6 @@ public class MetaData{
 	/** What is the information about **/ 
 	private int infographic; 
 	
-	MetaData(){ 
-		
-	}
-	
 	public String getTitle() {
 		return title;
 	}
