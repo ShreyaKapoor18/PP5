@@ -36,7 +36,7 @@ public class CommandLineInterface {
 	/** Creates command line options to make a database, store images in it
 	 * and retrieve image and metadata information
 	 * 
-	 * @return options	the command line arguments
+	 * @return options,	the command line arguments
 	 */
 	public static Options make_options() {
 		Options options = new Options(); 
@@ -58,7 +58,7 @@ public class CommandLineInterface {
 		options.addOption(print);
 
 		name.setRequired(true);
-		//directory.setRequired(true); We wouldn't want to insert a directory in the database everytume
+		//directory.setRequired(true); We wouldn't want to insert a directory in the database every time
 		
 		
 		return options;

@@ -2,6 +2,7 @@ package de.bit.pl02.pp5.task02;
 import de.bit.pl02.pp5.task02.*; 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.sql.Connection;
@@ -11,8 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.BaseStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.omg.CORBA.portable.InputStream;
 
@@ -55,7 +59,7 @@ public class Database {
 	 * 
 	 * @param name	the name of the database
 	 */
-	Database(String name) {
+	public Database(String name) {
 
 		this.name = name;
 		try {
@@ -78,14 +82,17 @@ public class Database {
 			Class.forName("org.sqlite.JDBC"); 
 			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
 			try {
-			// Check if TABLE Images is already present 
-			Statement smt = con.createStatement(); 
-			String count_query = "SELECT COUNT(*) from 'IMAGES'"; 
-			ResultSet r1 = smt.executeQuery(count_query); 
-			//r1.next(); 
-			int count = r1.getInt("COUNT(*)"); 
-			System.out.println("The database currently contains " + count + " elements"); 
-			int id = count; 
+				// Check if TABLE Images is already present 
+				Statement smt = con.createStatement(); 
+				String count_query = "SELECT COUNT(*) from 'IMAGES'"; 
+				ResultSet r1 = smt.executeQuery(count_query); 
+				//r1.next(); 
+				int count = r1.getInt("COUNT(*)"); 
+				//TODO test test close this statement
+				r1.close();
+				smt.close();
+				System.out.println("The database currently contains " + count + " elements"); 
+				id = count; 
 			
 			} catch(Exception e) {
 				Statement smt = con.createStatement(); 
@@ -95,13 +102,15 @@ public class Database {
 							+ "AUTHOR TEXT NOT NULL, "
 							+ "LINK TEXT NOT NULL);";
 				smt.execute(sql); 
-				 String sql1 = "ALTER TABLE IMAGES ADD COLUMN PICTURE blob"; 
-				 smt.execute(sql1); 
-				 //System.out.println(sql1);			
+				String sql1 = "ALTER TABLE IMAGES ADD COLUMN PICTURE blob"; 
+				smt.execute(sql1); 
+				smt.close();
+				//System.out.println(sql1);			
 			}
 
-			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
-			return con; } catch (ClassNotFoundException e) { 
+			//con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
+			return con;  
+		} catch (ClassNotFoundException e) { 
 				System.out.println(StringUtils.repeat("=", 20) + " ERROR " + StringUtils.repeat("=", 20)); 
 				System.out.println(" Could not find the class"); //TODO 
 				return null; 
@@ -266,6 +275,112 @@ public class Database {
 	            System.out.println(e.getMessage());
 	        }
 	    }
+	
+	/** MODIFIED FOR API
+	 * Updates the database with the new image by using the method {@link Image#readFile(String)}
+	 * to read in an image file and store it as a byte array.
+     * TODO check ID
+     * @param Id			the value of the id column in the database
+     * @param filename	the path of the image to be stored
+     */
+	public void storePictureForAPI(byte[] bytes, String author, String title, String link) {
+	    // update sql
+		// TODO allow for null strings/except for it
+		id++;
+	    String updateSQL = "UPDATE IMAGES SET PICTURE =? WHERE id=?";
+	    try {
+        	Statement smt = this.con.createStatement(); 
+			String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK) VALUES ("+ id + ",'" + title +  "','" + author + "','" + link + "')";
+			smt.execute(sql);
+			smt.close();
+		}catch (SQLException e) {
+			System.out.println(e.getMessage()); 
+			//continue; // only this particular image could not be inserted into the database.
+		}
+        try  {
+        	PreparedStatement pstmt = this.con.prepareStatement(updateSQL); 
+            // set parameters
+            pstmt.setBytes(1, bytes);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+ 
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+	       
+    }
+	
+	/** FOR API USE
+	 * function returns a list of id's and metadata that matches the get command
+	 * author and/or title. CANNOT  BOTH BE NULL! possible TODO write nice exception.
+	 */
+	public int[] getForAPI(String author, String title) {
+		if (author == null && title == null) {
+			return new int[0];
+		}
+		PreparedStatement stmt = null;
+		ArrayList<Integer> idList = new ArrayList<Integer>(); 
+		try {
+			if (title == null) {
+				stmt = this.con.prepareStatement("SELECT * FROM IMAGES WHERE AUTHOR=?");
+				stmt.setString(1, author);
+			} else if (author == null) {
+				stmt = this.con.prepareStatement("SELECT * FROM IMAGES WHERE TITLE=?");
+				stmt.setString(1, title);
+			} else {
+				stmt = this.con.prepareStatement("SELECT * FROM IMAGES WHERE AUTHOR=? AND TITLE=?");
+				stmt.setString(1, author);
+				stmt.setString(2, title);
+			}
+			System.out.println("executed:" + stmt.toString());
+			ResultSet rs = stmt.executeQuery(); 
+			while (rs.next()) { 
+				System.out.println("executed: get binary stream ");
+				int id = rs.getInt("ID");
+				String author2 = rs.getString("AUTHOR");
+				String title2 = rs.getString("TITLE");
+				String link = rs.getString("LINK");
+				idList.add(id);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			try {if (stmt != null) stmt.close();} catch (Exception e) {};
+        }
+		//convert arraylist into an array		    
+		return ArrayUtils.toPrimitive((Integer[]) idList.toArray(new Integer[idList.size()]));
+	}
+	
+	/** FOR API USE
+	 * returns byte[] of picture with identifier id.
+	 * Since id is unique, this function returns only 1 byte[].
+	 * overloaded
+	 * @param id
+	 * @return
+	 */
+	public byte[] getForAPI(int id) {
+		PreparedStatement stmt = null;
+		byte[] image= null;
+		System.out.println("id: " + id);
+		try {
+			stmt = this.con.prepareStatement("SELECT * FROM IMAGES WHERE ID=?");
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			image = IOUtils.toByteArray(rs.getBinaryStream("PICTURE"));
+			rs.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			try {if (stmt != null) stmt.close();} catch (Exception e) {};
+        }
+				    
+		return image;
+	}
 
 	/** Takes a String with value of column AUTHOR and return the byte array contained
 	 * in column PICTURE blob 
@@ -414,6 +529,18 @@ public class Database {
 		} 
 	
 	}
+	/**
+	 * method to close the connection at the end of API used, to prevent 
+	 * your database locking. 
+	 */
+	public void close() {
+		try {
+			con.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
 }
 	
 	
