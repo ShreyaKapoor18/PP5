@@ -19,7 +19,6 @@ import java.util.ArrayList;
  * @author Sophia Krix
  * @author Gemma van der Voort 
  * 
- * @since 1.8.0_231 // JKD Version
  * 
  */
 public class Image {

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 
 /** The class CommandLineInterface provides an interface for the user and helps to interact.
- * 	With this, it is possible to create a database on the basis of the directory given by the user at {@link #directory}.
+ * 	With this, it is possible to create a database on the basis of the directory given by the user.
  *  This directory should contain image files (.png, .jpg or .jpeg) and corresponding metadata files (.txt).
  *  The user can query the database by giving the name of the author or title to retrieve an image or
  *  additional metadata information.
@@ -87,7 +87,6 @@ public class CommandLineInterface {
 	 *  reads the files of the specified directory and inserts the metadata of 
 	 *  ID, TITLE and AUTHOR into the database with the method {@link Database#read_director(String)}.
 	 * 
-	 * @throws SQLException 
 	 */		
 	public static void option_s(){
 		String dir = cmd.getOptionValue("directory");
@@ -102,11 +101,10 @@ public class CommandLineInterface {
 	}
 		
 	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String)}
-	 *  and save as .png file with the specified path by the user.
-	 * @throws IOException 
+	 *  and save as .png file with the specified path by the user. 
 	 *  
 	 */
-	public static void option_gia() throws IOException { 
+	public static void option_gia(){ 
 		String author = cmd.getOptionValue("getImagebyAuthor");
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
@@ -124,8 +122,7 @@ public class CommandLineInterface {
 	}
 		
 	/** Get image by author and title and save as .png file
-	 * @throws SQLException 
-	 * 
+	 * @throws SQLException if SQL command could not be executed
 	 */
 	public static void option_giat() throws SQLException {
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthorTitle");
@@ -182,11 +179,7 @@ public class CommandLineInterface {
 		}
 		
 		if (cmd.hasOption("gia")){
-			try {
-				CommandLineInterface.option_gia();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			CommandLineInterface.option_gia();
 		}
 		
 		if (cmd.hasOption("git")){

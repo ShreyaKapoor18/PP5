@@ -20,7 +20,7 @@ import java.io.IOException;
  *  It is possible to print the values of the created table with the method {@link #see_table()}.
  *  If the user only wants the metadata of a specific sample, then the metadata can be retrieved by specifying
  *  either the author or the title with the {@link #get_meta(String, String)} method and be saved as a .txt file.
- *  The user can add images with the {@link #updatePicture(Image, String, String)} method to the table.
+ *  The user can add images with the {@link #updatePicture(Image, int, String)} method to the table.
  *  
  * 	Columns: 
  * 		AUTHOR			the name of the author
@@ -32,7 +32,6 @@ import java.io.IOException;
  * @author Sophia Krix
  * @author Gemma van der Voort 
  * 
- * @since 1.8.0_231 // JKD Version
  */
 
 public class Database {
@@ -62,8 +61,9 @@ public class Database {
 	}
 	
 	/** Establishes a connection to the SQLite database
-	 * 
+	 *
 	 * @return con connection to the database
+	 * @throws SQLException if SQL command can not be executed
 	 */
 	public Connection Connect_db() throws SQLException { 
 		// connecting to the database whether existing or not existing!
@@ -76,11 +76,9 @@ public class Database {
 			Statement smt = con.createStatement(); 
 			String count_query = "SELECT COUNT(*) from 'IMAGES'"; 
 			ResultSet r1 = smt.executeQuery(count_query); 
-			//r1.next(); 
 			int count = r1.getInt("COUNT(*)"); 
 			System.out.println("The database currently contains " + count + " elements"); 
-			int id = count; 
-			
+			int id = count; 	
 			} catch(Exception e) {
 				Statement smt = con.createStatement(); 
 				String sql = "CREATE TABLE IMAGES "
@@ -148,17 +146,18 @@ public class Database {
 	 * Reads in the files of the given directory.
 	 * 
 	 * @param dir		the path for the folder in which the metadata files are located
+	 * @throws IOException if there is an error with the input or output
+	 * @throws SQLException if the SQL commands could not be executed
+	 * @throws ClassNotFoundException if the class was not found
 	 */
 	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
-		// Class.forName("org.sqlite.JDBC");  no need to use this
-		// Connection con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");
 		Statement smt = this.con.createStatement();
 		smt.execute("SELECT * FROM IMAGES"); 
 	}
 
 	/** Prints the values of the table IMAGES of column ID, TITLE and AUTHOR.
 	 * 
-	 * @throws SQLException
+	 * @throws SQLException if the SQL command can not be executed
 	 */
 	public void see_table() throws SQLException
 	{ 	//System.out.println("printing"); 
@@ -184,11 +183,11 @@ public class Database {
 
 	/** Reads the files of a directory, finds the images and its corresponding metadata
 	 * Inserts the metadata of ID, TITLE and AUTHOR into the database and inserts the 
-	 * image into the PICTURE blob column via the {@link #updatePicture(Image, String, String)} method.
+	 * image into the PICTURE blob column via the {@link #updatePicture(Image, int, String)} method.
 	 * 
 	 * @param dir	the path of the directory 
 	 * @return arr	the SQL commands
-	 * @throws Exception if image could not be inserted into database
+	 * @throws SQLException if image could not be inserted into database
 	 */
 	public ArrayList<String> read_director(String dir) throws SQLException
 	{  
@@ -228,8 +227,9 @@ public class Database {
 	/** Updates the database with the new image by using the method {@link Image#readFile(String)}
 	 * to read in an image file and store it as a byte array.
 	 *
-     * @param Id			the value of the id column in the database
-     * @param filename	the path of the image to be stored
+	 * @param img 	the image to be stored 
+     * @param Id	the value of the id column in the database
+     * @param path	the path of the image to be stored
      */
 	public void updatePicture(Image img, int Id, String path) {
 	    // update sql
@@ -252,8 +252,8 @@ public class Database {
 	/** Takes a String with value of column AUTHOR and return the byte array contained
 	 * in column PICTURE blob 
 	 * 
-	 * @param value		the String of the value of column AUTHOR or TITLE in the database
-	 * @return 
+	 * @param column_name	the String of the column name
+	 * @param value			the String of the value of column AUTHOR or TITLE in the database
 	 */
 	public void get_byteImage (String column_name, String value) {
 		Statement stmt;
@@ -297,9 +297,8 @@ public class Database {
 	 * 
 	 * @param column_author	the String of the value of column AUTHOR 
 	 * @param column_title		the String of the value of column TITLE 
-	 * @return bImage			the byte array of the image
-	 * 
-     * @throws SQLException 
+	 *
+     * @throws SQLException if SQL command could not be executed
 	 */
 	public void get_byteImage2(String column_author, String column_title) throws SQLException {
 		Statement stmt = this.con.createStatement();
@@ -336,8 +335,6 @@ public class Database {
 	 * 
 	 * @param value			the value of the specified column
 	 * @param column_name	either AUTHOR or TITLE
-	 * 
-	 * @throws IOException
 	 */
 	public void get_meta(String column_name, String value) {
 		Statement stmt = null;
