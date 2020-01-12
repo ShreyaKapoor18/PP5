@@ -6,7 +6,8 @@ package de.bit.pl02.pp5.task01;
  * metadata standardised.
  * 
  * @author Shreya Kapoor 
- *
+ * @author Sophia Krix 
+ * @author Gemma van der Voort
  *
  */
 
