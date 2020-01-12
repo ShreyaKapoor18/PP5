@@ -30,7 +30,7 @@ public class CommandLineInterface {
 	
 	/** Constructor method */
 	CommandLineInterface() {
-		// TODO
+
 	}
 	
 	/** Creates command line options to make a database, store images in it
@@ -58,9 +58,7 @@ public class CommandLineInterface {
 		options.addOption(print);
 
 		name.setRequired(true);
-		//directory.setRequired(true); We wouldn't want to insert a directory in the database everytume
-		
-		
+	
 		return options;
 	}
 	
@@ -99,57 +97,33 @@ public class CommandLineInterface {
 		try {
 			Db.read_director(dir);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 		
 	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String)}
-	 *  and save as .jpg file with the specified path by the user.
+	 *  and save as .png file with the specified path by the user.
 	 * @throws IOException 
 	 *  
 	 */
 	public static void option_gia() throws IOException { 
-		//String[] imageValues = cmd.getOptionValues("getImagebyAuthor");
 		String author = cmd.getOptionValue("getImagebyAuthor");
-		//String imageOutputPath = imageValues[1];
-		// TODO: create sql to select image from database, convert into jpg and save as output file
-		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
-		// get byte array from table 
-		//byte[] bytes = 
 		Db.get_byteImage("AUTHOR", author);
-		//ByteImage byteImage = new ByteImage(bytes);
-		// convert byte array to jpg file and save at imageOutputPath
-		//byteImage.byteToImage(bytes, imageOutputPath);
 	}
 		
-	/** Retrieve an image from the database by title and save as .jpg file.
+	/** Retrieve an image from the database by title and save as .png file.
 	 * 
 	 */
 	public static void option_git() {
-		//String[] imageValues = cmd.getOptionValues("getImagebyTitle");
 		String title = cmd.getOptionValue("getImagebyTitle");
-		//String imageOutputPath = imageValues[1];
-		// TODO: create sql to select image from database, convert into jpg and save as output file
-		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
-		// get byte array from table 
-		//byte[] bytes = 
 		Db.get_byteImage("TITLE", title);
-		//ByteImage byteImage = new ByteImage(bytes);
-		// convert byte array to jpg file and save at imageOutputPath
-		/*try {
-			byteImage.byteToImage(bytes, imageOutputPath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 	}
 		
-	/** Get image by author and title and save as .jpg file
+	/** Get image by author and title and save as .png file
 	 * @throws SQLException 
 	 * 
 	 */
@@ -157,16 +131,11 @@ public class CommandLineInterface {
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthorTitle");
 		String author = imageValues[0];
 		String title = imageValues[1];
-		//String imageOutputPath = imageValues[2];
-		// TODO: create sql to select image from database, convert into jpg and save as output file
-		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get byte array from table 
-		Db.get_byteImage2(author, title);
-		
 		// convert byte array to jpg file and save at imageOutputPath
-		
+		Db.get_byteImage2(author, title);		
 	}
 			
 	/** Get metadata by author and save as .txt file
@@ -216,7 +185,6 @@ public class CommandLineInterface {
 			try {
 				CommandLineInterface.option_gia();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

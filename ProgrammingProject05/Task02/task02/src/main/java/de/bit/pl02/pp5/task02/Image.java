@@ -32,7 +32,6 @@ public class Image {
 	private String path;
 	
 	/** Class constructor
-	 * TODO What is the name for ?
 	 * @param path	The location of the image in the file system
 	 * @param name  The name of the image file.
 	 */
@@ -99,7 +98,6 @@ public class Image {
 			    	title = s.split(":")[1]; }
 			    else if (s.contains("Author:")) { 
 			    	author = s.split(":")[1]; }
-			    //TODO check if link works
 			    else if (s.contains("http")) {
 			    	link = s;
 			    }
