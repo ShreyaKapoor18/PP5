@@ -6,7 +6,8 @@ package de.bit.pl02.pp5.task01;
  * metadata standardised.
  * 
  * @author Shreya Kapoor 
- *
+ * @author Sophia Krix 
+ * @author Gemma van der Voort
  *
  */
 
@@ -20,10 +21,6 @@ public class MetaData{
 	private String database;
 	/** What is the information about **/ 
 	private int infographic; 
-	
-	MetaData(){ 
-		
-	}
 	
 	public String getTitle() {
 		return title;
