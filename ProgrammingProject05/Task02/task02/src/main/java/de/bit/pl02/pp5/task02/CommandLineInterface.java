@@ -122,6 +122,7 @@ public class CommandLineInterface {
 		String[] optionvalues = cmd.getOptionValues("getImagebyAuthor");
 		String author = optionvalues[0];
 		String outputpath = optionvalues[1];
+		System.out.println("outputpath"+outputpath+"\n");
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		Db.get_byteImage("AUTHOR", author, outputpath);

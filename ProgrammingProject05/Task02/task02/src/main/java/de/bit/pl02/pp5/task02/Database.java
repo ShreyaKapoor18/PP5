@@ -19,7 +19,7 @@ import java.io.IOException;
  *  a table will be created with the images and the corresponding metadata. 
  *  It is possible to print the values of the created table with the method {@link #see_table()}.
  *  If the user only wants the metadata of a specific sample, then the metadata can be retrieved by specifying
- *  either the author or the title with the {@link #get_meta(String, String)} method and be saved as a .txt file.
+ *  either the author or the title with the {@link #get_meta(String, String, String)} method and be saved as a .txt file.
  *  The user can add images with the {@link #updatePicture(Image, int, String)} method to the table.
  *  
  * 	Columns: 
@@ -249,8 +249,8 @@ public class Database {
 	        }
 	    }
 
-	/** Takes a String with value of column AUTHOR and return the byte array contained
-	 * in column PICTURE blob 
+	/** Takes a String with value of column AUTHOR and
+	 * in column PICTURE blob and stores the image in specified outputpath 
 	 * 
 	 * @param column_name	the String of the column name
 	 * @param value			the String of the value of column AUTHOR or TITLE in the database
@@ -269,9 +269,11 @@ public class Database {
 					System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
 					String author = rs.getString("AUTHOR"); 
-					//File dir = new File("imgresults"); 
+					//File dir = new File(outputpath); 
 					//dir.mkdir();
+					System.out.println("makedir reached \n Putting in path: "); 
 					File image = new File(outputpath+"/"+author+id + ".png");
+					System.out.println(outputpath+"/"+author+id + ".png"); 
 				    FileOutputStream fos = new FileOutputStream(image);
 				    byte[] buffer = new byte[1];
 				    java.io.InputStream is = rs.getBinaryStream("PICTURE");
@@ -283,9 +285,6 @@ public class Database {
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 				}			
-		    finally {
-		        if (stmt != null) { stmt.close();
-		        }}
 		} catch (SQLException e1) {
 			e1.printStackTrace();	
 		}	
@@ -293,10 +292,10 @@ public class Database {
 	}
 	  
 
-    /** Takes a String with value of column AUTHOR and TITLE and return the byte array contained
-	 * in column PICTURE blob 
+    /** Stores the retrieved image on the path specified by the user! 
 	 * 
 	 * @param column_author	the String of the value of column AUTHOR 
+	 * @param outputpath  the place where you want to store the output
 	 * @param column_title	the String of the value of column TITLE 
 	 * @param outputpath 	the output path of the retrieval
      * @throws SQLException if SQL command could not be executed
@@ -312,9 +311,11 @@ public class Database {
 				System.out.println("executed: get binary stream ");
 				String id = rs.getString("ID");
 				String author = rs.getString("AUTHOR"); 
-				//File dir = new File("imgresults"); 
+				//File dir = new File(outputpath); 
 				//dir.mkdir();
+				System.out.println("reached make directory \n Putting in path:");
 				File image = new File(outputpath+"/"+author+id + ".png");
+				System.out.println(outputpath+"/"+author+id + ".png");
 			    FileOutputStream fos = new FileOutputStream(image);
 			    byte[] buffer = new byte[1];
 			    java.io.InputStream is = rs.getBinaryStream("PICTURE");
