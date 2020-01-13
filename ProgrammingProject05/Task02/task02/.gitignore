@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/maven
 # Edit at https://www.gitignore.io/?templates=maven
 
@@ -14,5 +13,6 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 .flattened-pom.xml
-.DS_Store
+
 # End of https://www.gitignore.io/api/maven
+/.metadata/
