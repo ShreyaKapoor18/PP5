@@ -271,7 +271,7 @@ public class Database {
 					String author = rs.getString("AUTHOR"); 
 					//File dir = new File(outputpath); 
 					//dir.mkdir();
-					System.out.println("makedir reached \n Putting in path: "); 
+					System.out.println("Putting in path: "); 
 					File image = new File(outputpath+"/"+author+id + ".png");
 					System.out.println(outputpath+"/"+author+id + ".png"); 
 				    FileOutputStream fos = new FileOutputStream(image);
@@ -313,7 +313,7 @@ public class Database {
 				String author = rs.getString("AUTHOR"); 
 				//File dir = new File(outputpath); 
 				//dir.mkdir();
-				System.out.println("reached make directory \n Putting in path:");
+				System.out.println("Putting in path:");
 				File image = new File(outputpath+"/"+author+id + ".png");
 				System.out.println(outputpath+"/"+author+id + ".png");
 			    FileOutputStream fos = new FileOutputStream(image);
