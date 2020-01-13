@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 
 /** The class CommandLineInterface provides an interface for the user and helps to interact.
- * 	With this, it is possible to create a database on the basis of the directory given by the user.
+ * 	With this, it is possible to create a database on the basis of the directory given by the user at {@link #directory}.
  *  This directory should contain image files (.png, .jpg or .jpeg) and corresponding metadata files (.txt).
  *  The user can query the database by giving the name of the author or title to retrieve an image or
  *  additional metadata information.
@@ -30,13 +30,13 @@ public class CommandLineInterface {
 	
 	/** Constructor method */
 	CommandLineInterface() {
-
+		// TODO
 	}
 	
 	/** Creates command line options to make a database, store images in it
 	 * and retrieve image and metadata information
 	 * 
-	 * @return options,	the command line arguments
+	 * @return options	the command line arguments
 	 */
 	public static Options make_options() {
 		Options options = new Options(); 
@@ -58,6 +58,9 @@ public class CommandLineInterface {
 		options.addOption(print);
 
 		name.setRequired(true);
+		//directory.setRequired(true); We wouldn't want to insert a directory in the database everytume
+		
+		
 		return options;
 	}
 	
@@ -86,6 +89,7 @@ public class CommandLineInterface {
 	 *  reads the files of the specified directory and inserts the metadata of 
 	 *  ID, TITLE and AUTHOR into the database with the method {@link Database#read_director(String)}.
 	 * 
+	 * @throws SQLException 
 	 */		
 	public static void option_s(){
 		String dir = cmd.getOptionValue("directory");
@@ -95,43 +99,74 @@ public class CommandLineInterface {
 		try {
 			Db.read_director(dir);
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 		
 	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String)}
-	 *  and save as .png file with the specified path by the user. 
+	 *  and save as .jpg file with the specified path by the user.
+	 * @throws IOException 
 	 *  
 	 */
-	public static void option_gia(){ 
+	public static void option_gia() throws IOException { 
+		//String[] imageValues = cmd.getOptionValues("getImagebyAuthor");
 		String author = cmd.getOptionValue("getImagebyAuthor");
+		//String imageOutputPath = imageValues[1];
+		// TODO: create sql to select image from database, convert into jpg and save as output file
+		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
+		// get byte array from table 
+		//byte[] bytes = 
 		Db.get_byteImage("AUTHOR", author);
+		//ByteImage byteImage = new ByteImage(bytes);
+		// convert byte array to jpg file and save at imageOutputPath
+		//byteImage.byteToImage(bytes, imageOutputPath);
 	}
 		
-	/** Retrieve an image from the database by title and save as .png file.
+	/** Retrieve an image from the database by title and save as .jpg file.
 	 * 
 	 */
 	public static void option_git() {
+		//String[] imageValues = cmd.getOptionValues("getImagebyTitle");
 		String title = cmd.getOptionValue("getImagebyTitle");
+		//String imageOutputPath = imageValues[1];
+		// TODO: create sql to select image from database, convert into jpg and save as output file
+		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
+		// get byte array from table 
+		//byte[] bytes = 
 		Db.get_byteImage("TITLE", title);
+		//ByteImage byteImage = new ByteImage(bytes);
+		// convert byte array to jpg file and save at imageOutputPath
+		/*try {
+			byteImage.byteToImage(bytes, imageOutputPath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 		
-	/** Get image by author and title and save as .png file
-	 * @throws SQLException if SQL command could not be executed
+	/** Get image by author and title and save as .jpg file
+	 * @throws SQLException 
+	 * 
 	 */
 	public static void option_giat() throws SQLException {
 		String[] imageValues = cmd.getOptionValues("getImagebyAuthorTitle");
 		String author = imageValues[0];
 		String title = imageValues[1];
+		//String imageOutputPath = imageValues[2];
+		// TODO: create sql to select image from database, convert into jpg and save as output file
+		// TODO: make dbname an instance of Database
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get byte array from table 
+		Db.get_byteImage2(author, title);
+		
 		// convert byte array to jpg file and save at imageOutputPath
-		Db.get_byteImage2(author, title);		
+		
 	}
 			
 	/** Get metadata by author and save as .txt file
@@ -178,7 +213,12 @@ public class CommandLineInterface {
 		}
 		
 		if (cmd.hasOption("gia")){
-			CommandLineInterface.option_gia();
+			try {
+				CommandLineInterface.option_gia();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (cmd.hasOption("git")){
