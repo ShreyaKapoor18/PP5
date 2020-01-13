@@ -1,5 +1,7 @@
 package de.bit.pl02.pp5.task02;
-import de.bit.pl02.pp5.task02.*; 
+import de.bit.pl02.pp5.task02.*;
+//import de.bit.pl02.pp5.task03.MetaData;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -300,12 +302,13 @@ public class Database {
 	 * function returns a list of id's and metadata that matches the get command
 	 * author and/or title. CANNOT  BOTH BE NULL! possible TODO write nice exception.
 	 */
-	public int[] getForAPI(String author, String title) {
+	public List<MetaDataAPI> getForAPI(String author, String title) {
 		if (author == null && title == null) {
-			return new int[0];
+			return new ArrayList<MetaDataAPI>();
 		}
 		PreparedStatement stmt = null;
-		ArrayList<Integer> idList = new ArrayList<Integer>(); 
+		//ArrayList<Integer> idList = new ArrayList<Integer>(); 
+		List<MetaDataAPI> MetaDataList = new ArrayList<MetaDataAPI>();
 		try {
 			if (title == null) {
 				stmt = this.con.prepareStatement("SELECT * FROM IMAGES WHERE AUTHOR=?");
@@ -326,7 +329,9 @@ public class Database {
 				String author2 = rs.getString("AUTHOR");
 				String title2 = rs.getString("TITLE");
 				String link = rs.getString("LINK");
-				idList.add(id);
+				//idList.add(id);
+				MetaDataAPI MetaDataList2 = new MetaDataAPI(id, author2, title2, link);
+				MetaDataList.add(MetaDataList2);
 			}
 			rs.close();
 		} catch (SQLException e) {
@@ -334,8 +339,9 @@ public class Database {
 		} finally {
 			try {if (stmt != null) stmt.close();} catch (Exception e) {};
         }
-		//convert arraylist into an array		    
-		return ArrayUtils.toPrimitive((Integer[]) idList.toArray(new Integer[idList.size()]));
+		//convert array list into an array		    
+		return MetaDataList;
+				//ArrayUtils.toPrimitive((Integer[]) idList.toArray(new Integer[idList.size()]));
 	}
 	
 	/** FOR API USE
