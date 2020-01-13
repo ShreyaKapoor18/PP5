@@ -43,12 +43,26 @@ public class CommandLineInterface {
 		Option name = new Option("n", "name", true, "Enter the name of the database you want to make/see");
 		//directory
 		Option directory = new Option("d", "directory", true, "Enter the file directory from which you want to store the images"); 
-		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image" );
-		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image" ); 
-		Option getMetabyAuthor = new Option("gma", "getMetabyAuthor", true, "Enter the name of the author of which you want to retrieve the metadata");
-		Option getMetabyTitle = new Option("gmt", "getMetabyTitle", true, "Enter the name of the title of which you want to retrieve the metadata");
+		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image and the outputpath where to save it at" );
+		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image and the outputpath where to save it at" ); 
+		Option getMetabyAuthor = new Option("gma", "getMetabyAuthor", true, "Enter the name of the author of which you want to retrieve the metadata and the outputpath where to save it at");
+		Option getMetabyTitle = new Option("gmt", "getMetabyTitle", true, "Enter the name of the title of which you want to retrieve the metadata and the outputpath where to save it at");
 		Option print = new Option("p", "print", false, "Printing all content of the table");
 
+		// enable multiple argument options separated by ','
+		getImagebyAuthor.setArgs(2);
+		getImagebyAuthor.setValueSeparator(',');
+		
+		getImagebyTitle.setArgs(2);
+		getImagebyTitle.setValueSeparator(',');
+		
+		getMetabyAuthor.setArgs(2);
+		getMetabyAuthor.setValueSeparator(',');
+		
+		getMetabyTitle.setArgs(2);
+		getMetabyTitle.setValueSeparator(',');
+		
+		
 		options.addOption(name); 
 		options.addOption(directory); 
 		options.addOption(getImagebyAuthor);
@@ -56,7 +70,7 @@ public class CommandLineInterface {
 		options.addOption(getMetabyAuthor);
 		options.addOption(getMetabyTitle);
 		options.addOption(print);
-
+		
 		name.setRequired(true);
 	
 		return options;
@@ -100,62 +114,57 @@ public class CommandLineInterface {
 		} 
 	}
 		
-	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String)}
+	/** Retrieve an image from the database by author with the {@link Database#get_byteImage(String, String, String)}
 	 *  and save as .png file with the specified path by the user. 
 	 *  
 	 */
 	public static void option_gia(){ 
-		String author = cmd.getOptionValue("getImagebyAuthor");
+		String[] optionvalues = cmd.getOptionValues("getImagebyAuthor");
+		String author = optionvalues[0];
+		String outputpath = optionvalues[1];
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
-		Db.get_byteImage("AUTHOR", author);
+		Db.get_byteImage("AUTHOR", author, outputpath);
 	}
 		
 	/** Retrieve an image from the database by title and save as .png file.
 	 * 
 	 */
 	public static void option_git() {
-		String title = cmd.getOptionValue("getImagebyTitle");
+		String[] optionvalues = cmd.getOptionValues("getImagebyTitle");
+		String title = optionvalues[0];
+		String outputpath = optionvalues[1];
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
-		Db.get_byteImage("TITLE", title);
+		Db.get_byteImage("TITLE", title, outputpath);
 	}
 		
-	/** Get image by author and title and save as .png file
-	 * @throws SQLException if SQL command could not be executed
-	 */
-	public static void option_giat() throws SQLException {
-		String[] imageValues = cmd.getOptionValues("getImagebyAuthorTitle");
-		String author = imageValues[0];
-		String title = imageValues[1];
-		String name = cmd.getOptionValue("name");
-		Database Db = new Database(name);
-		// get byte array from table 
-		// convert byte array to jpg file and save at imageOutputPath
-		Db.get_byteImage2(author, title);		
-	}
 			
 	/** Get metadata by author and save as .txt file
 	 * 
 	 */
 	public static void option_gma() {
-		String author = cmd.getOptionValue("gma");
+		String[] optionvalues = cmd.getOptionValues("gma");
+		String author = optionvalues[0];
+		String outputpath = optionvalues[1];
 		System.out.println("Author name: "+ author); 
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get meta info from table and save as txt file
-		Db.get_meta("AUTHOR", author);
+		Db.get_meta("AUTHOR", author, outputpath);
 	}
 			
 	/** Get metadata by title and save as .txt file
 	 * 
 	 */
 	public static void option_gmt() {
-		String title = cmd.getOptionValue("getMetabyTitle");
+		String[] optionvalues = cmd.getOptionValues("getMetabyTitle");
+		String title = optionvalues[0];
+		String outputpath = optionvalues[1];
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
 		// get meta info from table and save as txt file
-		Db.get_meta("TITLE", title);
+		Db.get_meta("TITLE", title, outputpath);
 	}
 		
 	public static void option_p() throws SQLException {
@@ -184,14 +193,6 @@ public class CommandLineInterface {
 		
 		if (cmd.hasOption("git")){
 			CommandLineInterface.option_git();
-		}
-		
-		if (cmd.hasOption("giat")){
-			try {
-				CommandLineInterface.option_giat();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		
 		if (cmd.hasOption("gma")){

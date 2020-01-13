@@ -254,8 +254,9 @@ public class Database {
 	 * 
 	 * @param column_name	the String of the column name
 	 * @param value			the String of the value of column AUTHOR or TITLE in the database
+	 * @param outputpath	the output path of the retrieval 
 	 */
-	public void get_byteImage (String column_name, String value) {
+	public void get_byteImage (String column_name, String value, String outputpath) {
 		Statement stmt;
 		byte[] bImage = null;
 		try {
@@ -268,9 +269,9 @@ public class Database {
 					System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
 					String author = rs.getString("AUTHOR"); 
-					File dir = new File("imgresults"); 
-					dir.mkdir();
-					File image = new File("imgresults/"+author+id + ".png");
+					//File dir = new File("imgresults"); 
+					//dir.mkdir();
+					File image = new File(outputpath+"/"+author+id + ".png");
 				    FileOutputStream fos = new FileOutputStream(image);
 				    byte[] buffer = new byte[1];
 				    java.io.InputStream is = rs.getBinaryStream("PICTURE");
@@ -296,11 +297,11 @@ public class Database {
 	 * in column PICTURE blob 
 	 * 
 	 * @param column_author	the String of the value of column AUTHOR 
-	 * @param column_title		the String of the value of column TITLE 
-	 *
+	 * @param column_title	the String of the value of column TITLE 
+	 * @param outputpath 	the output path of the retrieval
      * @throws SQLException if SQL command could not be executed
 	 */
-	public void get_byteImage2(String column_author, String column_title) throws SQLException {
+	public void get_byteImage2(String column_author, String column_title, String outputpath) throws SQLException {
 		Statement stmt = this.con.createStatement();
 		String query = "SELECT * FROM TABLE IMAGES WHERE AUTHOR='" 
 				+ column_author + "' AND TITLE='"  
@@ -311,9 +312,9 @@ public class Database {
 				System.out.println("executed: get binary stream ");
 				String id = rs.getString("ID");
 				String author = rs.getString("AUTHOR"); 
-				File dir = new File("imgresults"); 
-				dir.mkdir();
-				File image = new File("imgresults/"+author+id + ".png");
+				//File dir = new File("imgresults"); 
+				//dir.mkdir();
+				File image = new File(outputpath+"/"+author+id + ".png");
 			    FileOutputStream fos = new FileOutputStream(image);
 			    byte[] buffer = new byte[1];
 			    java.io.InputStream is = rs.getBinaryStream("PICTURE");
@@ -335,8 +336,9 @@ public class Database {
 	 * 
 	 * @param value			the value of the specified column
 	 * @param column_name	either AUTHOR or TITLE
+	 * @param outputpath	the output path for the retrieval
 	 */
-	public void get_meta(String column_name, String value) {
+	public void get_meta(String column_name, String value, String outputpath) {
 		Statement stmt = null;
 		try {
 			stmt = this.con.createStatement();
@@ -356,10 +358,10 @@ public class Database {
 					String metadata = "Author: " + author + "\nTitle: " + title + "\nLink: " + link;
 					System.out.println("Author: " + author + "\nTitle: " + title + "\nLink: " + link);
 
-					File dir = new File("txtresults"); 
-					dir.mkdir();
+					//File dir = new File("txtresults"); 
+					//dir.mkdir();
 					
-				    FileWriter writer = new FileWriter("txtresults/"+author+id + ".txt");
+				    FileWriter writer = new FileWriter(outputpath+"/"+author+id + ".txt");
 				    try {
 				        BufferedWriter buff = new BufferedWriter(writer);
 				        try {
