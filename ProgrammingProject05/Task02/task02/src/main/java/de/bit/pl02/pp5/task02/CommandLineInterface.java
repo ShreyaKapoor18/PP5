@@ -27,12 +27,7 @@ public class CommandLineInterface {
 	
 	/** the command line to receive arguments from the user */
 	static CommandLine cmd;
-	
-	/** Constructor method */
-	CommandLineInterface() {
-
-	}
-	
+		
 	/** Creates command line options to make a database, store images in it
 	 * and retrieve image and metadata information
 	 * 
