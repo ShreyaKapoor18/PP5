@@ -35,8 +35,11 @@ import java.io.IOException;
  * The user can add images with the {@link #updatePicture(Image, int, String)}
  * method to the table.
  * 
- * Columns: AUTHOR the name of the author TITLE the name of the title LINK the
- * URL related to the image PICUTRE blob the image as a byte array
+ * Columns: 
+ * AUTHOR the name of the author 
+ * TITLE the name of the title 
+ * LINK the URL related to the image 
+ * PICUTRE the image as a byte array
  * 
  * @author Shreya Kapoor
  * @author Sophia Krix
@@ -53,7 +56,7 @@ public class Database {
 	// database.
 	private Connection con;
 	private int id = 0; // start the id with 1 for each database
-
+	
 	/**
 	 * Constructor method, makes a new database if it didn't exist, otherwise
 	 * connects to the existing database.

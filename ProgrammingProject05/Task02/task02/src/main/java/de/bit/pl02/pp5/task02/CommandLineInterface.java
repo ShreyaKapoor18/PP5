@@ -187,14 +187,59 @@ public class CommandLineInterface {
 	/**
 	 * Print the contents of the database
 	 * 
-	 * @param Db			the name of the database you want to conntect to
+	 * @param Db			the name of the database you want to connect to
 	 * @throws SQLException if the commands can not be executed
 	 */
 	public static void option_p(Database Db) throws SQLException {
 		String name = cmd.getOptionValue("name");
 		Db.see_table();
-
 	}
+	
+	/** Check if directory has already been provided so that 
+	 * no duplicates occur.
+	 * @throws IOException if input or output error occurs
+	 * 
+	 */
+	public static void avoid_duplicates() throws IOException {
+		String directory = cmd.getOptionValue("d");
+		String name = cmd.getOptionValue("n");
+		// write directory and name of database to file to be checked later
+		File directories = new File("~/gitlab/group-03-descartes/ProgrammingProject05/Task02/task02/directories.txt");
+		if (directories.exists()) {
+		// FileWriter writer = new FileWriter("~/gitlab/group-03-descartes/ProgrammingProject05/Task02/task02/directories.txt");
+			// if file is present
+			BufferedReader br = new BufferedReader(new FileReader(directories)); 	  
+			String st; 
+			while ((st = br.readLine()) != null)  {
+				String directory_present = st.split(",")[0];
+				String name_present = st.split(",")[1];
+				if (!directory_present.equals(directory) & !name_present.equals(name)) {
+				//TODO
+				}
+			}
+		} else {
+			try {
+				// write metadata to file
+				BufferedWriter buff = new BufferedWriter(writer);
+				String present = directory+","+name;
+				try {
+					buff.append(present);
+				} finally {
+					buff.flush();
+					buff.close();
+				}
+		} catch (IOException e) {
+		System.out.println(e.getMessage());}
+		finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}}
+		}
+	}
+		
+	
 
 	public static void main(String[] args) throws SQLException {
 
@@ -209,6 +254,15 @@ public class CommandLineInterface {
 			String[] namevalues = cmd.getOptionValues("n");
 			Database Db = new Database(namevalues[0], namevalues[1]);
 
+			// Check if directory has already been passed 
+			if (cmd.hasOption("d") & cmd.hasOption("n")) {
+				try {
+					CommandLineInterface.avoid_duplicates();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
 			/** Check command line options and do corresponding methods */
 			if (cmd.hasOption("d")) {
 				System.out.println("Executing Store method");
