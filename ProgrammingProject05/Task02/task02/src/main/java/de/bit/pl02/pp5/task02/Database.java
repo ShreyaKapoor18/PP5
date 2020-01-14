@@ -1,7 +1,10 @@
 package de.bit.pl02.pp5.task02;
 
 import de.bit.pl02.pp5.task02.*;
+
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -13,6 +16,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
@@ -402,21 +408,26 @@ public class Database {
 					// System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
 					String author = rs.getString("AUTHOR");
-					// File dir = new File(outputpath);
-					// dir.mkdir();
 					// System.out.println("Putting in path: ");
 					// create file at specified outputpath with the name of AUTHOR and ID from the
 					// table
-					File image = new File(outputpath + "/" + author + id + ".png");
+					
 					System.out.println(outputpath + "/" + author + id + ".png");
 					// write the byte array to the file
-					FileOutputStream fos = new FileOutputStream(image);
-					byte[] buffer = new byte[1];
+					
+					//byte[] buffer = new byte[1];
 					java.io.InputStream is = rs.getBinaryStream("PICTURE");
-					while (is.read(buffer) > 0) {
+					BufferedImage img = ImageIO.read(is); 
+					ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+					ImageIO.write(img, "PNG", baos); 
+					byte[] array = baos.toByteArray(); 
+					File image = new File(outputpath + "/" + author + id + ".png"); 
+					FileOutputStream fos = new FileOutputStream(image);
+					fos.write(array);
+					/*while (is.read(buffer) > 0) {
 						fos.write(buffer);
 					}
-					fos.close();
+					fos.close();*/ 
 				}
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
