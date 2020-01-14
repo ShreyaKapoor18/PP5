@@ -22,9 +22,7 @@ import java.util.ArrayList;
  * 
  */
 public class Image {
-	
-	/** image in byte array format to be stored in database column PICTURE blob */
-	private byte[] blob; 
+ 
 	/** the name of the image**/
 	private String name; 
 	/** the path of the image in the machine **/ 
@@ -35,7 +33,7 @@ public class Image {
 	 * @param name  The name of the image file.
 	 */
 	Image(String path, String name) {
-		this.blob = readFile(path); 
+ 
 		this.name = name; 
 		this.path = path; 
 	}
@@ -50,49 +48,56 @@ public class Image {
 	public byte[] readFile(String file) {
 		ByteArrayOutputStream bos = null;
 		try {
+			// load image file given by the user
             File f = new File(file);
             FileInputStream fis = new FileInputStream(f);
             byte[] buffer = new byte[1024];
             bos = new ByteArrayOutputStream();
+            // write file to ByteArrayOutputStream
             for (int len; (len = fis.read(buffer)) != -1;) {
                 bos.write(buffer, 0, len);
 	            }
+            fis.close();
         } catch (FileNotFoundException e) {
         	System.err.println(e.getMessage());
         } catch (IOException e2) {
             System.err.println(e2.getMessage());
         }
+		// if successfull then return the byte array else return null
         return bos != null ? bos.toByteArray() : null;
     }
 	
 	/** Reads in all .meta files in a folder with specified path
 	 *  and returns the meta information found about author and title
 	 *  together with the constructed id in a String array.
-	 *  We consider that we follow the same path for metadata files and the actual image files 
-	 *  so we can just strip off the . in the filename and then add .meta in front of it in order to get the
-	 *  related to a particular image.
+	 *  
 	 * 
 	 * @param path	the file path of the metadata 
 	 * @return meta a String array with the metadata about Id, title and author
 	 */
 	ArrayList<String> find_metadata(String path) {
 		ArrayList<String> meta = new ArrayList<String>(); 
+		// We consider that we follow the same path for metadata files and the actual image files 
+		// so we can just strip off the . in the filename and then add .meta in front of it in order to get the
+		// related to a particular image.
 		String metapath = this.path.split("\\.(?=[^\\\\.]+$)")[0]+ ".meta";
 		try { 
 			FileReader filer = new FileReader(metapath);
 			BufferedReader buffr = new BufferedReader(filer);
 			boolean eof = false;
+			// default values if not present
 			String author = "xx"; 
 			String title = "yyzz"; 
 			String link = "no link";
 			while ((!eof))
 			{
+			  // read from the metadata file
 			  String s = buffr.readLine();
 			  if(s == null){
 			    eof = true;
 			       }
 			  else{
-			    //System.out.println(s);
+			    // get values of title, author and link
 			    if (s.contains("Title:")){
 			    	title = s.split(":")[1]; }
 			    else if (s.contains("Author:")) { 
@@ -102,6 +107,8 @@ public class Image {
 			    }
 			   }
 			}
+			buffr.close();
+			// add found values to the ArrayList
 			meta.add(title); 
 			meta.add(author);
 			meta.add(link);
