@@ -34,6 +34,7 @@ public class CommandLineInterface {
 	 * @return options,	the command line arguments
 	 */
 	public static Options make_options() {
+		// create the command line options
 		Options options = new Options(); 
 		Option name = new Option("n", "name", true, "Enter the path and name of the database you want to make/see separated by a comma");
 		//directory
@@ -59,7 +60,7 @@ public class CommandLineInterface {
 		getMetabyTitle.setArgs(2);
 		getMetabyTitle.setValueSeparator(',');
 		
-		
+		// add options 
 		options.addOption(name); 
 		options.addOption(directory); 
 		options.addOption(getImagebyAuthor);
@@ -80,10 +81,11 @@ public class CommandLineInterface {
 	 * @return cmd		list of atomic option and value tokens
 	 */
 	public static CommandLine parse_commandline(Options options, String[] args) {
-		
+		// parse command line
 		CommandLineParser parser = new DefaultParser(); 
 		HelpFormatter formatter = new HelpFormatter(); 
 		try { 
+			// list of options and their values
 			cmd = parser.parse(options, args); 	
 			} 
 			catch (ParseException e) { 
@@ -101,8 +103,11 @@ public class CommandLineInterface {
 	public static void option_s(Database Db){
 		String dir = cmd.getOptionValue("directory");
 		String name = cmd.getOptionValue("name");
+        //create table IMAGES
 		Db.make_table();
 		try {
+			// reads files of given directory and inserts metadata and the image 
+			// into the table
 			Db.read_director(dir);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -113,11 +118,13 @@ public class CommandLineInterface {
 	 *  and save as .png file with the specified path by the user. 
 	 *  
 	 */
-	public static void option_gia(Database Db){ 
+	public static void option_gia(Database Db){
+        // split option values given by the author about the author and the output path
 		String[] optionvalues = cmd.getOptionValues("getImagebyAuthor");
 		String author = optionvalues[0];
 		String outputpath = optionvalues[1];
 		System.out.println("outputpath"+outputpath+"\n");
+        // store image of specified title in the output path
 		Db.get_byteImage("AUTHOR", author, outputpath);
 	}
 		
@@ -129,6 +136,7 @@ public class CommandLineInterface {
 		String title = optionvalues[0];
 		String outputpath = optionvalues[1];
 		Db.get_byteImage("TITLE", title, outputpath);
+        // store image of specified title in the output path
 	}
 		
 			
@@ -199,9 +207,29 @@ public class CommandLineInterface {
 		if (cmd.hasOption("p")) {
 			CommandLineInterface.option_p(Db);
 		}
+	}
+	/**
+	 * Adds name of a database created by the user to the list of allowed databases,
+	 * in file allowedDBs.txt in the task02 folder. 
+	 * Only those databases are allowed to be queried and added to by the API users.
+	 * This functionality is intended to prevent API users from making their own 
+	 * databases due to typo's, whereby they clutter the server that this application
+	 * is running on and upload their images to the wrong database.
+	 * @param name
+	 */
+	public static void addDbToAllowedDb(String name){
+		BufferedWriter output;
+		try {
+			//appends the new database name and a newline to allowedDBs.txt.
+			output = new BufferedWriter(new FileWriter("allowedDBs.txt", true));
+			output.append(name);
+			output.newLine();
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		} 
-	} 
-} 
+		
+	}
 
 
 

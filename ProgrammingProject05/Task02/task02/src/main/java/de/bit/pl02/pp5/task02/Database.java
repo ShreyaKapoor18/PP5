@@ -1,8 +1,7 @@
 package de.bit.pl02.pp5.task02;
-import de.bit.pl02.pp5.task02.*; 
+import de.bit.pl02.pp5.task02.*;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.sql.Connection;
@@ -13,10 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.BaseStream;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 
@@ -45,7 +41,7 @@ public class Database {
 	/** the name of the database */
 	private String path;
 	private String name;
-	private int error_code; // giving an error when something goes wrong with the database. 
+	//private int error_code; // giving an error when something goes wrong with the database. 
 	private Connection con; 
 	private int id = 0; // start the id with 1 for each database
 	private List<String> dir_= new ArrayList<String>(); // the name of the directories added to the dtabase
@@ -60,6 +56,8 @@ public class Database {
 
 		this.path = path;
 		this.name = name;
+		// adds this database to the list of allowed databases for collaborators to query.
+		CommandLineInterface.addDbToAllowedDb(name);
 		try {
 			this.Connect_db();
 		} catch (SQLException e) {
@@ -81,18 +79,18 @@ public class Database {
 			this.con = DriverManager.getConnection("jdbc:sqlite:" + this.path + "/"+ this.name + ".db");
 			//System.out.println("jdbc:sqlite:" + this.path + "/"+ this.name + ".db"); 
 			try {
-				// Check if TABLE Images is already present 
+				// Check if TABLE Images is already present
+                // create id by counting the instances that are already in the database
 				Statement smt = this.con.createStatement(); 
 				String count_query = "SELECT COUNT(*) from 'IMAGES'"; 
 				ResultSet r1 = smt.executeQuery(count_query); 
-				//r1.next(); 
 				int count = r1.getInt("COUNT(*)"); 
-				//TODO test test close this statement
 				r1.close();
 				smt.close();
 				System.out.println("The database currently contains " + count + " elements"); 
 				this.id = count; 
 			} catch(Exception e) {
+                // create table IMAGES with columns ID, TITLE, AUTHOR, LINK
 				Statement smt = this.con.createStatement(); 
 				String sql = "CREATE TABLE IMAGES "
 						    + "(ID INTEGER PRIMARY KEY NOT NULL,"
@@ -100,10 +98,10 @@ public class Database {
 							+ "AUTHOR TEXT NOT NULL, "
 							+ "LINK TEXT NOT NULL);";
 				smt.execute(sql); 
+				// add column PICTURE
 				String sql1 = "ALTER TABLE IMAGES ADD COLUMN PICTURE blob"; 
 				smt.execute(sql1); 
-				smt.close();
-				//System.out.println(sql1);			
+				smt.close();		
 			}
 
 			//con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");  
@@ -113,12 +111,13 @@ public class Database {
 			}
 		}
 		
-	/** Creates a table as a database
+	/** Creates a table IMAGES 
 	 */
 	public void make_table()
 	{ 
 		try {
-			Statement stmt = this.con.createStatement(); // try to query with the help of certain statements.
+			Statement stmt = this.con.createStatement(); 
+			// SQL commands to create the table IMAGES with columns ID, TITLE, AUTHOR, LINK
 			ArrayList<String> sqls = this.insert_fields(); 
 			for (String sql: sqls) { 
 				try { 
@@ -154,30 +153,17 @@ public class Database {
 		return commands; 	
 	}
 
-	/** Selects all the facts from the images, don't actually need this
-	 * 
-	 * Reads in the files of the given directory.
-	 * 
-	 * @param dir		the path for the folder in which the metadata files are located
-	 * @throws IOException if there is an error with the input or output
-	 * @throws SQLException if the SQL commands could not be executed
-	 * @throws ClassNotFoundException if the class was not found
-	 */
-	public void readmetadata(String dir) throws IOException, SQLException, ClassNotFoundException { 	
-		Statement smt = this.con.createStatement();
-		smt.execute("SELECT * FROM IMAGES"); 
-	}
-
 	/** Prints the values of the table IMAGES of column ID, TITLE and AUTHOR.
 	 * 
 	 * @throws SQLException if the SQL command can not be executed
 	 */
 	public void see_table() throws SQLException
-	{ 	//System.out.println("printing"); 
+	{ 	
 		Statement smt = this.con.createStatement(); 
+		// select all content from table IMAGES
 		ResultSet rs = smt.executeQuery("SELECT * from IMAGES"); 
 	   	while (rs.next())
-	   	{  //System.out.println("result set!"); 
+	   	{  // split the ResultSet into according values of ID, TITLE, AUTHOR, LINK
 		   String x = rs.getString("ID"); 
 		   String s = rs.getString("TITLE");
 		   String a = rs.getString("AUTHOR"); 
@@ -189,7 +175,7 @@ public class Database {
 	   
 	}
 
-	/** Reads the files of a directory, finds the images and its corresponding metadata
+	/** Reads the files of a directory, finds the images and its corresponding metadata.
 	 * Inserts the metadata of ID, TITLE and AUTHOR into the database and inserts the 
 	 * image into the PICTURE blob column via the {@link #updatePicture(Image, int, String)} method.
 	 * 
@@ -203,18 +189,23 @@ public class Database {
 		if (!this.dir_.contains(dir)) { 
 		this.dir_.add(dir); 
 		Statement smt = this.con.createStatement(); 
+		// create list of files of the directory given by the user
 		File dir1 = new File(dir); 
 		System.out.println("Directory: "+dir); 
     	File[] filesindir = dir1.listFiles(); 
     	
     	for (File f: filesindir)
-    	{ 	String imgname = f.getName();
-    		
+    	{ 	
+    		String imgname = f.getName();
     		if (imgname.contains(".png")|| imgname.contains(".jpg") || imgname.contains(".jpeg")){ 
+    			// create instance of Image with the name of the file given by the user directory
     			Image img = new Image(f.getAbsolutePath(), imgname);
+    			// increase ID with every new image instance
     			id +=1; 
     			System.out.println(id + " " +imgname); 
+    			// meta information as String array of file
     			ArrayList<String> meta = img.find_metadata(f.getAbsolutePath()); 
+    			// insert the metadata into the table IMAGES
     			if (meta!= null) {
     			arr.add("INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK)" + "VALUES ('"+ id + "','"+ meta.get(0) + "'," + meta.get(1) +"','"+meta.get(2)+ "')"); 
     			try {
@@ -223,7 +214,8 @@ public class Database {
     				String link = "'"+ meta.get(2)+ "'"; 
     				String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK) VALUES ("+ id + "," + title +  "," + author + "," + link + ")";
     				smt.execute(sql);
-    				this.updatePicture(img, id, f.getAbsolutePath()); 
+    				// add image as byte array into table IMAGES
+                    this.updatePicture(img, id, f.getAbsolutePath());
     			}catch (Exception e) {
     				System.out.println(e.getMessage());
     			}
@@ -246,7 +238,7 @@ public class Database {
      * @param path	the path of the image to be stored
      */
 	public void updatePicture(Image img, int Id, String path) {
-	    // update sql
+	    // update sql and add image byte array into table 
 	    String updateSQL = "UPDATE IMAGES " + "SET PICTURE =?"
 	            + "WHERE id=?";
 	        try  {
@@ -260,6 +252,7 @@ public class Database {
 	 
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
+                // only this particular image could not be inserted into the database.
 	        }
 	    }
 	
@@ -272,7 +265,6 @@ public class Database {
      */
 	public void storePictureForAPI(byte[] bytes, String author, String title, String link) {
 	    // update sql
-		// TODO allow for null strings/except for it
 		id++;
 	    String updateSQL = "UPDATE IMAGES SET PICTURE =? WHERE id=?";
 	    try {
@@ -282,7 +274,6 @@ public class Database {
 			smt.close();
 		}catch (SQLException e) {
 			System.out.println(e.getMessage()); 
-			//continue; // only this particular image could not be inserted into the database.
 		}
         try  {
         	PreparedStatement pstmt = this.con.prepareStatement(updateSQL); 
@@ -302,12 +293,13 @@ public class Database {
 	 * function returns a list of id's and metadata that matches the get command
 	 * author and/or title. CANNOT  BOTH BE NULL! possible TODO write nice exception.
 	 */
-	public int[] getForAPI(String author, String title) {
+	public List<MetaDataAPI> getForAPI(String author, String title) {
 		if (author == null && title == null) {
-			return new int[0];
+			return new ArrayList<MetaDataAPI>();
 		}
 		PreparedStatement stmt = null;
-		ArrayList<Integer> idList = new ArrayList<Integer>(); 
+		//ArrayList<Integer> idList = new ArrayList<Integer>(); 
+		List<MetaDataAPI> MetaDataList = new ArrayList<MetaDataAPI>();
 		try {
 			if (title == null) {
 				stmt = this.con.prepareStatement("SELECT * FROM IMAGES WHERE AUTHOR=?");
@@ -328,7 +320,9 @@ public class Database {
 				String author2 = rs.getString("AUTHOR");
 				String title2 = rs.getString("TITLE");
 				String link = rs.getString("LINK");
-				idList.add(id);
+				//idList.add(id);
+				MetaDataAPI MetaDataList2 = new MetaDataAPI(id, author2, title2, link);
+				MetaDataList.add(MetaDataList2);
 			}
 			rs.close();
 		} catch (SQLException e) {
@@ -336,12 +330,13 @@ public class Database {
 		} finally {
 			try {if (stmt != null) stmt.close();} catch (Exception e) {};
         }
-		//convert arraylist into an array		    
-		return ArrayUtils.toPrimitive((Integer[]) idList.toArray(new Integer[idList.size()]));
+		//convert array list into an array		    
+		return MetaDataList;
+				//ArrayUtils.toPrimitive((Integer[]) idList.toArray(new Integer[idList.size()]));
 	}
 	
 	/** FOR API USE
-	 * returns byte[] of picture with identifier id.
+	 * returns byte[] of picture with identifier id. 
 	 * Since id is unique, this function returns only 1 byte[].
 	 * overloaded
 	 * @param id
@@ -369,8 +364,8 @@ public class Database {
 		return image;
 	}
 
-	/** Takes a String with value of column AUTHOR and
-	 * in column PICTURE blob and stores the image in specified outputpath 
+	/** Takes a String with value of column AUTHOR or TITLE, retrieves image
+	 * in column PICTURE blob and stores the image in specified outputpath.
 	 * 
 	 * @param column_name	the String of the column name
 	 * @param value			the String of the value of column AUTHOR or TITLE in the database
@@ -381,17 +376,23 @@ public class Database {
 		try {
 			stmt = this.con.createStatement();
 			try {
+				// select corresponding metadata and byte array to the value of column AUTHOR or TITLE
+				// which was given by the user
 				String query = "SELECT * FROM IMAGES WHERE "+ column_name+ "='" + value+"';";  
 				ResultSet rs = stmt.executeQuery(query);  	
 				System.out.println("executed:" + query);
 				while (rs.next()) { 
-					System.out.println("executed: get binary stream ");
+					//System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
 					String author = rs.getString("AUTHOR"); 
-					System.out.println("Putting in path: "); 
-					File image = new File(outputpath+"/"+author+id +".png");
+					//File dir = new File(outputpath); 
+					//dir.mkdir();
+					//System.out.println("Putting in path: "); 
+					// create file at specified outputpath with the name of AUTHOR and ID from the table
+					File image = new File(outputpath+"/"+author+id + ".png");
 					System.out.println(outputpath+"/"+author+id + ".png"); 
-				    FileOutputStream fos = new FileOutputStream(image);
+				    // write the byte array to the file
+					FileOutputStream fos = new FileOutputStream(image);
 				    byte[] buffer = new byte[1];
 				    java.io.InputStream is = rs.getBinaryStream("PICTURE");
 				      while (is.read(buffer) > 0) {
@@ -405,49 +406,8 @@ public class Database {
 		} catch (SQLException e1) {
 			e1.printStackTrace();	
 		}	
-		//return bImage != null ? bImage : null;
 	}
 	  
-
-    /** Stores the retrieved image on the path specified by the user! 
-	 * 
-	 * @param column_author	the String of the value of column AUTHOR 
-	 * @param outputpath  the place where you want to store the output
-	 * @param column_title	the String of the value of column TITLE 
-	 * @param outputpath 	the output path of the retrieval
-     * @throws SQLException if SQL command could not be executed
-	 */
-	public void get_byteImage2(String column_author, String column_title, String outputpath) throws SQLException {
-		Statement stmt = this.con.createStatement();
-		String query = "SELECT * FROM TABLE IMAGES WHERE AUTHOR='" 
-				+ column_author + "' AND TITLE='"  
-				+ column_title+"'";
-		ResultSet rs = stmt.executeQuery(query);
-		try {
-			while (rs.next()) { 
-				System.out.println("executed: get binary stream ");
-				String id = rs.getString("ID");
-				String author = rs.getString("AUTHOR"); 
-				//File dir = new File(outputpath); 
-				//dir.mkdir();
-				System.out.println("Putting in path:");
-				File image = new File(outputpath+"/"+author+id + ".png");
-				System.out.println(outputpath+"/"+author+id + ".png");
-			    FileOutputStream fos = new FileOutputStream(image);
-			    byte[] buffer = new byte[1];
-			    java.io.InputStream is = rs.getBinaryStream("PICTURE");
-			      while (is.read(buffer) > 0) {
-			        fos.write(buffer);
-			      }
-			    fos.close();
-				
-			}
-			} catch (Exception e) {
-				System.out.println(e.getMessage()); 
-	    } finally {
-	        if (stmt != null) { stmt.close(); }}
-		//return bImage != null ? bImage : null;
-	}
     
 	/** Takes value of AUTHOR or TITLE column and saves the
 	 * corresponding metadata as a .txt file
@@ -463,24 +423,29 @@ public class Database {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
+		// select all meta information of the corresponding AUTHOR or TITLE value 
+		// which was given by the user
 		String query = "SELECT * FROM IMAGES WHERE "+ column_name+ "='" + value+"';";  
-		System.out.println(query); 
+		//System.out.println(query); 
 		ResultSet rs;
 		try {
 			rs = stmt.executeQuery(query);
 			try {
 				while (rs.next()) {
+					// retrieve value of column AUTHOR, TITLE, LINK from the ResultSet
 					String author = rs.getString("AUTHOR"); 
 					String title = rs.getString("TITLE"); 
 					String link = rs.getString("LINK");	
+					String id = rs.getString("ID");
 					String metadata = "Author: " + author + "\nTitle: " + title + "\nLink: " + link;
 					System.out.println("Author: " + author + "\nTitle: " + title + "\nLink: " + link);
-
 					//File dir = new File("txtresults"); 
-					//dir.mkdir();
-					
+					//dir.mkdir();	
+					// create file with name of AUTHOR and ID from the table in the 
+					// directory given by the user
 				    FileWriter writer = new FileWriter(outputpath+"/"+author+id + ".txt");
 				    try {
+				    	// write metadata to file
 				        BufferedWriter buff = new BufferedWriter(writer);
 				        try {
 				                buff.append(metadata);
@@ -504,8 +469,9 @@ public class Database {
 		} 
 	
 	}
+	
 	/**
-	 * method to close the connection at the end of API used, to prevent 
+	 * method to close the connection at the end of API usage, to prevent 
 	 * your database locking. 
 	 */
 	public void close() {
