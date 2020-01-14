@@ -59,6 +59,8 @@ public class Database {
 	public Database(String name) {
 
 		this.name = name;
+		// adds this database to the list of allowed databases for collaborators to query.
+		CommandLineInterface.addDbToAllowedDb(name);
 		try {
 			this.con = this.Connect_db();
 		} catch (SQLException e) {

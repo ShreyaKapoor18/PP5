@@ -1,12 +1,29 @@
 package de.bit.pl02.pp5.task02;
 
+/** MetaDataAPI receives metadata from the SQLite database upon querying by the 
+ * getForAPI method in the database class. 
+ * 
+ * @author Shreya Kapoor
+ * @author Sophia Krix
+ * @author Gemma van der Voort 
+ * 
+ * 
+ */
 public class MetaDataAPI {
-	// TODO returns list of id's and metadata!
+	
 		private int id;
 		private String author;
 		private String title;
 		private String link;
-
+		
+		/** Class constructor
+		 * MetaDataAPI receives metadata from the SQLite database upon querying by the 
+		 * getForAPI method in the database class. 
+		 * @param id
+		 * @param author
+		 * @param title
+		 * @param link
+		 */
 		public MetaDataAPI(int id, String author, String title, String link) {//, String link, String fileName) {
 			this.id = id;
 			this.author = author;

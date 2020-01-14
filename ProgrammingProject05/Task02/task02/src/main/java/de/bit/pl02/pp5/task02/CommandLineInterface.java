@@ -202,7 +202,28 @@ public class CommandLineInterface {
 			CommandLineInterface.option_p();
 		}
 	}
-	
+	/**
+	 * Adds name of a database created by the user to the list of allowed databases,
+	 * in file allowedDBs.txt in the task02 folder. 
+	 * Only those databases are allowed to be queried and added to by the API users.
+	 * This functionality is intended to prevent API users from making their own 
+	 * databases due to typo's, whereby they clutter the server that this application
+	 * is running on and upload their images to the wrong database.
+	 * @param name
+	 */
+	public static void addDbToAllowedDb(String name){
+		BufferedWriter output;
+		try {
+			//appends the new database name and a newline to allowedDBs.txt.
+			output = new BufferedWriter(new FileWriter("allowedDBs.txt", true));
+			output.append(name);
+			output.newLine();
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+	}
 
 }
 
