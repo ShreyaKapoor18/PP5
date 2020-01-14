@@ -79,19 +79,21 @@ https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20
     *  Select the de.bit.pl02.task02 pom xml for importing the existing maven project.
     *  Do a maven install
 3. After the application is installed you will see a task02-0.0.1-SNAPSHOT.jar in the /target folder
-4. To execute the jar use the following command
-    *  java -cp <Path to Programming Project>/ProgrammingProject05/Task01/task01/target/task02-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task02.CommandLineInterface <options> <arguments>
+4. To execute the jar use the following command (example in Commands file)
+    *  java -cp <Path to Programming Project>/ProgrammingProject05/Task02/task02/target/task02-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task02.CommandLineInterface <options> <arguments>
+    *  or use the Commands file to run from the base folder from your computer 
+         * bash /group-03-descartes/ProgrammingProject05/Task02/task02 Commands 
 ### Accessing a database
 
 For the program to be running you need to specify the name of the database you want to make or the database you want to see that you have already created. Therefore use the option
 
 
-**-n** or **--name**: Enter the name of the database you want to make/see. This database will be created in the task02 directory of the project. Example(trialyy.db) database from PP5 repository in the previous task has been made already. 
+**-n** or **--name** ***(Mandatory Option)*** : Enter the name of the database you want to make/see. This database will be created in the task02 directory of the project. Example(trialyy.db) database from PP5 repository in the previous task has been made already. 
 ```
--n your_database_name
+-n your_database_name 
 ```
 
-Provide a directory that contains image files (.png, .jpeg, .jpg) and corresponding metadata files (.txt). The metadata files have to have the following information:
+Provide a directory that contains image files (.png, .jpeg, .jpg) and corresponding metadata files (.txt). In our case it is the PP5 directory created in task01.The metadata files have to have the following information:
 ```
 AUTHOR: xxx
 TITLE: xxx
