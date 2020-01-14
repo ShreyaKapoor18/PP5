@@ -258,7 +258,6 @@ public class Database {
      */
 	public void storePictureForAPI(byte[] bytes, String author, String title, String link) {
 	    // update sql
-		// TODO allow for null strings/except for it
 		id++;
 	    String updateSQL = "UPDATE IMAGES SET PICTURE =? WHERE id=?";
 	    try {
@@ -330,7 +329,7 @@ public class Database {
 	}
 	
 	/** FOR API USE
-	 * returns byte[] of picture with identifier id.
+	 * returns byte[] of picture with identifier id. 
 	 * Since id is unique, this function returns only 1 byte[].
 	 * overloaded
 	 * @param id
@@ -467,7 +466,7 @@ public class Database {
 	}
 	
 	/**
-	 * method to close the connection at the end of API used, to prevent 
+	 * method to close the connection at the end of API usage, to prevent 
 	 * your database locking. 
 	 */
 	public void close() {
