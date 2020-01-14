@@ -9,6 +9,8 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.*;
 import java.sql.SQLException;
 
@@ -139,7 +141,7 @@ public class CommandLineInterface {
 		String[] optionvalues = cmd.getOptionValues("getImagebyAuthor");
 		String author = optionvalues[0];
 		String outputpath = optionvalues[1];
-		System.out.println("outputpath" + outputpath + "\n");
+		System.out.println("outputpath entered is: " + outputpath);
 		// store image of specified title in the output path
 		Db.get_byteImage("AUTHOR", author, outputpath);
 	}
@@ -191,54 +193,76 @@ public class CommandLineInterface {
 	 * @throws SQLException if the commands can not be executed
 	 */
 	public static void option_p(Database Db) throws SQLException {
-		String name = cmd.getOptionValue("name");
 		Db.see_table();
 	}
 	
-	/** Check if directory has already been provided so that 
-	 * no duplicates occur.
-	 * @throws IOException if input or output error occurs
-	 * 
+	/** Checks if the files from a given directory have been entered 
+	 * in the database
+	 * @param dir the directory that has been saved to the database
+	 * @param name the name of the database
+	 * @return boolean true if a duplicated directory in database, false otherwise
+	 * @throws IOException if there is a problem with dealing with the checkfile
 	 */
-	public static void avoid_duplicates() throws IOException {
-		String directory = cmd.getOptionValue("d");
-		String name = cmd.getOptionValue("n");
-		// write directory and name of database to file to be checked later
-		File directories = new File("~/gitlab/group-03-descartes/ProgrammingProject05/Task02/task02/directories.txt");
-		if (directories.exists()) {
-		// FileWriter writer = new FileWriter("~/gitlab/group-03-descartes/ProgrammingProject05/Task02/task02/directories.txt");
-			// if file is present
-			BufferedReader br = new BufferedReader(new FileReader(directories)); 	  
-			String st; 
-			while ((st = br.readLine()) != null)  {
-				String directory_present = st.split(",")[0];
-				String name_present = st.split(",")[1];
-				if (!directory_present.equals(directory) & !name_present.equals(name)) {
-				//TODO
-				}
+	public static boolean check_duplicates(String dir, String name) throws IOException {
+		//place in the task02 folder
+		String classpath = System.getProperty("java.class.path");
+		String[] classpathEntries = classpath.split(File.pathSeparator);
+		File directories = new File(classpathEntries[0].replace("/target/classes", "")+"test_options.txt");// this will create test_options file on your local machine
+		if (directories.exists()){
+		// if file is present
+		Reader fr;
+		fr = new FileReader(directories);
+		BufferedReader br = new BufferedReader(fr);
+		String st;
+		while ((st = br.readLine()) != null) {
+			String directory_present = st.split(",")[0];
+			String name_present = st.split(",")[1];
+			if (directory_present.equals(dir) & name_present.equals(name)) {
+				System.out.println("Files from the particular folder " + dir
+						+ "have already been added to the database named " + name);
+				System.out.println(StringUtils.repeat("-", 60)+"\n");
+				return true; // duplicates have been found, the not condition will make the value false in
+								// main function
 			}
-		} else {
-			try {
-				// write metadata to file
-				BufferedWriter buff = new BufferedWriter(writer);
-				String present = directory+","+name;
-				try {
-					buff.append(present);
-				} finally {
-					buff.flush();
-					buff.close();
-				}
-		} catch (IOException e) {
-		System.out.println(e.getMessage());}
-		finally {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}}
 		}
-	}
+		br.close();
+		fr.close();
+		FileWriter fw =  new FileWriter(directories, true); // appending
+		fw.write(dir + "," + name + "\n");
+		fw.close();
+		return false; 
+		} 
+		else { 
+			directories.createNewFile(); 
+			FileWriter fw = new FileWriter(directories); 
+			fw.write(dir + "," + name + "\n");
+			fw.close();
+			return false;
+		}
 		
+	}
+	 /** Adds name of a database created by the user to the list of allowed databases,
+	 * in file allowedDBs.txt in the task02 folder. Only those databases are allowed
+	 * to be queried and added to by the API users. This functionality is intended
+	 * to prevent API users from making their own databases due to typo's, whereby
+	 * they clutter the server that this application is running on and upload their
+	 * images to the wrong database.
+	 * 
+	 * @param name	the name of the database
+	 */
+	public static void addDbToAllowedDb(String name) {
+		BufferedWriter output;
+		try {
+			// appends the new database name and a newline to allowedDBs.txt.
+			output = new BufferedWriter(new FileWriter("allowedDBs.txt", true));
+			output.append(name);
+			output.newLine();
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 	
 
 	public static void main(String[] args) throws SQLException {
@@ -250,23 +274,21 @@ public class CommandLineInterface {
 
 		if (cmd.hasOption("name")) {
 			System.out.println("Connecting to the database: ");
-			System.out.println("if the database doesnt exist new one will be created");
+			//System.out.println("if the database doesnt exist new one will be created");
 			String[] namevalues = cmd.getOptionValues("n");
+			// namevalues[0] is the path of the database, namevalues[1] is the name of the database
 			Database Db = new Database(namevalues[0], namevalues[1]);
 
-			// Check if directory has already been passed 
-			if (cmd.hasOption("d") & cmd.hasOption("n")) {
-				try {
-					CommandLineInterface.avoid_duplicates();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
 			/** Check command line options and do corresponding methods */
-			if (cmd.hasOption("d")) {
-				System.out.println("Executing Store method");
-				CommandLineInterface.option_s(Db);
+			if (cmd.hasOption("d")) { 
+				try {
+					if (!check_duplicates(cmd.getOptionValue("d"),namevalues[1])) { 
+					System.out.println("Executing Store method");
+					CommandLineInterface.option_s(Db);
+					}
+				} catch (IOException e) {
+					System.out.println(StringUtils.repeat("-", 20)+ "File error with testing_options.txt"+ StringUtils.repeat("-", 20)); 
+				} 
 			}
 
 			if (cmd.hasOption("gia")) {
@@ -291,27 +313,5 @@ public class CommandLineInterface {
 		}
 	}
 
-	/**
-	 * Adds name of a database created by the user to the list of allowed databases,
-	 * in file allowedDBs.txt in the task02 folder. Only those databases are allowed
-	 * to be queried and added to by the API users. This functionality is intended
-	 * to prevent API users from making their own databases due to typo's, whereby
-	 * they clutter the server that this application is running on and upload their
-	 * images to the wrong database.
-	 * 
-	 * @param name	the name of the database
-	 */
-	public static void addDbToAllowedDb(String name) {
-		BufferedWriter output;
-		try {
-			// appends the new database name and a newline to allowedDBs.txt.
-			output = new BufferedWriter(new FileWriter("allowedDBs.txt", true));
-			output.append(name);
-			output.newLine();
-			output.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-	}
 }

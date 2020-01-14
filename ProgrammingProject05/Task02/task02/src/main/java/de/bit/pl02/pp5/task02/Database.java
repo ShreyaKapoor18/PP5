@@ -92,7 +92,6 @@ public class Database {
 			Class.forName("org.sqlite.JDBC");
 			System.out.println("jdbc:sqlite:" + this.path + "/" + this.name + ".db");
 			this.con = DriverManager.getConnection("jdbc:sqlite:" + this.path + "/" + this.name + ".db");
-			System.out.println("The directories connected to db");
 			// System.out.println("jdbc:sqlite:" + this.path + "/"+ this.name + ".db");
 			try {
 				// Check if TABLE Images is already present
@@ -413,7 +412,7 @@ public class Database {
 				// which was given by the user
 				String query = "SELECT * FROM IMAGES WHERE " + column_name + "='" + value + "';";
 				ResultSet rs = stmt.executeQuery(query);
-				System.out.println("executed:" + query);
+				System.out.println("executed the query:" + query);
 				while (rs.next()) {
 					// System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
@@ -422,7 +421,7 @@ public class Database {
 					// create file at specified outputpath with the name of AUTHOR and ID from the
 					// table
 					
-					System.out.println(outputpath + "/" + author + id + ".png");
+					System.out.println("saved image at: "+ outputpath + "/" + author + id + ".png");
 					// write the byte array to the file
 					
 					//byte[] buffer = new byte[1];
@@ -434,10 +433,6 @@ public class Database {
 					File image = new File(outputpath + "/" + author + id + ".png"); 
 					FileOutputStream fos = new FileOutputStream(image);
 					fos.write(array);
-					/*while (is.read(buffer) > 0) {
-						fos.write(buffer);
-					}
-					fos.close();*/ 
 				}
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
