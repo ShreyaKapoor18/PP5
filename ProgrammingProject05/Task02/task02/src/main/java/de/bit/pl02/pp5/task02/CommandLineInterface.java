@@ -34,9 +34,9 @@ public class CommandLineInterface {
 	 * @return options,	the command line arguments
 	 */
 	public static Options make_options() {
+		// create the command line options
 		Options options = new Options(); 
 		Option name = new Option("n", "name", true, "Enter the name of the database you want to make/see");
-		//directory
 		Option directory = new Option("d", "directory", true, "Enter the file directory from which you want to store the images"); 
 		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image and the outputpath where to save it at" );
 		Option getImagebyTitle = new Option("git", "getImagebyTitle", true, "Enter the name of the title from which you want the image and the outputpath where to save it at" ); 
@@ -57,7 +57,7 @@ public class CommandLineInterface {
 		getMetabyTitle.setArgs(2);
 		getMetabyTitle.setValueSeparator(',');
 		
-		
+		// add options 
 		options.addOption(name); 
 		options.addOption(directory); 
 		options.addOption(getImagebyAuthor);
@@ -78,10 +78,11 @@ public class CommandLineInterface {
 	 * @return cmd		list of atomic option and value tokens
 	 */
 	public static CommandLine parse_commandline(Options options, String[] args) {
-		
+		// parse command line
 		CommandLineParser parser = new DefaultParser(); 
 		HelpFormatter formatter = new HelpFormatter(); 
 		try { 
+			// list of options and their values
 			cmd = parser.parse(options, args); 	
 			} 
 			catch (ParseException e) { 
@@ -96,12 +97,15 @@ public class CommandLineInterface {
 	 *  ID, TITLE and AUTHOR into the database with the method {@link Database#read_director(String)}.
 	 * 
 	 */		
-	public static void option_s(){
+	public static void option_s() {
 		String dir = cmd.getOptionValue("directory");
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name); 
+		// create table IMAGES 
 		Db.make_table();
 		try {
+			// reads files of given directory and inserts metadata and the image 
+			// into the table
 			Db.read_director(dir);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -113,24 +117,28 @@ public class CommandLineInterface {
 	 *  
 	 */
 	public static void option_gia(){ 
+		// split option values given by the author about the author and the output path
 		String[] optionvalues = cmd.getOptionValues("getImagebyAuthor");
 		String author = optionvalues[0];
 		String outputpath = optionvalues[1];
 		System.out.println("outputpath"+outputpath+"\n");
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
-		Db.get_byteImage("AUTHOR", author, outputpath);
+		// store image of specified author in the output path
+		Db.get_byteImage("AUTHOR", author, outputpath); 
 	}
 		
 	/** Retrieve an image from the database by title and save as .png file.
 	 * 
 	 */
 	public static void option_git() {
+		// split option values about title and output path
 		String[] optionvalues = cmd.getOptionValues("getImagebyTitle");
 		String title = optionvalues[0];
 		String outputpath = optionvalues[1];
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
+		// store image of specified title in the output path
 		Db.get_byteImage("TITLE", title, outputpath);
 	}
 		
@@ -165,6 +173,7 @@ public class CommandLineInterface {
 	public static void option_p() throws SQLException {
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
+		// print table
 		Db.see_table();
 
 	}
