@@ -17,12 +17,76 @@ It is possible to print the values of the created table. If the user only wants 
 
 ## Getting Started
 
+### Description
+Main Class: **CommandLineInterface.Java** <br> 
+Subsidiary Classes: **Image.java**, **Database.Java** <br> 
+
+### Installing
+
+
+How to set up an working environment for this application:
+###  Installing SQLite
+
+Before trying to install, please check whether the installation has already been made.
+
+```
+$ sqlite3
+```
+
+If SQLite is already installed, you should get the following message:
+
+```
+SQLite version 3.29.0 2019-07-10 17:32:03
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite>
+```
+
+If not, please follow these instructions to install SQLite.
+
+Go to the SQLite webpage (https://www.sqlite.org/download.html) and download the most recent version of **SQLite-autoconf-*.tar.gz**.
+Type the following commands into the command line to unzip and install the package.
+
+```
+$ tar xvfz SQLite-autoconf-*.tar.gz
+
+$ cd SQLite-autoconf-*
+
+$ ./configure --prefix = /usr/local
+
+$ make
+
+$ make install
+```
+
+Confirm successful installation by typing again
+
+```
+$ sqlite3
+```
+### Running the Application
+In order to get the application running you will need to download the repository from gitlab from the following link.
+
+```
+https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20/group-03-descartes/tree/master/ProgrammingProject05
+```
+
+1. Git clone the repository
+2. Open Eclipse
+    *  Direct the workspace to /group-03-descartes/ProgrammingProject05
+    *  Import existing maven project
+    *  Select the de.bit.pl02.task02 pom xml for importing the existing maven project.
+    *  Do a maven install
+3. After the application is installed you will see a task02-0.0.1-SNAPSHOT.jar in the /target folder
+4. To execute the jar use the following command
+    *  java -cp <Path to Programming Project>/ProgrammingProject05/Task01/task01/target/task02-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task02.CommandLineInterface <options> <arguments>
 ### Accessing a database
 
 For the program to be running you need to specify the name of the database you want to make or the database you want to see that you have already created. Therefore use the option
 
 
-**-n** or **--name**: Enter the name of the database you want to make/see
+**-n** or **--name**: Enter the name of the database you want to make/see. This database will be created in the task02 directory of the project. Example(trialyy.db) database from PP5 repository in the previous task has been made already. 
 ```
 -n your_database_name
 ```
@@ -119,68 +183,6 @@ by adding the according dependencies to the pom.xml file:
     	<artifactId>commons-lang3</artifactId>
   	<version>3.4</version>
 </dependency>
-```
-
-### Installing
-
-In order to get the application running you will need to download the repository from gitlab from the following link.
-
-```
-https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20/group-03-descartes/tree/master/ProgrammingProject05
-```
-
-1. Git clone the repository
-2. Open Eclipse
-    *  Direct the workspace to /group-03-descartes/ProgrammingProject05
-    *  Import existing maven project
-    *  Select the de.bit.pl02.task01 pom xml for importing the existing maven project.
-    *  Do a maven install
-3. After the application is installed you will see a task01-0.0.1-SNAPSHOT.jar in the /target folder
-4. To execute the jar use the following command
-    *  java -cp <Path to Programming Project>/ProgrammingProject05/Task01/task01/target/task01-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task01.CommandLineInterface <options> <arguments>
-
-
-How to set up an working environment for this application:
-
-###  Installing SQLite
-
-Before trying to install, please check whether the installation has already been made.
-
-```
-$ sqlite3
-```
-
-If SQLite is already installed, you should get the following message:
-
-```
-SQLite version 3.29.0 2019-07-10 17:32:03
-Enter ".help" for usage hints.
-Connected to a transient in-memory database.
-Use ".open FILENAME" to reopen on a persistent database.
-sqlite>
-```
-
-If not, please follow these instructions to install SQLite.
-
-Go to the SQLite webpage (https://www.sqlite.org/download.html) and download the most recent version of **SQLite-autoconf-*.tar.gz**.
-Type the following commands into the command line to unzip and install the package.
-
-```
-$ tar xvfz SQLite-autoconf-*.tar.gz
-
-$ cd SQLite-autoconf-*
-
-$ ./configure --prefix = /usr/local
-
-$ make
-
-$ make install
-```
-
-Confirm successful installation by typing again
-
-```
-$ sqlite3
 ```
 
 ## Built With
