@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public class CommandLineInterface {
 	
 	/** the command line to receive arguments from the user */
-	static CommandLine cmd;
+	static CommandLine cmd; 
 		
 	/** Creates command line options to make a database, store images in it
 	 * and retrieve image and metadata information
@@ -35,7 +35,7 @@ public class CommandLineInterface {
 	 */
 	public static Options make_options() {
 		Options options = new Options(); 
-		Option name = new Option("n", "name", true, "Enter the name of the database you want to make/see");
+		Option name = new Option("n", "name", true, "Enter the path and name of the database you want to make/see separated by a comma");
 		//directory
 		Option directory = new Option("d", "directory", true, "Enter the file directory from which you want to store the images"); 
 		Option getImagebyAuthor = new Option("gia", "getImagebyAuthor", true, "Enter the name of the author from which you want the image and the outputpath where to save it at" );
@@ -45,6 +45,8 @@ public class CommandLineInterface {
 		Option print = new Option("p", "print", false, "Printing all content of the table");
 
 		// enable multiple argument options separated by ','
+		name.setArgs(2); 
+		name.setValueSeparator(',');
 		getImagebyAuthor.setArgs(2);
 		getImagebyAuthor.setValueSeparator(',');
 		
@@ -96,10 +98,9 @@ public class CommandLineInterface {
 	 *  ID, TITLE and AUTHOR into the database with the method {@link Database#read_director(String)}.
 	 * 
 	 */		
-	public static void option_s(){
+	public static void option_s(Database Db){
 		String dir = cmd.getOptionValue("directory");
 		String name = cmd.getOptionValue("name");
-		Database Db = new Database(name); 
 		Db.make_table();
 		try {
 			Db.read_director(dir);
@@ -112,25 +113,21 @@ public class CommandLineInterface {
 	 *  and save as .png file with the specified path by the user. 
 	 *  
 	 */
-	public static void option_gia(){ 
+	public static void option_gia(Database Db){ 
 		String[] optionvalues = cmd.getOptionValues("getImagebyAuthor");
 		String author = optionvalues[0];
 		String outputpath = optionvalues[1];
 		System.out.println("outputpath"+outputpath+"\n");
-		String name = cmd.getOptionValue("name");
-		Database Db = new Database(name);
 		Db.get_byteImage("AUTHOR", author, outputpath);
 	}
 		
 	/** Retrieve an image from the database by title and save as .png file.
 	 * 
 	 */
-	public static void option_git() {
+	public static void option_git(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("getImagebyTitle");
 		String title = optionvalues[0];
 		String outputpath = optionvalues[1];
-		String name = cmd.getOptionValue("name");
-		Database Db = new Database(name);
 		Db.get_byteImage("TITLE", title, outputpath);
 	}
 		
@@ -138,13 +135,11 @@ public class CommandLineInterface {
 	/** Get metadata by author and save as .txt file
 	 * 
 	 */
-	public static void option_gma() {
+	public static void option_gma(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("gma");
 		String author = optionvalues[0];
 		String outputpath = optionvalues[1];
 		System.out.println("Author name: "+ author); 
-		String name = cmd.getOptionValue("name");
-		Database Db = new Database(name);
 		// get meta info from table and save as txt file
 		Db.get_meta("AUTHOR", author, outputpath);
 	}
@@ -152,59 +147,62 @@ public class CommandLineInterface {
 	/** Get metadata by title and save as .txt file
 	 * 
 	 */
-	public static void option_gmt() {
+	public static void option_gmt(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("getMetabyTitle");
 		String title = optionvalues[0];
 		String outputpath = optionvalues[1];
-		String name = cmd.getOptionValue("name");
-		Database Db = new Database(name);
 		// get meta info from table and save as txt file
 		Db.get_meta("TITLE", title, outputpath);
 	}
 		
-	public static void option_p() throws SQLException {
+	public static void option_p(Database Db) throws SQLException {
 		String name = cmd.getOptionValue("name");
-		Database Db = new Database(name);
 		Db.see_table();
 
 	}
 	
 	public static void main(String[] args) throws SQLException {
-	
+		
 		/** create command line options */
 		Options options = CommandLineInterface.make_options();
 		/** parse command line for options */
 		cmd = CommandLineInterface.parse_commandline(options, args);
 		
-		/** Check command line options and do corresponding methods */
+		if (cmd.hasOption("name")) {
+		System.out.println("Connecting to the database: "); 
+		System.out.println("if the database doesnt exist new one will be created"); 
+		String[] namevalues = cmd.getOptionValues("n"); 
+		Database Db = new Database(namevalues[0], namevalues[1]); 
 		
+		/** Check command line options and do corresponding methods */
 		if (cmd.hasOption("d")){
-			CommandLineInterface.option_s();
+			System.out.println("Executing Store method"); 
+			CommandLineInterface.option_s(Db);
 		}
 		
 		if (cmd.hasOption("gia")){
-			CommandLineInterface.option_gia();
+			CommandLineInterface.option_gia(Db);
 		}
 		
 		if (cmd.hasOption("git")){
-			CommandLineInterface.option_git();
+			CommandLineInterface.option_git(Db);
 		}
 		
 		if (cmd.hasOption("gma")){
-			CommandLineInterface.option_gma();
+			CommandLineInterface.option_gma(Db);
 		}
 		
 		if (cmd.hasOption("gmt")){
-			CommandLineInterface.option_gmt();
+			CommandLineInterface.option_gmt(Db);
 		}
 		
 		if (cmd.hasOption("p")) {
-			CommandLineInterface.option_p();
+			CommandLineInterface.option_p(Db);
 		}
-	}
-	
+		} 
+	} 
+} 
 
-}
 
 
 

@@ -43,22 +43,25 @@ import java.io.IOException;
 public class Database {
 
 	/** the name of the database */
+	private String path;
 	private String name;
 	private int error_code; // giving an error when something goes wrong with the database. 
 	private Connection con; 
 	private int id = 0; // start the id with 1 for each database
-	private int dir_count = 0; // count of how many directories have been added
+	private List<String> dir_= new ArrayList<String>(); // the name of the directories added to the dtabase
 	  
 	
-	/** Constructor method
+	/** Constructor method, makes a new database if it didn't exist, otherwise connects to the 
+	 * existing database. 
 	 * 
-	 * @param name	the name of the database
+	 * @param path	the path of the database
 	 */
-	public Database(String name) {
+	public Database(String path, String name) {
 
+		this.path = path;
 		this.name = name;
 		try {
-			this.con = this.Connect_db();
+			this.Connect_db();
 		} catch (SQLException e) {
 			
 			System.out.println(StringUtils.repeat("=", 20) + " ERROR " + StringUtils.repeat("=", 20)); 
@@ -66,20 +69,20 @@ public class Database {
 		} 
 	}
 	
-	/** Establishes a connection to the SQLite database
+	/** Establishes a connection to the SQLite database 
 	 *
-	 * @return con connection to the database
 	 * @throws SQLException if SQL command can not be executed
 	 */
-	public Connection Connect_db() throws SQLException { 
-		// connecting to the database whether existing or not existing!
-		Connection con = null; 
+	public void Connect_db() throws SQLException { 
+		// connecting to the database whether existing or not existing! 
 		try {
 			Class.forName("org.sqlite.JDBC"); 
-			con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
+			System.out.println("jdbc:sqlite:" + this.path + "/"+ this.name + ".db"); 
+			this.con = DriverManager.getConnection("jdbc:sqlite:" + this.path + "/"+ this.name + ".db");
+			//System.out.println("jdbc:sqlite:" + this.path + "/"+ this.name + ".db"); 
 			try {
 				// Check if TABLE Images is already present 
-				Statement smt = con.createStatement(); 
+				Statement smt = this.con.createStatement(); 
 				String count_query = "SELECT COUNT(*) from 'IMAGES'"; 
 				ResultSet r1 = smt.executeQuery(count_query); 
 				//r1.next(); 
@@ -88,9 +91,9 @@ public class Database {
 				r1.close();
 				smt.close();
 				System.out.println("The database currently contains " + count + " elements"); 
-				id = count; 
+				this.id = count; 
 			} catch(Exception e) {
-				Statement smt = con.createStatement(); 
+				Statement smt = this.con.createStatement(); 
 				String sql = "CREATE TABLE IMAGES "
 						    + "(ID INTEGER PRIMARY KEY NOT NULL,"
 							+ "TITLE TEXT NOT NULL, "
@@ -103,12 +106,10 @@ public class Database {
 				//System.out.println(sql1);			
 			}
 
-			//con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db"); 
-			return con;  
+			//con = DriverManager.getConnection("jdbc:sqlite:" + this.name + ".db");  
 		} catch (ClassNotFoundException e) { 
 				System.out.println(StringUtils.repeat("=", 20) + " ERROR " + StringUtils.repeat("=", 20)); 
-				System.out.println(" Could not find the class"); 
-				return null; 
+				System.out.println(" Could not find the class");  
 			}
 		}
 		
@@ -184,11 +185,6 @@ public class Database {
 		   System.out.println("Printing table:");
 		   System.out.println("ID: "+x+"\nAUTHOR: "+a+"\nTITLE: "+s+"\nLINK: "+l);   
 	   	}
-	   	ResultSet rs2 = smt.executeQuery("PRAGMA table_info('IMAGES')"); 
-	   	while (rs2.next())
-	   	{  
-	   		//System.out.println("result set2!");    
-	   	}
 	   	smt.close(); 
 	   
 	}
@@ -202,12 +198,15 @@ public class Database {
 	 * @throws SQLException if image could not be inserted into database
 	 */
 	public ArrayList<String> read_director(String dir) throws SQLException
-	{  
+	{ 	ArrayList<String> arr = new ArrayList<String>();
+		
+		if (!this.dir_.contains(dir)) { 
+		this.dir_.add(dir); 
 		Statement smt = this.con.createStatement(); 
 		File dir1 = new File(dir); 
 		System.out.println("Directory: "+dir); 
     	File[] filesindir = dir1.listFiles(); 
-    	ArrayList<String> arr = new ArrayList<String>();
+    	
     	for (File f: filesindir)
     	{ 	String imgname = f.getName();
     		
@@ -224,7 +223,7 @@ public class Database {
     				String link = "'"+ meta.get(2)+ "'"; 
     				String sql = "INSERT INTO IMAGES (ID,TITLE, AUTHOR, LINK) VALUES ("+ id + "," + title +  "," + author + "," + link + ")";
     				smt.execute(sql);
-    				updatePicture(img, id, f.getAbsolutePath()); 
+    				this.updatePicture(img, id, f.getAbsolutePath()); 
     			}catch (Exception e) {
     				System.out.println(e.getMessage());
     			}
@@ -232,7 +231,10 @@ public class Database {
     	  }
     	}
     	//System.out.println("inserting images");
-
+		} 
+		else { 
+			System.out.println("This directory has already been added to the Database"); 
+		}
     	return arr; 
 	}
 	
@@ -376,7 +378,6 @@ public class Database {
 	 */
 	public void get_byteImage (String column_name, String value, String outputpath) {
 		Statement stmt;
-		byte[] bImage = null;
 		try {
 			stmt = this.con.createStatement();
 			try {
@@ -387,10 +388,8 @@ public class Database {
 					System.out.println("executed: get binary stream ");
 					String id = rs.getString("ID");
 					String author = rs.getString("AUTHOR"); 
-					//File dir = new File(outputpath); 
-					//dir.mkdir();
 					System.out.println("Putting in path: "); 
-					File image = new File(outputpath+"/"+author+id + ".png");
+					File image = new File(outputpath+"/"+author+id +".png");
 					System.out.println(outputpath+"/"+author+id + ".png"); 
 				    FileOutputStream fos = new FileOutputStream(image);
 				    byte[] buffer = new byte[1];
