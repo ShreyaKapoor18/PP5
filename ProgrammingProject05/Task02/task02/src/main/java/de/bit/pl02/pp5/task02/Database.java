@@ -1,10 +1,7 @@
 package de.bit.pl02.pp5.task02;
 import de.bit.pl02.pp5.task02.*;
-//import de.bit.pl02.pp5.task03.MetaData;
-
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.sql.Connection;
@@ -15,10 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.BaseStream;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 
@@ -46,10 +40,10 @@ public class Database {
 
 	/** the name of the database */
 	private String name;
-	private int error_code; // giving an error when something goes wrong with the database. 
+	//private int error_code; // giving an error when something goes wrong with the database. 
 	private Connection con; 
 	private int id = 0; // start the id with 1 for each database
-	private int dir_count = 0; // count of how many directories have been added
+	//private int dir_count = 0; // count of how many directories have been added
 	  
 	
 	/** Constructor method
@@ -366,8 +360,6 @@ public class Database {
 	 */
 	public void get_byteImage (String column_name, String value, String outputpath) {
 		Statement stmt;
-		// placeholder byte array 
-		byte[] bImage = null;
 		try {
 			stmt = this.con.createStatement();
 			try {

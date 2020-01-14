@@ -8,7 +8,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter; 
 import org.apache.commons.cli.ParseException;
-import java.io.*; 
 import java.sql.SQLException;
 
 
@@ -173,7 +172,6 @@ public class CommandLineInterface {
 	public static void option_p() throws SQLException {
 		String name = cmd.getOptionValue("name");
 		Database Db = new Database(name);
-		// print table
 		Db.see_table();
 
 	}

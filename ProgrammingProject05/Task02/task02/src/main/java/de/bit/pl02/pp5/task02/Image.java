@@ -22,9 +22,7 @@ import java.util.ArrayList;
  * 
  */
 public class Image {
-	
-	/** image in byte array format to be stored in database column PICTURE blob */
-	private byte[] blob; 
+ 
 	/** the name of the image**/
 	private String name; 
 	/** the path of the image in the machine **/ 
@@ -35,8 +33,7 @@ public class Image {
 	 * @param name  The name of the image file.
 	 */
 	Image(String path, String name) {
-		// the byte array of the image
-		this.blob = readFile(path); 
+ 
 		this.name = name; 
 		this.path = path; 
 	}
@@ -60,6 +57,7 @@ public class Image {
             for (int len; (len = fis.read(buffer)) != -1;) {
                 bos.write(buffer, 0, len);
 	            }
+            fis.close();
         } catch (FileNotFoundException e) {
         	System.err.println(e.getMessage());
         } catch (IOException e2) {
@@ -109,6 +107,7 @@ public class Image {
 			    }
 			   }
 			}
+			buffr.close();
 			// add found values to the ArrayList
 			meta.add(title); 
 			meta.add(author);
