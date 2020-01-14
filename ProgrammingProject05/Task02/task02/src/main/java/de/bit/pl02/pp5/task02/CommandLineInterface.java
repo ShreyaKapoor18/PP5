@@ -207,7 +207,8 @@ public class CommandLineInterface {
 		//place in the task02 folder
 		String classpath = System.getProperty("java.class.path");
 		String[] classpathEntries = classpath.split(File.pathSeparator);
-		File directories = new File(classpathEntries[0].replace("/target/classes", "")+"test_options.txt");// this will create test_options file on your local machine
+		//System.out.println(classpathEntries[0].split("/target")[0]+"/test_options.txt"); 
+		File directories = new File(classpathEntries[0].split("/target")[0]+"/test_options.txt");// this will create test_options file on your local machine
 		if (directories.exists()){
 		// if file is present
 		Reader fr;

@@ -82,7 +82,7 @@ https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20
 4. To execute the jar use the following command (example in Commands file)
     *  java -cp <Path to Programming Project>/ProgrammingProject05/Task02/task02/target/task02-0.0.1-SNAPSHOT.jar  de.bit.pl02.pp5.task02.CommandLineInterface <options> <arguments>
     *  or use the Commands file to run from the base folder from your computer 
-         * bash /group-03-descartes/ProgrammingProject05/Task02/task02 Commands 
+         * bash /group-03-descartes/ProgrammingProject05/Task02/task02 Commands.txt
 ### Accessing a database
 
 For the program to be running you need to specify the name of the database you want to make or the database you want to see that you have already created. Therefore use the option
