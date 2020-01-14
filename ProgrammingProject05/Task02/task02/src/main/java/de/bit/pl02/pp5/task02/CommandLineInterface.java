@@ -111,6 +111,7 @@ public class CommandLineInterface {
 	 * AUTHOR into the database with the method
 	 * {@link Database#read_director(String)}.
 	 * 
+	 * @param Db	the name of the database you want to connect to 
 	 */
 	public static void option_s(Database Db) {
 		String dir = cmd.getOptionValue("directory");
@@ -131,6 +132,7 @@ public class CommandLineInterface {
 	 * {@link Database#get_byteImage(String, String, String)} and save as .png file
 	 * with the specified path by the user.
 	 * 
+	 * @param Db	the name of the database you want to connect to
 	 */
 	public static void option_gia(Database Db) {
 		// split option values given by the author about the author and the output path
@@ -145,6 +147,7 @@ public class CommandLineInterface {
 	/**
 	 * Retrieve an image from the database by title and save as .png file.
 	 * 
+	 * @param Db	the name of the database you want to connect to
 	 */
 	public static void option_git(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("getImagebyTitle");
@@ -157,6 +160,7 @@ public class CommandLineInterface {
 	/**
 	 * Get metadata by author and save as .txt file
 	 * 
+	 * @param Db	the name of the database you want to connect to
 	 */
 	public static void option_gma(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("gma");
@@ -170,6 +174,7 @@ public class CommandLineInterface {
 	/**
 	 * Get metadata by title and save as .txt file
 	 * 
+	 * @param Db	the name of the database you want to connect to
 	 */
 	public static void option_gmt(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("getMetabyTitle");
@@ -179,6 +184,12 @@ public class CommandLineInterface {
 		Db.get_meta("TITLE", title, outputpath);
 	}
 
+	/**
+	 * Print the contents of the database
+	 * 
+	 * @param Db			the name of the database you want to conntect to
+	 * @throws SQLException if the commands can not be executed
+	 */
 	public static void option_p(Database Db) throws SQLException {
 		String name = cmd.getOptionValue("name");
 		Db.see_table();
@@ -234,7 +245,7 @@ public class CommandLineInterface {
 	 * they clutter the server that this application is running on and upload their
 	 * images to the wrong database.
 	 * 
-	 * @param name
+	 * @param name	the name of the database
 	 */
 	public static void addDbToAllowedDb(String name) {
 		BufferedWriter output;

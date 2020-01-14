@@ -58,7 +58,8 @@ public class Database {
 	 * Constructor method, makes a new database if it didn't exist, otherwise
 	 * connects to the existing database.
 	 * 
-	 * @param path the path of the database
+	 * @param path	the path of the database
+	 * @param name	the name of the database 
 	 */
 	public Database(String path, String name) {
 
@@ -267,8 +268,10 @@ public class Database {
 	 * {@link Image#readFile(String)} to read in an image file and store it as a
 	 * byte array. TODO check ID
 	 * 
-	 * @param Id       the value of the id column in the database
-	 * @param filename the path of the image to be stored
+	 * @param bytes		the byte array of the image
+	 * @param author	the value of column AUTHOR
+	 * @param title		the value of column TITLE
+	 * @param link		the value of column LINK
 	 */
 	public void storePictureForAPI(byte[] bytes, String author, String title, String link) {
 		// update sql
@@ -301,6 +304,10 @@ public class Database {
 	 * FOR API USE function returns a list of id's and metadata that matches the get
 	 * command author and/or title. CANNOT BOTH BE NULL! possible TODO write nice
 	 * exception.
+	 * 
+	 * @param author		the value of column AUTHOR to be searched
+	 * @param title			the value of column TITLE to be search
+	 * @return MetaDataList	the list of id and metadata
 	 */
 	public List<MetaDataAPI> getForAPI(String author, String title) {
 		if (author == null && title == null) {
@@ -354,8 +361,8 @@ public class Database {
 	 * FOR API USE returns byte[] of picture with identifier id. Since id is unique,
 	 * this function returns only 1 byte[]. overloaded
 	 * 
-	 * @param id
-	 * @return
+	 * @param id		the identifier id
+	 * @return image	the byte array of the image
 	 */
 	public byte[] getForAPI(int id) {
 		PreparedStatement stmt = null;
