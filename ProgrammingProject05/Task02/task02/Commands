@@ -1,0 +1,1 @@
+java -cp ~/git/group-03-descartes/ProgrammingProject05/Task02/task02/target/task02-0.0.1-SNAPSHOT.jar de.bit.pl02.pp5.task02.CommandLineInterface -d ~/git/group-03-descartes/ProgrammingProject05/Task01/task01/PP5 -n Desktop,trialyy -gia Sebastian,Desktop
