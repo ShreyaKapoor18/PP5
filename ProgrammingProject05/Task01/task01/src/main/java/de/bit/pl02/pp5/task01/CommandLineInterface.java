@@ -66,12 +66,10 @@ public class CommandLineInterface {
 			System.out.println("Metafile exists, will deal with existing metafile");
 			System.out.println(StringUtils.repeat("-", 50));
 		} else {
-			error_code = 1; // this means that the file didnt exist before and was made by the program
-							// itself.
+			error_code = 1; // this means that the file didnt exist before and was made by the program itself.
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				System.out.println(StringUtils.repeat("-", 20) + " MESSAGE " + StringUtils.repeat("-", 20));
 				System.out.println("The file did not exist before, program has created a new one");
 				System.out.println(StringUtils.repeat("-", 50));

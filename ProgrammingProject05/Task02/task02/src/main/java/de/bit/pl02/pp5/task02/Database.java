@@ -35,11 +35,8 @@ import java.io.IOException;
  * The user can add images with the {@link #updatePicture(Image, int, String)}
  * method to the table.
  * 
- * Columns: 
- * AUTHOR the name of the author 
- * TITLE the name of the title 
- * LINK the URL related to the image 
- * PICUTRE the image as a byte array
+ * Columns: AUTHOR the name of the author TITLE the name of the title LINK the
+ * URL related to the image PICUTRE the image as a byte array
  * 
  * @author Shreya Kapoor
  * @author Sophia Krix
@@ -56,13 +53,13 @@ public class Database {
 	// database.
 	private Connection con;
 	private int id = 0; // start the id with 1 for each database
-	
+
 	/**
 	 * Constructor method, makes a new database if it didn't exist, otherwise
 	 * connects to the existing database.
 	 * 
-	 * @param path	the path of the database
-	 * @param name	the name of the database 
+	 * @param path the path of the database
+	 * @param name the name of the database
 	 */
 	public Database(String path, String name) {
 
@@ -270,10 +267,10 @@ public class Database {
 	 * {@link Image#readFile(String)} to read in an image file and store it as a
 	 * byte array. TODO check ID
 	 * 
-	 * @param bytes		the byte array of the image
-	 * @param author	the value of column AUTHOR
-	 * @param title		the value of column TITLE
-	 * @param link		the value of column LINK
+	 * @param bytes  the byte array of the image
+	 * @param author the value of column AUTHOR
+	 * @param title  the value of column TITLE
+	 * @param link   the value of column LINK
 	 */
 	public void storePictureForAPI(byte[] bytes, String author, String title, String link) {
 		// update sql
@@ -306,9 +303,9 @@ public class Database {
 	 * FOR API USE function returns a list of id's and metadata that matches the get
 	 * command author and/or title. Cannot both be null!
 	 * 
-	 * @param author		the value of column AUTHOR to be searched
-	 * @param title			the value of column TITLE to be search
-	 * @return MetaDataList	the list of id and metadata
+	 * @param author the value of column AUTHOR to be searched
+	 * @param title  the value of column TITLE to be search
+	 * @return MetaDataList the list of id and metadata
 	 */
 	public List<MetaDataAPI> getForAPI(String author, String title) {
 		if (author == null && title == null) {
@@ -362,8 +359,8 @@ public class Database {
 	 * FOR API USE returns byte[] of picture with identifier id. Since id is unique,
 	 * this function returns only 1 byte[]. overloaded
 	 * 
-	 * @param id		the identifier id
-	 * @return image	the byte array of the image
+	 * @param id the identifier id
+	 * @return image the byte array of the image
 	 */
 	public byte[] getForAPI(int id) {
 		PreparedStatement stmt = null;
@@ -419,17 +416,17 @@ public class Database {
 					// System.out.println("Putting in path: ");
 					// create file at specified outputpath with the name of AUTHOR and ID from the
 					// table
-					
-					System.out.println("saved image at: "+ outputpath + "/" + author + id + ".png");
+
+					System.out.println("saved image at: " + outputpath + "/" + author + id + ".png");
 					// write the byte array to the file
-					
-					//byte[] buffer = new byte[1];
+
+					// byte[] buffer = new byte[1];
 					java.io.InputStream is = rs.getBinaryStream("PICTURE");
-					BufferedImage img = ImageIO.read(is); 
-					ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-					ImageIO.write(img, "PNG", baos); 
-					byte[] array = baos.toByteArray(); 
-					File image = new File(outputpath + "/" + author + id + ".png"); 
+					BufferedImage img = ImageIO.read(is);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ImageIO.write(img, "PNG", baos);
+					byte[] array = baos.toByteArray();
+					File image = new File(outputpath + "/" + author + id + ".png");
 					FileOutputStream fos = new FileOutputStream(image);
 					fos.write(array);
 				}

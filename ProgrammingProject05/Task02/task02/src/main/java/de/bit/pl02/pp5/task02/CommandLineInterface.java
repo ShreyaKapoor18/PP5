@@ -113,11 +113,10 @@ public class CommandLineInterface {
 	 * AUTHOR into the database with the method
 	 * {@link Database#read_director(String)}.
 	 * 
-	 * @param Db	the name of the database you want to connect to 
+	 * @param Db the name of the database you want to connect to
 	 */
 	public static void option_s(Database Db) {
 		String dir = cmd.getOptionValue("directory");
-		String name = cmd.getOptionValue("name");
 		// create table IMAGES
 		Db.make_table();
 		try {
@@ -134,7 +133,7 @@ public class CommandLineInterface {
 	 * {@link Database#get_byteImage(String, String, String)} and save as .png file
 	 * with the specified path by the user.
 	 * 
-	 * @param Db	the name of the database you want to connect to
+	 * @param Db the name of the database you want to connect to
 	 */
 	public static void option_gia(Database Db) {
 		// split option values given by the author about the author and the output path
@@ -149,7 +148,7 @@ public class CommandLineInterface {
 	/**
 	 * Retrieve an image from the database by title and save as .png file.
 	 * 
-	 * @param Db	the name of the database you want to connect to
+	 * @param Db the name of the database you want to connect to
 	 */
 	public static void option_git(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("getImagebyTitle");
@@ -162,7 +161,7 @@ public class CommandLineInterface {
 	/**
 	 * Get metadata by author and save as .txt file
 	 * 
-	 * @param Db	the name of the database you want to connect to
+	 * @param Db the name of the database you want to connect to
 	 */
 	public static void option_gma(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("gma");
@@ -176,7 +175,7 @@ public class CommandLineInterface {
 	/**
 	 * Get metadata by title and save as .txt file
 	 * 
-	 * @param Db	the name of the database you want to connect to
+	 * @param Db the name of the database you want to connect to
 	 */
 	public static void option_gmt(Database Db) {
 		String[] optionvalues = cmd.getOptionValues("getMetabyTitle");
@@ -189,67 +188,69 @@ public class CommandLineInterface {
 	/**
 	 * Print the contents of the database
 	 * 
-	 * @param Db			the name of the database you want to connect to
+	 * @param Db the name of the database you want to connect to
 	 * @throws SQLException if the commands can not be executed
 	 */
 	public static void option_p(Database Db) throws SQLException {
 		Db.see_table();
 	}
-	
-	/** Checks if the files from a given directory have been entered 
-	 * in the database
-	 * @param dir the directory that has been saved to the database
+
+	/**
+	 * Checks if the files from a given directory have been entered in the database
+	 * 
+	 * @param dir  the directory that has been saved to the database
 	 * @param name the name of the database
 	 * @return boolean true if a duplicated directory in database, false otherwise
 	 * @throws IOException if there is a problem with dealing with the checkfile
 	 */
 	public static boolean check_duplicates(String dir, String name) throws IOException {
-		//place in the task02 folder
+		// place in the task02 folder
 		String classpath = System.getProperty("java.class.path");
 		String[] classpathEntries = classpath.split(File.pathSeparator);
-		//System.out.println(classpathEntries[0].split("/target")[0]+"/test_options.txt"); 
-		File directories = new File(classpathEntries[0].split("/target")[0]+"/test_options.txt");// this will create test_options file on your local machine
-		if (directories.exists()){
-		// if file is present
-		Reader fr;
-		fr = new FileReader(directories);
-		BufferedReader br = new BufferedReader(fr);
-		String st;
-		while ((st = br.readLine()) != null) {
-			String directory_present = st.split(",")[0];
-			String name_present = st.split(",")[1];
-			if (directory_present.equals(dir) & name_present.equals(name)) {
-				System.out.println("Files from the particular folder " + dir
-						+ "have already been added to the database named " + name);
-				System.out.println(StringUtils.repeat("-", 60)+"\n");
-				return true; // duplicates have been found, the not condition will make the value false in
-								// main function
+		// System.out.println(classpathEntries[0].split("/target")[0]+"/test_options.txt");
+		//we want to get the classpath without the target directory and store the file there
+		File directories = new File(classpathEntries[0].split("/target")[0] + "/test_options.txt");
+		if (directories.exists()) {
+			// if file is present
+			Reader fr;
+			fr = new FileReader(directories);
+			BufferedReader br = new BufferedReader(fr);
+			String st;
+			while ((st = br.readLine()) != null) {
+				String directory_present = st.split(",")[0];
+				String name_present = st.split(",")[1];
+				if (directory_present.equals(dir) & name_present.equals(name)) {
+					System.out.println("Files from the particular folder " + dir
+							+ "have already been added to the database named " + name);
+					System.out.println(StringUtils.repeat("-", 60) + "\n");
+					br.close();
+					return true; // duplicates have been found, the not condition will make the value false in main function
+				}
 			}
-		}
-		br.close();
-		fr.close();
-		FileWriter fw =  new FileWriter(directories, true); // appending
-		fw.write(dir + "," + name + "\n");
-		fw.close();
-		return false; 
-		} 
-		else { 
-			directories.createNewFile(); 
-			FileWriter fw = new FileWriter(directories); 
+			br.close();
+			fr.close();
+			FileWriter fw = new FileWriter(directories, true); // appending
+			fw.write(dir + "," + name + "\n");
+			fw.close();
+			return false;
+		} else {
+			directories.createNewFile();
+			FileWriter fw = new FileWriter(directories);
 			fw.write(dir + "," + name + "\n");
 			fw.close();
 			return false;
 		}
-		
 	}
-	 /** Adds name of a database created by the user to the list of allowed databases,
+
+	/**
+	 * Adds name of a database created by the user to the list of allowed databases,
 	 * in file allowedDBs.txt in the task02 folder. Only those databases are allowed
 	 * to be queried and added to by the API users. This functionality is intended
 	 * to prevent API users from making their own databases due to typo's, whereby
 	 * they clutter the server that this application is running on and upload their
 	 * images to the wrong database.
 	 * 
-	 * @param name	the name of the database
+	 * @param name the name of the database
 	 */
 	public static void addDbToAllowedDb(String name) {
 		BufferedWriter output;
@@ -264,7 +265,6 @@ public class CommandLineInterface {
 		}
 
 	}
-	
 
 	public static void main(String[] args) throws SQLException {
 
@@ -275,21 +275,23 @@ public class CommandLineInterface {
 
 		if (cmd.hasOption("name")) {
 			System.out.println("Connecting to the database: ");
-			//System.out.println("if the database doesnt exist new one will be created");
+			// System.out.println("if the database doesnt exist new one will be created");
 			String[] namevalues = cmd.getOptionValues("n");
-			// namevalues[0] is the path of the database, namevalues[1] is the name of the database
+			// namevalues[0] is the path of the database, namevalues[1] is the name of the
+			// database
 			Database Db = new Database(namevalues[0], namevalues[1]);
 
 			/** Check command line options and do corresponding methods */
-			if (cmd.hasOption("d")) { 
+			if (cmd.hasOption("d")) {
 				try {
-					if (!check_duplicates(cmd.getOptionValue("d"),namevalues[1])) { 
-					System.out.println("Executing Store method");
-					CommandLineInterface.option_s(Db);
+					if (!check_duplicates(cmd.getOptionValue("d"), namevalues[1])) {
+						System.out.println("Executing Store method");
+						CommandLineInterface.option_s(Db);
 					}
 				} catch (IOException e) {
-					System.out.println(StringUtils.repeat("-", 20)+ "File error with testing_options.txt"+ StringUtils.repeat("-", 20)); 
-				} 
+					System.out.println(StringUtils.repeat("-", 20) + "File error with testing_options.txt"
+							+ StringUtils.repeat("-", 20));
+				}
 			}
 
 			if (cmd.hasOption("gia")) {
@@ -313,6 +315,5 @@ public class CommandLineInterface {
 			}
 		}
 	}
-
 
 }
