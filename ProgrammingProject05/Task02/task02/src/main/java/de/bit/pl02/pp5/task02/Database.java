@@ -1,6 +1,5 @@
 package de.bit.pl02.pp5.task02;
 
-import de.bit.pl02.pp5.task02.*;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -35,8 +34,11 @@ import java.io.IOException;
  * The user can add images with the {@link #updatePicture(Image, int, String)}
  * method to the table.
  * 
- * Columns: AUTHOR the name of the author TITLE the name of the title LINK the
- * URL related to the image PICUTRE the image as a byte array
+ * Columns: 
+ * AUTHOR the name of the author 
+ * TITLE the name of the title 
+ * LINK the URL related to the image 
+ * PICUTRE the image as a byte array
  * 
  * @author Shreya Kapoor
  * @author Sophia Krix
@@ -65,9 +67,6 @@ public class Database {
 
 		this.path = path;
 		this.name = name;
-		// adds this database to the list of allowed databases for collaborators to
-		// query.
-		CommandLineInterface.addDbToAllowedDb(name);
 		try {
 			this.Connect_db();
 
@@ -265,7 +264,7 @@ public class Database {
 	/**
 	 * MODIFIED FOR API Updates the database with the new image by using the method
 	 * {@link Image#readFile(String)} to read in an image file and store it as a
-	 * byte array. TODO check ID
+	 * byte array. 
 	 * 
 	 * @param bytes  the byte array of the image
 	 * @param author the value of column AUTHOR
@@ -306,6 +305,7 @@ public class Database {
 	 * @param author the value of column AUTHOR to be searched
 	 * @param title  the value of column TITLE to be search
 	 * @return MetaDataList the list of id and metadata
+     * command author and/or title. CANNOT BOTH BE NULL!
 	 */
 	public List<MetaDataAPI> getForAPI(String author, String title) {
 		if (author == null && title == null) {
@@ -359,8 +359,8 @@ public class Database {
 	 * FOR API USE returns byte[] of picture with identifier id. Since id is unique,
 	 * this function returns only 1 byte[]. overloaded
 	 * 
-	 * @param id the identifier id
-	 * @return image the byte array of the image
+	 * @param id		the identifier id
+	 * @return image	the byte array of the image
 	 */
 	public byte[] getForAPI(int id) {
 		PreparedStatement stmt = null;
@@ -371,8 +371,14 @@ public class Database {
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
-			image = IOUtils.toByteArray(rs.getBinaryStream("PICTURE"));
+			//image = IOUtils.toByteArray(rs.getBinaryStream("PICTURE"));
+			java.io.InputStream is = rs.getBinaryStream("PICTURE");
+			BufferedImage img = ImageIO.read(is); 
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+			ImageIO.write(img, "PNG", baos); 
+			image = baos.toByteArray();
 			rs.close();
+		
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} catch (IOException e) {

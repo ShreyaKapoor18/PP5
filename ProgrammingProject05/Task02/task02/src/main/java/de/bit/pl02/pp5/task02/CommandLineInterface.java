@@ -113,7 +113,7 @@ public class CommandLineInterface {
 	 * AUTHOR into the database with the method
 	 * {@link Database#read_director(String)}.
 	 * 
-	 * @param Db the name of the database you want to connect to
+	 * @param Db	the name of the database you want to connect to 
 	 */
 	public static void option_s(Database Db) {
 		String dir = cmd.getOptionValue("directory");
@@ -194,11 +194,10 @@ public class CommandLineInterface {
 	public static void option_p(Database Db) throws SQLException {
 		Db.see_table();
 	}
-
-	/**
-	 * Checks if the files from a given directory have been entered in the database
-	 * 
-	 * @param dir  the directory that has been saved to the database
+	
+	/** Checks if the files from a given directory have been entered 
+	 * in the database
+	 * @param dir the directory that has been saved to the database
 	 * @param name the name of the database
 	 * @return boolean true if a duplicated directory in database, false otherwise
 	 * @throws IOException if there is a problem with dealing with the checkfile
