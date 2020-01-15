@@ -304,8 +304,7 @@ public class Database {
 
 	/**
 	 * FOR API USE function returns a list of id's and metadata that matches the get
-	 * command author and/or title. CANNOT BOTH BE NULL! possible TODO write nice
-	 * exception.
+	 * command author and/or title. Cannot both be null!
 	 * 
 	 * @param author		the value of column AUTHOR to be searched
 	 * @param title			the value of column TITLE to be search
