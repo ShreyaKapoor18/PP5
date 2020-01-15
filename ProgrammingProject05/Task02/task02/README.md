@@ -19,7 +19,7 @@ It is possible to print the values of the created table. If the user only wants 
 
 ### Description
 Main Class: **CommandLineInterface.Java** <br> 
-Subsidiary Classes: **Image.java**, **Database.Java** <br> 
+Subsidiary Classes: **Image.java**, **Database.Java**, **MetaDataAPI.java**  <br> 
 
 ### Installing
 
@@ -88,9 +88,10 @@ https://gitlab-sysprog.informatik.uni-bonn.de/ProgrammingLab2/winterterm-2019-20
 For the program to be running you need to specify the name of the database you want to make or the database you want to see that you have already created. Therefore use the option
 
 
-**-n** or **--name** ***(Mandatory Option)*** : Enter the name of the database you want to make/see. This database will be created in the task02 directory of the project. Example(trialyy.db) database from PP5 repository in the previous task has been made already. 
+**-n** or **--name** ***(Mandatory Option)*** : Enter the path of the database and the name of the database you want to make/see. Example(trialyy.db) database from PP5 repository in the previous task has been made already. 
+
 ```
--n your_database_name 
+-n your_path,your_database_name 
 ```
 
 Provide a directory that contains image files (.png, .jpeg, .jpg) and corresponding metadata files (.txt). In our case it is the PP5 directory created in task01.The metadata files have to have the following information:
@@ -118,16 +119,16 @@ You can give information about the author or the title to retrieve additional me
 To query by the author use the option
 
 
-**-gma** or **--getMetabyAuthor**: Enter the name of the author of which you want to retrieve the metadata
+**-gma** or **--getMetabyAuthor**: Enter the name of the author of which you want to retrieve the metadata and the outputpath where to save it at
 ```
--gma author_name
+-gma author_name,output_path
 ```
 To query by the title use the option
 
 
-**-gmt** or **--getMetabyTitle**: Enter the name of the title of which you want to retrieve the metadata
+**-gmt** or **--getMetabyTitle**: Enter the name of the title of which you want to retrieve the metadata and the outputpath where to save it at
 ```
--gmt title_name
+-gmt title_name,output_path
 ```
 
 
@@ -136,16 +137,16 @@ You can give information about the author or title to retrieve the images.
 To query by the author use the option
 
 
-**-gia** or **--getImagebyAuthor**: Enter the name of the author from which you want the image
+**-gia** or **--getImagebyAuthor**: Enter the name of the author from which you want the image and the outputpath where to save it at
 ```
--gia author_name
+-gia author_name,output_path
 ```
 To query by the title use the option
 
 
-**-git** or **--getImagebyTitle**: Enter the name of the title from which you want the image
+**-git** or **--getImagebyTitle**: Enter the name of the title from which you want the image and the outputpath where to save it at
 ```
--git title_name
+-git title_name,output_path
 ```
 
 ### Prerequisites
